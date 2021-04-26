@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lms.MVC.Core.Entites
+namespace Lms.MVC.Core.Entities
 {
-    class ActivityType
+    class Student : User
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+
+        public Course Course { get; set; }
 
     }
 }

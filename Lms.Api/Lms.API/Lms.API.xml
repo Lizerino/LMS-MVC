@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Lms.API.UI</name>
+    </assembly>
+    <members>
+        <member name="M:Lms.API.UI.Controllers.CoursesController.GetCourseAsync(System.Int32)">
+            <summary>
+            Returns a specific course by id
+            </summary>
+            <param name="id"> the course Id</param>
+            <returns>Returns tag </returns>
+        </member>
+        <member name="M:Lms.API.UI.Controllers.CoursesController.PatchCourse(System.Int32,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{Lms.API.Core.Dto.CourseDto})">
+            <summary>
+            
+            </summary>
+            <param name="id">course Id</param>
+            <param name="patchDocument">The set of operations to apply to the course</param>
+             <remarks>
+            Sample request (this request updates the author's first name) \ 
+            PATCH /authors/id \
+            [ \
+                { \
+                  "op": "replace", \
+                  "path": "/title", \
+                  "value": "new title" \
+                  } \
+            ] \
+            </remarks>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
