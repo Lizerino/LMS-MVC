@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Lms.MVC.Core.Entities
 {
-    class Student : User
+    public class Student : User
     {
 
         public Course Course { get; set; }

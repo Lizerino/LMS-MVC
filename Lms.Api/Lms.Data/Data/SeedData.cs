@@ -29,8 +29,6 @@ namespace Lms.API.Data.Data
                 for (int i = 0; i < 30; i += 3)
                 {
                     var list = modules.Skip(i).ToList();
-
-
                     foreach (var course in courses)
                     {
                         if (course.Modules != null)
@@ -40,26 +38,12 @@ namespace Lms.API.Data.Data
                         course.Modules = list.Take(3).ToList();
                         break;
                     }
-
                 }
-
-                //for (int i = 0; i < 10; i+=3)
-                //{
-                //    var list = modules.Skip(i).ToList();
-                //foreach (var course in courses)
-                //{
-                //        course.Modules = list.Take(3).ToList();
-                //        break;
-                //}
-
-                //}
-                
                 await db.AddRangeAsync(courses);
 
                 await db.SaveChangesAsync();
             };
         }
-
         private static List<Module> GetModules()
         {
             var fake = new Faker("sv");
@@ -92,39 +76,6 @@ namespace Lms.API.Data.Data
             }
             return courses;
         }
-        //private static List<Module> GetThreeModules(List<Module> modules)
-        //{
-
-        //    var list = new List<Module>();
-        //    for (int i = 0; i < 10; i+=3)
-        //    {
-        //        var result = modules.Skip(i).Take(3).ToList();
-        //        foreach (var item in result)
-        //        {
-        //        list.Add(item);
-        //            return list;
-        //        } 
-
-        //    }
-
-        //}
-        private static List<Module> GetRandomModules(List<Module> modules)
-        {
-            var rand = new Random();
-            var rand2 = new Random();
-            var skipped = rand.Next(0, 5);
-            var taken = rand2.Next(1, 24);
-
-            var result = modules.Skip(skipped).Take(taken).ToList();
-
-            //var result = new List<Module>();
-
-            //for (int i = 0; i < rand.Next(2,10); i++)
-            //{
-            //    result.Add(modules[rand2.Next(0, 30)]);
-            //}
-
-            return result;
-        }
+       
     }
 }
