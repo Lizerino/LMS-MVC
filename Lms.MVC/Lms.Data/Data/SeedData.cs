@@ -233,7 +233,7 @@ namespace Lms.MVC.Data.Data
                 while ((uniqueemail == false))
                 {
                     email = fake.Internet.Email();
-                    if (!students.Any(t => t.Email == email))
+                    if (students.Count==0 || !students.Any(t => t.Email == email))
                     {
                         uniqueemail = true;
                     }
