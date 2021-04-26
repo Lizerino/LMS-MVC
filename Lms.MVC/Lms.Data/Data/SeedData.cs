@@ -9,16 +9,25 @@ using Lms.MVC.Core.Entities;
 
 namespace Lms.MVC.Data.Data
 {
-    internal class SeedData
+    public class SeedData
     {
-        //var testUsers = new Faker<User>()
 
-        //.RuleFor(u => u.SomethingUnique, f => $"Value {f.UniqueIndex}");
 
-        //from faker import Fakerfake = Faker()names = [fake.unique.first_name() for i in range(500)] assert len(set(names)) == len(names)
-
-        public static async Task InitAsync(IServiceProvider services)
+        private readonly ApplicationDbContext db;
+        public SeedData(ApplicationDbContext db)
         {
+            this.db = db;
+            // Set Random to a fixed number to generate the same data each time Randomizer.Seed = new Random(12345);
+            Randomizer.Seed = new Random();
+        }
+
+
+
+        public void Seed()
+        {
+            db.Database.EnsureDeleted();
+            db.Database.EnsureCreated();
+
             var courses = GetCourses();
             var students = GetStudents();
             var teachers = GetTeachers();
@@ -34,7 +43,7 @@ namespace Lms.MVC.Data.Data
                     {
                         if (!course.Students.Any(s => s.Email == student.Email))
                         {
-                            course.Students.Add(student);                            
+                            course.Students.Add(student);
                         }
                     }
                 }
@@ -45,7 +54,7 @@ namespace Lms.MVC.Data.Data
                     {
                         if (!course.Teachers.Any(s => s.Email == teacher.Email))
                         {
-                            course.Teachers.Add(teacher);                            
+                            course.Teachers.Add(teacher);
                         }
                     }
                 }
@@ -61,18 +70,21 @@ namespace Lms.MVC.Data.Data
                             {
                                 if (!module.Activities.Any(a => a.Id == activity.Id))
                                 {
-                                    module.Activities.Add(activity);                                    
+                                    module.Activities.Add(activity);
                                 }
                             }
                         }
                         if (!course.Modules.Any(m => m.Id == module.Id))
                         {
-                            course.Modules.Add(module);                            
+                            course.Modules.Add(module);
                         }
                     }
                 }
             }
+
         }
+
+           
         
         // Save students to db
         // save teachers to db
@@ -90,6 +102,7 @@ namespace Lms.MVC.Data.Data
                 {
                     Title = fake.Company.CatchPhrase(),
                     StartDate = DateTime.Now.AddDays(fake.Random.Int(-2, 2)),
+                    
                 };
                 courses.Add(course);
             }
