@@ -63,6 +63,23 @@ namespace Lms.MVC.Data.Data
                 }
             }
 
+            // Add activities to modules
+
+            for (int i = 0; i < 45; i += 3)
+            {
+                var list = activities.Skip(i).ToList();
+                foreach (var module in modules)
+                {
+                    if (module.Activities != null)
+                    {
+                        continue;
+                    }
+                    module.Activities = list.Take(3).ToList();
+                    break;
+                }
+            }
+
+
             // Add modules to courses
 
             for (int i = 0; i < 15; i += 3)
@@ -79,54 +96,6 @@ namespace Lms.MVC.Data.Data
                 }
             }
 
-
-            //foreach (var course in courses)
-            //{
-            //    // Add students to courses
-            //    while (course.Students.Count < 5)
-            //    {
-            //        foreach (var student in students)
-            //        {
-            //            if (!course.Students.Any(s => s.Email == student.Email))
-            //            {
-            //                course.Students.Add(student);
-            //            }
-            //        }
-            //    }
-            //    // Add teachers to courses
-            //    while (course.Teachers.Count < 1)
-            //    {
-            //        foreach (var teacher in teachers)
-            //        {
-            //            if (!course.Teachers.Any(s => s.Email == teacher.Email))
-            //            {
-            //                course.Teachers.Add(teacher);
-            //            }
-            //        }
-            //    }
-            //    // Add modules to courses
-            //    while (course.Modules.Count < 3)
-            //    {
-            //        foreach (var module in modules)
-            //        {
-            //            // Add activities to modules
-            //            while (module.Activities.Count < 3)
-            //            {
-            //                foreach (var activity in activities)
-            //                {
-            //                    if (!module.Activities.Any(a => a.Id == activity.Id))
-            //                    {
-            //                        module.Activities.Add(activity);
-            //                    }
-            //                }
-            //            }
-            //            if (!course.Modules.Any(m => m.Id == module.Id))
-            //            {
-            //                course.Modules.Add(module);
-            //            }
-            //        }
-            //    }
-            //}
 
         }
 
