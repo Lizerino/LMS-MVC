@@ -160,11 +160,12 @@ namespace Lms.MVC.Data.Data
                     }
                 };
 
-                var user = new Teacher
+                var teacher = new Teacher
                 {
                     Name = fake.Name.FullName(),
                     Email = email,
                 };
+                teachers.Add(teacher);
             }
 
             return teachers;
@@ -194,6 +195,7 @@ namespace Lms.MVC.Data.Data
                     Name = fake.Name.FullName(),
                     Email = email,
                 };
+                students.Add(student);
             }
 
             return students;
