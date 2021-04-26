@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lms.MVC.Core.Entites
+namespace Lms.MVC.Core.Entities
 {
-    class Student : User
+    class Teacher : User
     {
-
-        public Course Course { get; set; }
-
     }
 }
