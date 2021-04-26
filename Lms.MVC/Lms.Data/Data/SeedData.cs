@@ -20,9 +20,6 @@ namespace Lms.MVC.Data.Data
             // Set Random to a fixed number to generate the same data each time Randomizer.Seed = new Random(12345);
             Randomizer.Seed = new Random();
         }
-
-
-
         public void Seed()
         {
             db.Database.EnsureDeleted();
@@ -151,11 +148,16 @@ namespace Lms.MVC.Data.Data
             var teachers = new List<Teacher>();
             for (int i = 0; i < 20; i++)
             {
-                var email = fake.Internet.Email();
+                string email="";
+                bool uniqueemail=false;
 
-                while ((teachers.Any(u => u.Email == email)))
+                while ((uniqueemail==false))
                 {
                     email = fake.Internet.Email();
+                    if (!teachers.Any(t=>t.Email==email))
+                    {
+                        uniqueemail = true;
+                    }
                 };
 
                 var user = new Teacher
@@ -175,11 +177,16 @@ namespace Lms.MVC.Data.Data
             var students = new List<Student>();
             for (int i = 0; i < 25; i++)
             {
-                var email = fake.Internet.Email();
+                string email = "";
+                bool uniqueemail = false;
 
-                while ((students.Any(u => u.Email == email)))
+                while ((uniqueemail == false))
                 {
                     email = fake.Internet.Email();
+                    if (!students.Any(t => t.Email == email))
+                    {
+                        uniqueemail = true;
+                    }
                 };
 
                 var student = new Student
