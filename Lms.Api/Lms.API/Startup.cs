@@ -55,9 +55,9 @@ namespace Lms.API.UI
             {
                 opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Lms.API", Version = "v1" });
 
-                var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
-                opt.IncludeXmlComments(xmlCommentsFullPath); // Review! : Including XMl in the path so we get our API documented.
+                //var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                //var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
+                //opt.IncludeXmlComments(xmlCommentsFullPath); // Review! : Including XMl in the path so we get our API documented.
             });
             services.AddDbContext<LmsAPIContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("LmsAPIContext")));
