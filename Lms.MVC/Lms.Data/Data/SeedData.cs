@@ -31,58 +31,107 @@ namespace Lms.MVC.Data.Data
             var activities = GetActivities();
             var modules = GetModules();
 
-            foreach (var course in courses)
+
+            // Add students to courses
+            for (int i = 0; i < 25; i += 5)
             {
-                // Add students to courses
-                while (course.Students.Count < 5)
+                var list = students.Skip(i).ToList();
+                foreach (var course in courses)
                 {
-                    foreach (var student in students)
+                    if (course.Students != null)
                     {
-                        if (!course.Students.Any(s => s.Email == student.Email))
-                        {
-                            course.Students.Add(student);
-                        }
+                        continue;
                     }
-                }
-                // Add teachers to courses
-                while (course.Teachers.Count < 1)
-                {
-                    foreach (var teacher in teachers)
-                    {
-                        if (!course.Teachers.Any(s => s.Email == teacher.Email))
-                        {
-                            course.Teachers.Add(teacher);
-                        }
-                    }
-                }
-                // Add modules to courses
-                while (course.Modules.Count < 3)
-                {
-                    foreach (var module in modules)
-                    {
-                        // Add activities to modules
-                        while (module.Activities.Count < 3)
-                        {
-                            foreach (var activity in activities)
-                            {
-                                if (!module.Activities.Any(a => a.Id == activity.Id))
-                                {
-                                    module.Activities.Add(activity);
-                                }
-                            }
-                        }
-                        if (!course.Modules.Any(m => m.Id == module.Id))
-                        {
-                            course.Modules.Add(module);
-                        }
-                    }
+                    course.Students = list.Take(5).ToList();
+                    break;
                 }
             }
 
+
+            // Add teachers to courses
+            for (int i = 0; i < 5; i++)
+            {
+                var list = teachers.Skip(i).ToList();
+                foreach (var course in courses)
+                {
+                    if (course.Teachers != null)
+                    {
+                        continue;
+                    }
+                    course.Teachers = list.Take(1).ToList();
+                    break;
+                }
+            }
+
+            // Add modules to courses
+
+            for (int i = 0; i < 15; i += 3)
+            {
+                var list = modules.Skip(i).ToList();
+                foreach (var course in courses)
+                {
+                    if (course.Modules != null)
+                    {
+                        continue;
+                    }
+                    course.Modules = list.Take(3).ToList();
+                    break;
+                }
+            }
+
+
+            //foreach (var course in courses)
+            //{
+            //    // Add students to courses
+            //    while (course.Students.Count < 5)
+            //    {
+            //        foreach (var student in students)
+            //        {
+            //            if (!course.Students.Any(s => s.Email == student.Email))
+            //            {
+            //                course.Students.Add(student);
+            //            }
+            //        }
+            //    }
+            //    // Add teachers to courses
+            //    while (course.Teachers.Count < 1)
+            //    {
+            //        foreach (var teacher in teachers)
+            //        {
+            //            if (!course.Teachers.Any(s => s.Email == teacher.Email))
+            //            {
+            //                course.Teachers.Add(teacher);
+            //            }
+            //        }
+            //    }
+            //    // Add modules to courses
+            //    while (course.Modules.Count < 3)
+            //    {
+            //        foreach (var module in modules)
+            //        {
+            //            // Add activities to modules
+            //            while (module.Activities.Count < 3)
+            //            {
+            //                foreach (var activity in activities)
+            //                {
+            //                    if (!module.Activities.Any(a => a.Id == activity.Id))
+            //                    {
+            //                        module.Activities.Add(activity);
+            //                    }
+            //                }
+            //            }
+            //            if (!course.Modules.Any(m => m.Id == module.Id))
+            //            {
+            //                course.Modules.Add(module);
+            //            }
+            //        }
+            //    }
+            //}
+
         }
 
-           
-        
+
+
         // Save students to db
         // save teachers to db
         // save activities to db
