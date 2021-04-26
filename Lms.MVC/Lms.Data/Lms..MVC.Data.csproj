@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Lms.Core\Lms.Core.csproj" />
+    <ProjectReference Include="..\Lms.Core\Lms..MVC.Core.csproj" />
   </ItemGroup>
 
 </Project>

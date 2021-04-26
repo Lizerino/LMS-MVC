@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lms.Core.Entites
+namespace Lms.MVC.Core.Entites
 {
     class Document
     {

@@ -1,4 +1,4 @@
-﻿using Lms.UI.Models;
+﻿using Lms.MVC.UI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Lms.UI.Controllers
+namespace Lms.MVC.UI.Controllers
 {
     public class HomeController : Controller
     {

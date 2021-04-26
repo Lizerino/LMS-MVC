@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Lms.UI.Data
+namespace Lms.MVC.Data.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
