@@ -1,80 +1,84 @@
-﻿using Bogus;
-using Lms.MVC.Core.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+
+using Bogus;
+
+using Lms.MVC.Core.Entities;
 
 namespace Lms.MVC.Data.Data
 {
-    class SeedData
+    internal class SeedData
     {
-
-
         //var testUsers = new Faker<User>()
 
         //.RuleFor(u => u.SomethingUnique, f => $"Value {f.UniqueIndex}");
-
-
-
-
 
         //from faker import Fakerfake = Faker()names = [fake.unique.first_name() for i in range(500)] assert len(set(names)) == len(names)
 
         public static async Task InitAsync(IServiceProvider services)
         {
-
-
-
-
             var courses = GetCourses();
             var students = GetStudents();
             var teachers = GetTeachers();
-            // save students to db
-            // save teachers to db
+            var activities = GetActivities();
+            var modules = GetModules();
+
             foreach (var course in courses)
             {
-                if (course.Students.Count < 5)
+                // Add students to courses
+                while (course.Students.Count < 5)
                 {
                     foreach (var student in students)
                     {
                         if (!course.Students.Any(s => s.Email == student.Email))
                         {
-                            course.Students.Add(student);
-                            students.Remove(student);
+                            course.Students.Add(student);                            
                         }
-
                     }
-
                 }
-            }
-            foreach (var course in courses)
-            {
-                if (course.Teachers.Count < 1)
+                // Add teachers to courses
+                while (course.Teachers.Count < 1)
                 {
                     foreach (var teacher in teachers)
                     {
                         if (!course.Teachers.Any(s => s.Email == teacher.Email))
                         {
-                            course.Teachers.Add(teacher);
-                            teachers.Remove(teacher);
+                            course.Teachers.Add(teacher);                            
                         }
-
                     }
-
+                }
+                // Add modules to courses
+                while (course.Modules.Count < 3)
+                {
+                    foreach (var module in modules)
+                    {
+                        // Add activities to modules
+                        while (module.Activities.Count < 3)
+                        {
+                            foreach (var activity in activities)
+                            {
+                                if (!module.Activities.Any(a => a.Id == activity.Id))
+                                {
+                                    module.Activities.Add(activity);                                    
+                                }
+                            }
+                        }
+                        if (!course.Modules.Any(m => m.Id == module.Id))
+                        {
+                            course.Modules.Add(module);                            
+                        }
+                    }
                 }
             }
-
         }
-
-
-        // add activity to module
-        // add module to course
-
-
-
-
+        
+        // Save students to db
+        // save teachers to db
+        // save activities to db
+        // save modules to db
+        // Save courses to db       
 
         private static List<Course> GetCourses()
         {
@@ -86,12 +90,12 @@ namespace Lms.MVC.Data.Data
                 {
                     Title = fake.Company.CatchPhrase(),
                     StartDate = DateTime.Now.AddDays(fake.Random.Int(-2, 2)),
-
                 };
                 courses.Add(course);
             }
             return courses;
         }
+
         private static List<Module> GetModules()
         {
             var fake = new Faker("sv");
@@ -102,7 +106,6 @@ namespace Lms.MVC.Data.Data
                 {
                     Title = fake.Name.JobTitle(),
                     StartDate = fake.Date.Soon()
-
                 };
                 modules.Add(module);
             }
@@ -122,8 +125,6 @@ namespace Lms.MVC.Data.Data
                     StartDate = fake.Date.Soon(),
                     Description = fake.Lorem.Sentence(),
                     ActivityType = GetActivityType(ran)
-
-
                 };
                 modules.Add(activity);
             }
@@ -153,6 +154,7 @@ namespace Lms.MVC.Data.Data
 
             return teachers;
         }
+
         private static List<Student> GetStudents()
         {
             var fake = new Faker("sv");
@@ -171,12 +173,12 @@ namespace Lms.MVC.Data.Data
                 {
                     Name = fake.Name.FullName(),
                     Email = email,
-
                 };
             }
 
             return students;
         }
+
         private static ActivityType GetActivityType(int ran)
         {
             var activityTypeEnum = (ActivityTypeEnum)ran;
@@ -188,12 +190,17 @@ namespace Lms.MVC.Data.Data
             return activityType;
         }
     }
+
     public enum ActivityTypeEnum
     {
         Lecture,
+
         ELearning,
+
         Practise,
+
         Assignment,
+
         Other
     }
 }
