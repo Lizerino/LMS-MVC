@@ -34,49 +34,60 @@ namespace Lms.MVC.Data.Data
             foreach (var course in courses)
             {
                 // Add students to courses
-                while (course.Students.Count < 5)
-                {
+                course.Students = new List<Student>();
+               
                     foreach (var student in students)
                     {
-                        if (!course.Students.Any(s => s.Email == student.Email))
+                        if (course.Students == null||!course.Students.Contains(student))
                         {
                             course.Students.Add(student);
                         }
+                        if (course.Students.Count<5)
+                        {
+                            break;
+                        }
                     }
-                }
+                
                 // Add teachers to courses
-                while (course.Teachers.Count < 1)
-                {
+                
                     foreach (var teacher in teachers)
                     {
                         if (!course.Teachers.Any(s => s.Email == teacher.Email))
                         {
                             course.Teachers.Add(teacher);
                         }
-                    }
-                }
+                        if (course.Teachers.Count < 5)
+                        {
+                            break;
+                        }
+                    }                
                 // Add modules to courses
-                while (course.Modules.Count < 3)
-                {
+               
                     foreach (var module in modules)
                     {
-                        // Add activities to modules
-                        while (module.Activities.Count < 3)
-                        {
+                        // Add activities to modules                        
                             foreach (var activity in activities)
                             {
                                 if (!module.Activities.Any(a => a.Id == activity.Id))
                                 {
                                     module.Activities.Add(activity);
                                 }
+                                if (module.Activities.Count < 5)
+                                {
+                                    break;
+                                }
                             }
-                        }
+                        
                         if (!course.Modules.Any(m => m.Id == module.Id))
                         {
                             course.Modules.Add(module);
                         }
-                    }
-                }
+                        if (course.Modules.Count < 5)
+                        {
+                            break;
+                        }
+                        
+                    }              
             }
 
         }
@@ -184,7 +195,7 @@ namespace Lms.MVC.Data.Data
                 while ((uniqueemail == false))
                 {
                     email = fake.Internet.Email();
-                    if (!students.Any(t => t.Email == email))
+                    if (students.Count==0 || !students.Any(t => t.Email == email))
                     {
                         uniqueemail = true;
                     }
