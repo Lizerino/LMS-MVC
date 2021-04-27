@@ -6,7 +6,9 @@ using Bogus;
 
 using Lms.MVC.Core.Entities;
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Lms.MVC.Data.Data
 {
@@ -23,10 +25,8 @@ namespace Lms.MVC.Data.Data
             Randomizer.Seed = new Random();
         }
 
-        public void Seed()
-        {
-            db.Database.EnsureDeleted();
-            db.Database.EnsureCreated();
+        public void Seed(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        {           
 
             var courses = GetCourses();
             var students = GetStudents();
@@ -96,8 +96,34 @@ namespace Lms.MVC.Data.Data
                 }
             }
 
-            db.AddRange(students);
-            db.AddRange(teachers);
+            
+
+            // Add teachers as users
+            foreach (var user in teachers)
+            {
+                user.UserName = user.Email;
+                IdentityResult result = userManager.CreateAsync(user, "password").Result;
+
+                if (result.Succeeded)
+                {
+                    userManager.AddToRoleAsync(user, "TEACHER").Wait();
+                }
+            }
+
+            // Add students as users
+            foreach (var user in students)
+            {
+                user.UserName = user.Email;
+                IdentityResult result = userManager.CreateAsync(user, "password").Result;
+
+                if (result.Succeeded)
+                {
+                    userManager.AddToRoleAsync(user, "STUDENT").Wait();
+                }
+            }
+
+            //db.AddRange(students);
+            //db.AddRange(teachers);
             db.AddRange(activities);
             db.AddRange(modules);
             db.AddRange(courses);

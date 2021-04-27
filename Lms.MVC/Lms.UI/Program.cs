@@ -1,13 +1,12 @@
+using System;
+
+using Lms.MVC.Core.Entities;
 using Lms.MVC.Data.Data;
+
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Lms.MVC.UI
 {
@@ -19,23 +18,28 @@ namespace Lms.MVC.UI
 
             try
             {
-            using (var scope = host.Services.CreateScope())
-            {
-                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                using (var scope = host.Services.CreateScope())
+                {
+                    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                    var serviceProvider = scope.ServiceProvider;
+                    
+                    var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+                    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-                SeedData seed = new SeedData(db);
-                seed.Seed();
-            }
+                    // TODO: REMOVE IN PRODUCTION
+                    db.Database.EnsureDeleted();
+                    db.Database.EnsureCreated();
 
+                    CreateRoles.Create(roleManager);
+                    SeedData seedData = new SeedData(db);
+
+                    seedData.Seed(userManager, roleManager);
+                }
             }
             catch (Exception)
             {
-
                 throw;
             }
-
-
-
 
             host.Run();
         }

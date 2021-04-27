@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Lms.MVC.Core.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace Lms.MVC.Data.Data
 {
@@ -16,7 +17,8 @@ namespace Lms.MVC.Data.Data
         public DbSet<Document> Documents { get; set; }
         public DbSet<Module> Modules { get; set; }
         public DbSet<Student> Students { get; set; }
-        public DbSet<Teacher> Teachers { get; set; }        
+        public DbSet<Teacher> Teachers { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
