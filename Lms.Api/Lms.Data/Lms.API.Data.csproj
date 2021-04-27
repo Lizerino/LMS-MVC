@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Lms.Core\Lms.API.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>
