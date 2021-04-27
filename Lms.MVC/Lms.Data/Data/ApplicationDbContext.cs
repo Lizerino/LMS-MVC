@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Lms.MVC.Data.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string>
     {
 
         public DbSet<Activity> Activities { get; set; }

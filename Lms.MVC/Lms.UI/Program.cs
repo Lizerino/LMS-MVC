@@ -4,6 +4,8 @@ using Lms.MVC.Core.Entities;
 using Lms.MVC.Data.Data;
 
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -18,6 +20,26 @@ namespace Lms.MVC.UI
 
             try
             {
+            using (var scope = host.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                    var services = scope.ServiceProvider;
+                    var context = services.GetRequiredService<ApplicationDbContext>();
+                    var confiq = services.GetRequiredService<IConfiguration>();
+                    context.Database.EnsureDeleted();
+                    context.Database.Migrate();
+                    //SeedData seed = new SeedData(db);
+                    //seed.Seed();
+
+                    var adminPW = confiq["AdminPW"];
+                    try
+                    {
+                        CreateAdmin.CreateAdminAsync(services, adminPW).Wait();
+                    }
+                    catch (Exception ex)
+                    {
+                        var logger = services.GetRequiredService<ILogger<Program>>();
+                        logger.LogError(ex.Message, "Seed Fail");
                 using (var scope = host.Services.CreateScope())
                 {
                     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
