@@ -17,7 +17,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Lms.MVC.UI.Areas.Identity.Pages.Account
 {
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin , Teacher")]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<User> _signInManager;
