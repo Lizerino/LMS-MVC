@@ -165,7 +165,7 @@ namespace Lms.MVC.Data.Data
         private static List<Activity> GetActivities()
         {
             var fake = new Faker("sv");
-            var modules = new List<Activity>();
+            var activitys = new List<Activity>();
             for (int i = 0; i < 45; i++)
             {
                 var ran = fake.Random.Int(0, 4);
@@ -176,9 +176,9 @@ namespace Lms.MVC.Data.Data
                     Description = fake.Lorem.Sentence(),
                     ActivityType = GetActivityType(ran)
                 };
-                modules.Add(activity);
+                activitys.Add(activity);
             }
-            return modules;
+            return activitys;
         }
 
         private static List<Teacher> GetTeachers()
