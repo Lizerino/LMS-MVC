@@ -1,25 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 using Bogus;
 
 using Lms.MVC.Core.Entities;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace Lms.MVC.Data.Data
 {
     public class SeedData
     {
-
-
         private readonly ApplicationDbContext db;
+
         public SeedData(ApplicationDbContext db)
         {
             this.db = db;
-            // Set Random to a fixed number to generate the same data each time Randomizer.Seed = new Random(12345);
+
+            // Set Random to a fixed number to generate the same data each time Randomizer.Seed =
+            // new Random(12345);
             Randomizer.Seed = new Random();
         }
+
         public void Seed()
         {
             db.Database.EnsureDeleted();
@@ -30,7 +33,6 @@ namespace Lms.MVC.Data.Data
             var teachers = GetTeachers();
             var activities = GetActivities();
             var modules = GetModules();
-
 
             // Add students to courses
             for (int i = 0; i < 25; i += 5)
@@ -46,7 +48,6 @@ namespace Lms.MVC.Data.Data
                     break;
                 }
             }
-
 
             // Add teachers to courses
             for (int i = 0; i < 5; i++)
@@ -79,7 +80,6 @@ namespace Lms.MVC.Data.Data
                 }
             }
 
-
             // Add modules to courses
 
             for (int i = 0; i < 15; i += 3)
@@ -96,16 +96,13 @@ namespace Lms.MVC.Data.Data
                 }
             }
 
-
+            db.AddRange(students);
+            db.AddRange(teachers);
+            db.AddRange(activities);
+            db.AddRange(modules);
+            db.AddRange(courses);
+            db.SaveChanges();
         }
-
-
-
-        // Save students to db
-        // save teachers to db
-        // save activities to db
-        // save modules to db
-        // Save courses to db       
 
         private static List<Course> GetCourses()
         {
@@ -117,7 +114,6 @@ namespace Lms.MVC.Data.Data
                 {
                     Title = fake.Company.CatchPhrase(),
                     StartDate = DateTime.Now.AddDays(fake.Random.Int(-2, 2)),
-                    
                 };
                 courses.Add(course);
             }
@@ -166,13 +162,13 @@ namespace Lms.MVC.Data.Data
             var teachers = new List<Teacher>();
             for (int i = 0; i < 20; i++)
             {
-                string email="";
-                bool uniqueemail=false;
+                string email = "";
+                bool uniqueemail = false;
 
-                while ((uniqueemail==false))
+                while ((uniqueemail == false))
                 {
                     email = fake.Internet.Email();
-                    if (!teachers.Any(t=>t.Email==email))
+                    if (!teachers.Any(t => t.Email == email))
                     {
                         uniqueemail = true;
                     }
@@ -202,7 +198,7 @@ namespace Lms.MVC.Data.Data
                 while ((uniqueemail == false))
                 {
                     email = fake.Internet.Email();
-                    if (students.Count==0 || !students.Any(t => t.Email == email))
+                    if (students.Count == 0 || !students.Any(t => t.Email == email))
                     {
                         uniqueemail = true;
                     }
