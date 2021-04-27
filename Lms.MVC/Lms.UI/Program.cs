@@ -23,8 +23,8 @@ namespace Lms.MVC.UI
             {
                 var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-                SeedData seed = new SeedData(db);
-                seed.Seed();
+                //SeedData seed = new SeedData(db);
+                //seed.Seed();
             }
 
             }
