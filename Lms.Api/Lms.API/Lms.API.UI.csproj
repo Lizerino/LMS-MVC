@@ -11,7 +11,6 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Analyzers" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.5">
       <PrivateAssets>all</PrivateAssets>

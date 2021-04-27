@@ -38,16 +38,7 @@ namespace Lms.API.UI.Controllers
             var coursesDto = mapper.Map<IEnumerable<CourseDto>>(courses);
             return Ok(coursesDto);
         }
-        /* the xml documantation won't work unless you activate them from the project proporties 
-         * and then add the necessary options/setupActions in the startup class Review! :Startup class
-         * 
-         */
-        /// <summary>
-        /// Returns a specific course by id
-        /// </summary>
-        /// <param name="id"> the course Id</param>
-
-        /// <returns>Returns tag </returns>
+      
 
         // GET: api/Courses/5
         [HttpGet]
@@ -154,23 +145,7 @@ namespace Lms.API.UI.Controllers
 
             return NoContent();
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id">course Id</param>
-        /// <param name="patchDocument">The set of operations to apply to the course</param>
-        ///  <remarks>
-        /// Sample request (this request updates the author's first name) \ 
-        /// PATCH /authors/id \
-        /// [ \
-        ///     { \
-        ///       "op": "replace", \
-        ///       "path": "/title", \
-        ///       "value": "new title" \
-        ///       } \
-        /// ] \
-        /// </remarks>
-        /// <returns></returns>
+        
         [HttpPatch("{id:int}")]
         public async Task<ActionResult<CourseDto>> PatchCourse(int id, JsonPatchDocument<CourseDto> patchDocument)
         {
