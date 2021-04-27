@@ -26,7 +26,7 @@ namespace Lms.MVC.Data.Data
         public void Seed()
         {
             db.Database.EnsureDeleted();
-            db.Database.EnsureCreated();
+            db.Database.Migrate();
 
             var courses = GetCourses();
             var students = GetStudents();
