@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Lms.MVC.Core.Entities
 {
-    public class Teacher : User
+    public class Teacher : ApplicationUser
     {
     }
 }
