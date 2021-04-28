@@ -70,6 +70,9 @@ namespace Lms.MVC.UI
 
                 config.Filters.Add(new AuthorizeFilter(policy));
             });
+
+            services.AddAutoMapper(typeof(MapperProfile));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
