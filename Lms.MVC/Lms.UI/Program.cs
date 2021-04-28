@@ -1,13 +1,12 @@
+using Lms.MVC.Core.Entities;
 using Lms.MVC.Data.Data;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Lms.MVC.UI
 {
@@ -19,25 +18,43 @@ namespace Lms.MVC.UI
 
             try
             {
-            using (var scope = host.Services.CreateScope())
-            {
-                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                using (var scope = host.Services.CreateScope())
+                {
+                    var services = scope.ServiceProvider;                    
+                    var db = services.GetRequiredService<ApplicationDbContext>();
+                    var config = services.GetRequiredService<IConfiguration>();
 
-                SeedData seed = new SeedData(db);
-                seed.Seed();
-            }
+                    // TODO: REMOVE IN PRODUCTION
+                    db.Database.EnsureDeleted();
+                    db.Database.EnsureCreated();
 
+                    var adminPW = config["AdminPW"];
+
+                    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+                    CreateRoles.Create(roleManager);
+                    SeedData seedData = new SeedData(db);
+
+                    seedData.Seed(userManager, roleManager);
+
+                    try
+                    {
+                        CreateAdmin.CreateAdminAsync(services, adminPW).Wait();
+                    }
+                    catch (Exception ex)
+                    {
+                        var logger = services.GetRequiredService<ILogger<Program>>();
+                        logger.LogError(ex.Message, "Seed Fail");
+                    }
+
+                    host.Run();
+                }
             }
             catch (Exception)
             {
-
                 throw;
             }
-
-
-
-
-            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
