@@ -108,7 +108,7 @@ namespace Lms.API.UI.Controllers
             if ( await uoW.CourseRepository.SaveAsync())
             {
                 var model = mapper.Map<CourseDto>(course);
-            return CreatedAtAction("GetCourse", new { id = course.Id }, model);
+                return CreatedAtAction("GetCourse", new { id = course.Id }, model);
                 // The framework's default is to delet the Async from the action name.
                 // the can be overridden in the startup class by adding an option " opt.SuppressAsyncSuffixInActionNames = false; " so the Add controller method will look like:
                 /*
@@ -123,7 +123,6 @@ namespace Lms.API.UI.Controllers
             {
                 return StatusCode(500);
             }
-
         }
         
 
