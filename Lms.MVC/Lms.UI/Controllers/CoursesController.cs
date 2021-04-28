@@ -17,11 +17,12 @@ namespace Lms.MVC.UI.Controllers
     public class CoursesController : Controller
     {
         private readonly ApplicationDbContext db;
-        private readonly UserManager<Teacher> userManager;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public CoursesController(ApplicationDbContext context)
+        public CoursesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             db = context;
+            this.userManager = userManager;
         }
 
         // GET: Courses
@@ -38,7 +39,7 @@ namespace Lms.MVC.UI.Controllers
                 return NotFound();
             }
 
-            var course = await db.Courses
+            var course = await db.Courses.Include(c => c.Teachers)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (course == null)
             {
@@ -67,7 +68,10 @@ namespace Lms.MVC.UI.Controllers
             {
                 course.Teachers = new List<Teacher>();
                 if (User.IsInRole("Teacher"))
-                    course.Teachers.Add(userManager.FindByIdAsync(userManager.GetUserId(User)).Result);
+                {
+                    Teacher teacher = await db.Teachers.FindAsync(userManager.GetUserId(User));
+                    course.Teachers.Add(teacher);
+                }
                 db.Add(course);
                 await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
