@@ -2,9 +2,11 @@
 using Lms.API.Data.Data;
 using Lms.API.Data.Repositories;
 using Lms.MVC.Core.Entities;
+using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Extensions;
 using Lms.MVC.UI.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,11 +26,13 @@ namespace Lms.MVC.UI
     {
         private ApplicationDbContext db;
         private readonly IMapper mapper;
+        private readonly IUoW uow;
 
-        public ModuleWebController(ApplicationDbContext db, IMapper mapper)
+        public ModuleWebController(ApplicationDbContext db, IMapper mapper, IUoW uow)
         {
             this.db = db;
             this.mapper = mapper;
+            this.uow = uow;
         }
 
         // GET: ModulerController
@@ -43,15 +47,15 @@ namespace Lms.MVC.UI
             return View();
         }
 
-        //[Authorize(Roles = "Teacher, Admin")]
+        [Authorize(Roles = "Teacher, Admin")]
         [HttpGet]
         [Route("create")]
-        public ActionResult Create()
+        public ActionResult Create()        
         {
             return View();
         }
 
-        //[Authorize(Roles = "Teacher, Admin")]
+        [Authorize(Roles = "Teacher, Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("create")]
@@ -63,17 +67,19 @@ namespace Lms.MVC.UI
                 var course = db.Courses.FirstOrDefault(c => c.Id == id);//Todo Add Navigation to Course
 
 
-                course.Modules = new List<Module>();
 
                 //Add Module to Course
+                course.Modules = new List<Module>();
                 course.Modules.Add(module);
 
+                //Unassign ID from module
+                module.Id = 0;
                 //Update Database
-                await db.AddAsync(module);
+                 db.Modules.Add(module);
                 if (await db.SaveChangesAsync() ==1)
                 {
                     
-                    return View(course);
+                    return View(module);
                 }
                 else
                 {
@@ -83,7 +89,7 @@ namespace Lms.MVC.UI
             return View();
         }
 
-        //[Authorize(Roles = "Teacher, Admin")]
+        [Authorize(Roles = "Teacher, Admin")]
         [HttpGet]
         [Route("edit")]
         public ActionResult Edit(int id)
@@ -91,7 +97,7 @@ namespace Lms.MVC.UI
             return View();
         }
 
-        //[Authorize(Roles = "Teacher, Admin")]
+        [Authorize(Roles = "Teacher, Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("edit")]
