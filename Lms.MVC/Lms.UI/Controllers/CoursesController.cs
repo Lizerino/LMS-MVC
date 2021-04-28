@@ -49,7 +49,7 @@ namespace Lms.MVC.UI.Controllers
         }
 
         // GET: Courses/Create
-        //[Authorize(Roles = "Teacher,Admin")]
+        [Authorize(Roles = "Teacher,Admin")]
         public IActionResult Create()
         {
             return View();
@@ -59,7 +59,7 @@ namespace Lms.MVC.UI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        //[Authorize(Roles = "Teacher,Admin")]
+        [Authorize(Roles = "Teacher,Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,StartDate")] Course course)
         {
@@ -77,7 +77,7 @@ namespace Lms.MVC.UI.Controllers
         }
 
         // GET: Courses/Edit/5
-        //[Authorize(Roles = "Teacher,Admin")]
+        [Authorize(Roles = "Teacher,Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -97,7 +97,7 @@ namespace Lms.MVC.UI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        //[Authorize(Roles = "Teacher,Admin")]
+        [Authorize(Roles = "Teacher,Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,StartDate")] Course course)
         {
@@ -129,35 +129,57 @@ namespace Lms.MVC.UI.Controllers
             return View(course);
         }
 
-        public async Task<IActionResult> AssignTeachers(int id, [Bind("Teachers")] Course course)
+        public IActionResult AssignTeachers()
         {
-            if (id != course.Id)
+            return View();
+        }
+
+        public async Task<IActionResult> AssignTeachers(int id, Teacher teacher)
+        {
+            Course course = await db.Courses.Include(c => c.Teachers).FirstOrDefaultAsync(c => c.Id == id);
+
+            if (course is null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (course.Teachers is null)
             {
-                try
-                {
-                    db.Update(course);
-                    await db.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CourseExists(course.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                course.Teachers = new List<Teacher>();
             }
+
+            course.Teachers.Add(teacher);
+
+            db.Update(course);
+            await db.SaveChangesAsync();
+
             return View(course);
         }
+
+        public bool RemoveTeacher(int id, Teacher teacher)
+        {
+            Course course = db.Courses.Include(c => c.Teachers).FirstOrDefault(c => c.Id == id);
+
+            if (course is null)
+            {
+                return false;
+            }
+
+            if (course.Teachers is null)
+            {
+                return false;
+            }
+
+            if (!course.Teachers.Remove(teacher))
+                return false;
+
+            db.Update(course);
+            db.SaveChanges();
+
+            return true;
+        }
+
+
 
         // GET: Courses/Delete/5
         public async Task<IActionResult> Delete(int? id)

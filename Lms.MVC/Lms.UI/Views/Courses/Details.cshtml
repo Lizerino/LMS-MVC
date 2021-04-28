@@ -32,9 +32,9 @@
             @Html.DisplayNameFor(model => model.Teachers)
         </dt>
         @foreach (var teacher in Model.Teachers)
-            <dd class="col-sm-10">
+        {    <dd class="col-sm-10">
                 @Html.DisplayFor(modelItem => teacher.Name)
-            </dd>
+            </dd>}
     </dl>
 </div>
 <div>
