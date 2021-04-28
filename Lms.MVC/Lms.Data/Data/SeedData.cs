@@ -106,7 +106,7 @@ namespace Lms.MVC.Data.Data
 
                 if (result.Succeeded)
                 {
-                    userManager.AddToRoleAsync(user, "TEACHER").Wait();
+                    userManager.AddToRoleAsync(user, "Teacher").Wait();
                 }
             }
 
@@ -118,7 +118,7 @@ namespace Lms.MVC.Data.Data
 
                 if (result.Succeeded)
                 {
-                    userManager.AddToRoleAsync(user, "STUDENT").Wait();
+                    userManager.AddToRoleAsync(user, "Student").Wait();
                 }
             }
 
