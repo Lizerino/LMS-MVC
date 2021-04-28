@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Lms.MVC.Data.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole, string>
     {
 
         public DbSet<Activity> Activities { get; set; }
@@ -18,7 +18,7 @@ namespace Lms.MVC.Data.Data
         public DbSet<Module> Modules { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<ApplicationUser> Users { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

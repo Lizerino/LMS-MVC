@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Lms.MVC.Core.Repositories;
+using Lms.MVC.Data.Repositories;
 
 namespace Lms.MVC.UI
 {
@@ -49,7 +51,7 @@ namespace Lms.MVC.UI
             //
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<User>(options =>
+            services.AddDefaultIdentity<ApplicationUser>(options =>
             {               
                 options.Password.RequiredLength = 1;
                 options.Password.RequireLowercase = false;
@@ -70,7 +72,8 @@ namespace Lms.MVC.UI
 
                 config.Filters.Add(new AuthorizeFilter(policy));
             });
-
+            
+            services.AddScoped<IUoW, UoW>();
             services.AddAutoMapper(typeof(MapperProfile));
 
         }

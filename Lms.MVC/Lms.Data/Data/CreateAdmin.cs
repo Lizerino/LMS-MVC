@@ -17,7 +17,7 @@ namespace Lms.MVC.Data.Data
         {
             using (var context = new ApplicationDbContext(services.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
             {
-                var userManager = services.GetRequiredService<UserManager<User>>();
+                var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
                 var roleName = "Admin";
@@ -33,7 +33,7 @@ namespace Lms.MVC.Data.Data
 
                 if (foundAdmin != null) return;
 
-                var admin = new User
+                var admin = new ApplicationUser
                 {
                     UserName = "admin@admin.se",
                     Email = adminEmail,

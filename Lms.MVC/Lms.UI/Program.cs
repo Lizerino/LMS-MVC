@@ -20,9 +20,8 @@ namespace Lms.MVC.UI
             {
                 using (var scope = host.Services.CreateScope())
                 {
-                    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                    var services = scope.ServiceProvider;
-                    var context = services.GetRequiredService<ApplicationDbContext>();
+                    var services = scope.ServiceProvider;                    
+                    var db = services.GetRequiredService<ApplicationDbContext>();
                     var config = services.GetRequiredService<IConfiguration>();
 
                     // TODO: REMOVE IN PRODUCTION
@@ -31,7 +30,7 @@ namespace Lms.MVC.UI
 
                     var adminPW = config["AdminPW"];
 
-                    var userManager = services.GetRequiredService<UserManager<User>>();
+                    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
                     CreateRoles.Create(roleManager);

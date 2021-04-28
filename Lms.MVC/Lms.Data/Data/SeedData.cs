@@ -25,7 +25,7 @@ namespace Lms.MVC.Data.Data
             Randomizer.Seed = new Random();
         }
 
-        public void Seed(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public void Seed(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {           
 
             var courses = GetCourses();
@@ -122,8 +122,6 @@ namespace Lms.MVC.Data.Data
                 }
             }
 
-            //db.AddRange(students);
-            //db.AddRange(teachers);
             db.AddRange(activities);
             db.AddRange(modules);
             db.AddRange(courses);

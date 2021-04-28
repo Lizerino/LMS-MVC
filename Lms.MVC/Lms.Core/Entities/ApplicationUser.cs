@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Lms.MVC.Core.Entities
 {
-    public class User : IdentityUser
+    public class ApplicationUser : IdentityUser
     {        
         public string Name { get; set; }
 
