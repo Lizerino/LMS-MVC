@@ -23,6 +23,11 @@ namespace Lms.MVC.UI.Controllers
             return View();
         }
 
+        public IActionResult CourseList()
+        {
+            return View("Courses/Index");
+        }
+
         public IActionResult Privacy()
         {
             return View();
