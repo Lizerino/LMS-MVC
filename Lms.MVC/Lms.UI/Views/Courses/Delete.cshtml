@@ -1,5 +1,4 @@
-﻿@page
-@model Lms.MVC.UI.Views.Courses.DeleteModel
+﻿@model Lms.MVC.Core.Entities.Course
 
 @{
     ViewData["Title"] = "Delete";
@@ -13,29 +12,29 @@
     <h4>Course</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Course.Title)
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
         </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Course.Title)
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Title)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Course.Description)
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
         </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Course.Description)
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Course.StartDate)
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StartDate)
         </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Course.StartDate)
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StartDate)
         </dd>
     </dl>
     
-    <form method="post">
-        <input type="hidden" asp-for="Course.Id" />
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-page="./Index">Back to List</a>
+        <a asp-action="Index">Back to List</a>
     </form>
 </div>
