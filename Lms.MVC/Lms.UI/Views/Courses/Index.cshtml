@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Lms.MVC.Core.Entities.Course>
+﻿@model IEnumerable<Lms.MVC.UI.Models.ViewModels.CourseListViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -6,7 +6,10 @@
 }
 
 <h1>Index</h1>
-
+<form>
+    Search Courses: <input type="text" name="Search" />
+    <input type="submit" value="Filter" />
+</form>
 <p>
     <a asp-action="Create">Create New</a>
 </p>

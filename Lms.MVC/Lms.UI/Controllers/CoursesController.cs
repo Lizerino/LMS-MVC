@@ -11,6 +11,8 @@ using Lms.MVC.Data.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Lms.MVC.UI.Models.ViewModels;
+using AutoMapper;
 
 namespace Lms.MVC.UI.Controllers
 {
@@ -18,16 +20,29 @@ namespace Lms.MVC.UI.Controllers
     {
         private readonly ApplicationDbContext db;
         private readonly UserManager<Teacher> userManager;
+        private readonly IMapper mapper;
 
-        public CoursesController(ApplicationDbContext context)
+        public CoursesController(ApplicationDbContext context, IMapper mapper)
         {
             db = context;
+            this.mapper = mapper;
         }
 
-        // GET: Courses
-        public async Task<IActionResult> Index()
-        {
-            return View(await db.Courses.ToListAsync());
+        // GET: Vehicles
+
+        //includes search functions in overview
+        public async Task<IActionResult> Index(string search)
+        {            
+            var courses = await db.Courses
+                .Include(c => c.Modules)
+                .Include(c => c.Teachers)
+                .Include(c => c.Students)                
+                .Where(v => String.IsNullOrEmpty(search) || (v.Title.Contains(search)))
+                .ToListAsync();
+
+            var output = mapper.Map<List<CourseListViewModel>>(courses);           
+
+            return View(output);
         }
 
         // GET: Courses/Details/5
