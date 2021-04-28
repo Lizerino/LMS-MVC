@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Lms.MVC.Data.Data;
 using Lms.API.Data.Data;
 using Lms.API.Core.Entities;
 using Lms.API.Core.Repositories;
@@ -22,7 +23,7 @@ namespace Lms.API.UI.Controllers
         private readonly IUoW uoW;
         private readonly IMapper mapper;
 
-        public ModulesController(LmsAPIContext context, IUoW uoW, IMapper mapper)
+        public ModulesController( IUoW uoW, IMapper mapper)
         {
             this.uoW = uoW;
             this.mapper = mapper;
@@ -100,21 +101,25 @@ namespace Lms.API.UI.Controllers
         //}
 
 
-        [HttpPost]
-        public async Task<ActionResult<ModuleDto>> CreateModuleByTitle(int id, ModuleDto dto)
+        [HttpPost(Name = "CreateModule")]
+        [Route("/create")]
+        public async Task<ActionResult<ModuleDto>> CreateModule(int id, ModuleDto dto)
         {
+            //Find Course
             var course = await uoW.CourseRepository.GetCourseAsync(id);
             if (course is null)
             {
                 return BadRequest();
             }
+            
+            //Map Module and add to database
             var module = mapper.Map<Module>(dto);
             module.CourseId = id;
             await uoW.ModuleRepository.AddAsync(module);
             if (await uoW.ModuleRepository.SaveAsync())
             {
                 var model = mapper.Map<ModuleDto>(module);
-                return CreatedAtAction("GetModuleByTitle", new { id = module.CourseId, title = module.Title }, model);
+                return CreatedAtAction("GetModuleByTitleAsync", new { id = module.CourseId, title = module.Title }, model);
             }
             else
             {

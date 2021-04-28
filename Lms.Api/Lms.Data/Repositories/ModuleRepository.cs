@@ -1,6 +1,6 @@
-﻿using Lms.API.Core.Entities;
+﻿using Lms.MVC.Core.Entities;
 using Lms.API.Core.Repositories;
-using Lms.API.Data.Data;
+using Lms.MVC.Data.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,9 +12,9 @@ namespace Lms.API.Data.Repositories
 {
     class ModuleRepository : IModuleRepository
     {
-        private readonly LmsAPIContext db;
+        private readonly ApplicationDbContext db;
 
-        public ModuleRepository(LmsAPIContext db)
+        public ModuleRepository(ApplicationDbContext db)
         {
             this.db = db;
         }
@@ -26,7 +26,7 @@ namespace Lms.API.Data.Repositories
         public async Task<IEnumerable<Module>> GetAllModulesAsync(int id)
         {
 
-            var query = db.Modules.AsQueryable().Where(m => m.CourseId == id);
+            var query = db.Modules.AsQueryable().Where(m => m.Id == id);
 
             return await query.ToArrayAsync();
         }
@@ -34,14 +34,15 @@ namespace Lms.API.Data.Repositories
         public async Task<Module> GetModuleAsync(int id ,int moduleId)
         {
             var query = db.Modules.AsQueryable();
-            return await query.FirstOrDefaultAsync(m => m.Id == moduleId && m.CourseId == id);
+            return await query.FirstOrDefaultAsync(m => m.Id == moduleId );
 
         }
 
         public async Task<Module> GetModuleByTitleAsync(int id, string title)
         {
+            
             var query = db.Modules.AsQueryable();
-            return await query.FirstOrDefaultAsync(m => m.Title == title && m.CourseId == id);
+            return await query.FirstOrDefaultAsync(m => m.Title == title);
         }
 
         public void Remove(Module removed)

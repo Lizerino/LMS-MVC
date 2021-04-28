@@ -1,4 +1,7 @@
+using Lms.API.Core.Repositories;
+using Lms.API.Data.Repositories;
 using Lms.MVC.Data.Data;
+using Lms.MVC.UI.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -35,6 +38,9 @@ namespace Lms.MVC.UI
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
+            services.AddHttpClient();
+            services.AddScoped<IUoW, UoW>();
+            services.AddAutoMapper(typeof(MapperProfile));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,7 +64,7 @@ namespace Lms.MVC.UI
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseCookiePolicy();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
