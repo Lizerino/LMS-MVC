@@ -75,9 +75,9 @@ namespace Lms.MVC.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Student_CourseId = table.Column<int>(type: "int", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CourseId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -262,8 +262,7 @@ namespace Lms.MVC.Data.Migrations
                     ActivityId = table.Column<int>(type: "int", nullable: true),
                     CourseId = table.Column<int>(type: "int", nullable: true),
                     ModuleId = table.Column<int>(type: "int", nullable: true),
-                    StudentId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    TeacherId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -275,14 +274,8 @@ namespace Lms.MVC.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Documents_AspNetUsers_StudentId",
-                        column: x => x.StudentId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Documents_AspNetUsers_TeacherId",
-                        column: x => x.TeacherId,
+                        name: "FK_Documents_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -375,14 +368,9 @@ namespace Lms.MVC.Data.Migrations
                 column: "ModuleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Documents_StudentId",
+                name: "IX_Documents_UserId",
                 table: "Documents",
-                column: "StudentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Documents_TeacherId",
-                table: "Documents",
-                column: "TeacherId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Modules_CourseId",
