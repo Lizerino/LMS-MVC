@@ -23,7 +23,8 @@ namespace Lms.MVC.Data.Repositories
         public async Task AddAsync<T>(T added)
         {
             await db.AddAsync(added);
-        } 
+        }
+        public void Remove<T>(T removed) => db.Remove(removed);
         public void Remove(Course removed)
         {
              db.Remove(removed);

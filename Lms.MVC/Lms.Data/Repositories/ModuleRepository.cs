@@ -47,7 +47,7 @@ namespace Lms.MVC.Data.Repositories
         {
             db.Remove(removed);
         }
-
+        public void Remove<T>(T removed) => db.Remove(removed);
         public async Task<bool> SaveAsync()
         {
             return (await db.SaveChangesAsync()) >= 0;
