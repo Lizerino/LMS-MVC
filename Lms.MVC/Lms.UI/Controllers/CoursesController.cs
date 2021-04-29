@@ -133,11 +133,13 @@ namespace Lms.MVC.UI.Controllers
             return View(course);
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         public IActionResult AssignTeachers()
         {
             return View();
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         public async Task<IActionResult> AssignTeachers(int id, Teacher teacher)
         {
             Course course = await db.Courses.Include(c => c.Teachers).FirstOrDefaultAsync(c => c.Id == id);
@@ -157,30 +159,50 @@ namespace Lms.MVC.UI.Controllers
             db.Update(course);
             await db.SaveChangesAsync();
 
-            return View(course);
+            return View();
         }
 
-        public bool RemoveTeacher(int id, Teacher teacher)
+        [Authorize(Roles = "Teacher,Admin")]
+        public async Task<IActionResult> RemoveTeacher(int? id, Teacher teacher)
         {
-            Course course = db.Courses.Include(c => c.Teachers).FirstOrDefault(c => c.Id == id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var course = await db.Courses
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (course == null)
+            {
+                return NotFound();
+            }
+
+            return View();
+        }
+
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher,Admin")]
+        public async Task<IActionResult> RemoveTeacher(int id, Teacher teacher)
+        {
+            Course course = await db.Courses.Include(c => c.Teachers).FirstOrDefaultAsync(c => c.Id == id);
 
             if (course is null)
             {
-                return false;
+                return BadRequest();
             }
 
             if (course.Teachers is null)
             {
-                return false;
+                return BadRequest();
             }
 
             if (!course.Teachers.Remove(teacher))
-                return false;
+                return NotFound();
 
             db.Update(course);
             db.SaveChanges();
 
-            return true;
+            return View("Index");
         }
 
 
