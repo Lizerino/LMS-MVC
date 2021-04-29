@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using Bogus;
 
@@ -14,221 +13,146 @@ namespace Lms.MVC.Data.Data
     {
         private readonly ApplicationDbContext db;
 
-        public SeedData(ApplicationDbContext db)
+        private readonly UserManager<ApplicationUser> userManager;
+
+        public int numberOfCourses { get; set; }
+
+        public int numberOfModules { get; set; }
+
+        public int numberOfModulesPerCourse { get; set; }
+
+        public int numberOfActivities { get; set; }
+
+        public int numberOfActivititesPerModule { get; set; }
+
+        public int numberOfStudents { get; set; }
+
+        public int numberOfStudentsPerClass { get; set; }
+
+        public int numberOfTeachers { get; set; }
+
+        public SeedData(ApplicationDbContext db, UserManager<ApplicationUser> userManager)
         {
             this.db = db;
+            this.userManager = userManager;
 
             // Set Random to a fixed number to generate the same data each time Randomizer.Seed =
             // new Random(12345);
             Randomizer.Seed = new Random();
+
+            numberOfCourses = 5;
+            numberOfModulesPerCourse = 3;
+            numberOfActivititesPerModule = 3;
+            numberOfStudentsPerClass = 10;
+
+            numberOfModules = numberOfCourses * numberOfModulesPerCourse;
+            numberOfActivities = numberOfModules * numberOfActivititesPerModule;
+            numberOfStudents = numberOfCourses * numberOfStudentsPerClass;
+            numberOfTeachers = numberOfCourses;
         }
 
         public void Seed(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
-            var courses = GetCourses();
-            var students = GetStudents();
-            var teachers = GetTeachers();
-            var activities = GetActivities();
-            var modules = GetModules();
-
-            // Add students to courses
-            var i = 0;
-            var step = (students.Count() / courses.Count());
-            foreach (var course in courses)
+            for (int i = 0; i < numberOfCourses; i++)
             {
-                // need to add course to student
-                if (students != null)
-                {
-                    var list = students.Skip(i).Take(step).ToList();
-                    foreach (var item in list)
-                    {
-                        course.Students.Add(item);
-                        item.CourseUserTakes = course;
-                    }
-                    i = i + step;
-                }
+                db.Courses.Add(GetCourse());
             }
-
-            // Add teachers to courses
-            i = 0;
-            foreach (var course in courses)
-            {
-                if (course.Teachers != null)
-                {
-                    var list = teachers.Skip(i).Take(1).ToList();
-                    foreach (var item in list)
-                    {
-                        course.Teachers.Add(item);                         
-                        item.CoursesUserTeaches.Add(course);
-                    }
-                    i++;
-                }
-            }
-
-            // Add modules to courses
-            i = 0;
-            step = modules.Count() / courses.Count();
-
-            foreach (var course in courses)
-            {
-                if (course.Modules != null)
-                {
-                    course.Modules = modules.Skip(i).Take(step).ToList();
-                    i = i + step;
-                }
-            }
-
-            // Add activities to modules
-
-            i = 0;
-            step = activities.Count() / modules.Count();
-            foreach (var module in modules)
-            {
-                if (module.Activities != null)
-                {
-                    module.Activities = activities.Skip(step).Take(step).ToList();
-                }
-            }
-
-            // Add teachers as users
-            foreach (var user in teachers)
-            {
-                user.UserName = user.Email;
-                IdentityResult result = userManager.CreateAsync(user, "password").Result;
-
-                if (result.Succeeded)
-                {
-                    userManager.AddToRoleAsync(user, "Teacher").Wait();
-                }
-            }
-
-            // Add students as users
-            foreach (var user in students)
-            {
-                user.UserName = user.Email;
-                IdentityResult result = userManager.CreateAsync(user, "password").Result;
-
-                if (result.Succeeded)
-                {
-                    userManager.AddToRoleAsync(user, "Student").Wait();
-                }
-            }
-
-            db.AddRange(activities);
-            db.AddRange(modules);
-            db.AddRange(courses);
             db.SaveChanges();
         }
 
-        private static List<Course> GetCourses()
+        private Course GetCourse()
         {
             var fake = new Faker("sv");
-            var courses = new List<Course>();
-            for (int i = 0; i < 5; i++)
+            var course = new Course();
+
+            course.Title = fake.Company.CatchPhrase();
+            course.StartDate = DateTime.Now.AddDays(fake.Random.Int(-2, 2));
+
+            course.Modules = new List<Module>();
+
+            for (int i = 0; i < numberOfModulesPerCourse; i++)
             {
-                var course = new Course
-                {
-                    Title = fake.Company.CatchPhrase(),
-                    StartDate = DateTime.Now.AddDays(fake.Random.Int(-2, 2)),
-                };
-                courses.Add(course);
+                course.Modules.Add(GetModule());
             }
-            return courses;
+
+            course.Users = new List<ApplicationUser>();
+
+            for (int i = 0; i < numberOfStudentsPerClass; i++)
+            {
+                course.Users.Add(GetStudent());
+            }
+
+            course.Users.Add(GetTeacher());
+
+            return course;
         }
 
-        private static List<Module> GetModules()
+        private Module GetModule()
         {
             var fake = new Faker("sv");
-            var modules = new List<Module>();
-            for (int i = 0; i < 15; i++)
+
+            var module = new Module();
+
+            module.Title = fake.Name.JobTitle();
+            module.StartDate = fake.Date.Soon();
+
+            module.Activities = new List<Activity>();
+            for (int i = 0; i < numberOfActivititesPerModule; i++)
             {
-                var module = new Module
-                {
-                    Title = fake.Name.JobTitle(),
-                    StartDate = fake.Date.Soon()
-                };
-                modules.Add(module);
+                module.Activities.Add(GetActivity());
             }
-            return modules;
+
+            return module;
         }
 
-        private static List<Activity> GetActivities()
+        private Activity GetActivity()
         {
             var fake = new Faker("sv");
-            var activitys = new List<Activity>();
-            for (int i = 0; i < 45; i++)
+
+            var ran = fake.Random.Int(0, 4);
+            var activity = new Activity
             {
-                var ran = fake.Random.Int(0, 4);
-                var activity = new Activity
-                {
-                    Title = fake.Name.JobTitle(),
-                    StartDate = fake.Date.Soon(),
-                    Description = fake.Lorem.Sentence(),
-                    ActivityType = GetActivityType(ran)
-                };
-                activitys.Add(activity);
-            }
-            return activitys;
+                Title = fake.Name.JobTitle(),
+                StartDate = fake.Date.Soon(),
+                Description = fake.Lorem.Sentence(),
+                ActivityType = GetActivityType(ran)
+            };
+
+            return activity;
         }
 
-        private static List<ApplicationUser> GetTeachers()
+        private ApplicationUser GetTeacher()
         {
             var fake = new Faker("sv");
 
-            var teachers = new List<ApplicationUser>();
-            for (int i = 0; i < 20; i++)
-            {
-                string email = "";
-                bool uniqueemail = false;
+            var teacher = new ApplicationUser();
 
-                while ((uniqueemail == false))
-                {
-                    email = fake.Internet.Email();
-                    if (!teachers.Any(t => t.Email == email))
-                    {
-                        uniqueemail = true;
-                    }
-                };
+            teacher.Name = fake.Name.FullName();
+            teacher.Email = fake.Internet.Email();
+            teacher.UserName = teacher.Email;
+            teacher.Role = "Teacher";
 
-                var teacher = new ApplicationUser
-                {
-                    Name = fake.Name.FullName(),
-                    Email = email,
-                };
-                teachers.Add(teacher);
-            }
+            userManager.CreateAsync(teacher, "password").Wait();
+            userManager.AddToRoleAsync(teacher, "Teacher").Wait();
 
-            return teachers;
+            return teacher;
         }
 
-        private static List<ApplicationUser> GetStudents()
+        private ApplicationUser GetStudent()
         {
             var fake = new Faker("sv");
 
-            var students = new List<ApplicationUser>();
-            for (int i = 0; i < 25; i++)
-            {
-                string email = "";
-                bool uniqueemail = false;
+            var student = new ApplicationUser();
 
-                while ((uniqueemail == false))
-                {
-                    email = fake.Internet.Email();
-                    if (students.Count == 0 || !students.Any(t => t.Email == email))
-                    {
-                        uniqueemail = true;
-                    }
-                };
+            student.Name = fake.Name.FullName();
+            student.Email = fake.Internet.Email();
+            student.UserName = student.Email;
+            student.Role = "Student";
 
-                var student = new ApplicationUser
-                {
-                    Name = fake.Name.FullName(),
-                    Email = email,
-                };
-                students.Add(student);
-            }
+            userManager.CreateAsync(student, "password").Wait();
+            userManager.AddToRoleAsync(student, "Student").Wait();
 
-            return students;
+            return student;
         }
 
         private static ActivityType GetActivityType(int ran)

@@ -36,7 +36,7 @@ namespace Lms.MVC.UI
 
                     CreateRoles.Create(roleManager);
                    
-                    SeedData seedData = new SeedData(db);
+                    SeedData seedData = new SeedData(db,userManager);
 
                     seedData.Seed(userManager, roleManager);
                     

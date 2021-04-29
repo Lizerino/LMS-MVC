@@ -17,7 +17,7 @@ namespace Lms.MVC.UI.Controllers
     public class CoursesController : Controller
     {
         private readonly ApplicationDbContext db;
-        private readonly UserManager<Teacher> userManager;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public CoursesController(ApplicationDbContext context)
         {
@@ -65,9 +65,9 @@ namespace Lms.MVC.UI.Controllers
         {
             if (ModelState.IsValid)
             {
-                course.Teachers = new List<Teacher>();
+                course.Users = new List<ApplicationUser>();
                 if (User.IsInRole("Teacher"))
-                    course.Teachers.Add(userManager.FindByIdAsync(userManager.GetUserId(User)).Result);
+                    course.Users.Add(userManager.FindByIdAsync(userManager.GetUserId(User)).Result);
                 db.Add(course);
                 await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -134,21 +134,21 @@ namespace Lms.MVC.UI.Controllers
             return View();
         }
 
-        public async Task<IActionResult> AssignTeachers(int id, Teacher teacher)
+        public async Task<IActionResult> AssignTeachers(int id, ApplicationUser teacher)
         {
-            Course course = await db.Courses.Include(c => c.Teachers).FirstOrDefaultAsync(c => c.Id == id);
+            Course course = await db.Courses.Include(c => c.Users).FirstOrDefaultAsync(c => c.Id == id);
 
             if (course is null)
             {
                 return NotFound();
             }
 
-            if (course.Teachers is null)
+            if (course.Users is null)
             {
-                course.Teachers = new List<Teacher>();
+                course.Users = new List<ApplicationUser>();
             }
 
-            course.Teachers.Add(teacher);
+            course.Users.Add(teacher);
 
             db.Update(course);
             await db.SaveChangesAsync();
@@ -156,21 +156,21 @@ namespace Lms.MVC.UI.Controllers
             return View(course);
         }
 
-        public bool RemoveTeacher(int id, Teacher teacher)
+        public bool RemoveTeacher(int id, ApplicationUser teacher)
         {
-            Course course = db.Courses.Include(c => c.Teachers).FirstOrDefault(c => c.Id == id);
+            Course course = db.Courses.Include(c => c.Users).FirstOrDefault(c => c.Id == id);
 
             if (course is null)
             {
                 return false;
             }
 
-            if (course.Teachers is null)
+            if (course.Users is null)
             {
                 return false;
             }
 
-            if (!course.Teachers.Remove(teacher))
+            if (!course.Users.Remove(teacher))
                 return false;
 
             db.Update(course);

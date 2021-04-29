@@ -158,12 +158,12 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
 
             if (role == "Teacher")
             {
-                var appUser = new Teacher { UserName = $"{Input.FirstName}.{Input.LastName}", Email = Input.Email, Name = Input.Name };
+                var appUser = new ApplicationUser { UserName = $"{Input.FirstName}.{Input.LastName}", Email = Input.Email, Name = Input.Name };
                 return appUser;
             }
             else 
             {
-                var appUser = new Student { UserName = $"{Input.FirstName}.{Input.LastName}", Email = Input.Email, Name = Input.Name };
+                var appUser = new ApplicationUser { UserName = $"{Input.FirstName}.{Input.LastName}", Email = Input.Email, Name = Input.Name };
                 return appUser;
             }
 
