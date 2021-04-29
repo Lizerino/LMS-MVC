@@ -160,55 +160,79 @@ namespace Lms.MVC.UI.Controllers
             return View(course);
         }
 
-        public IActionResult AssignTeachers()
-        {
-            return View();
-        }
+        //[Authorize(Roles = "Teacher,Admin")]
+        //public IActionResult AssignTeachers()
+        //{
+        //    return View();
+        //}
 
-        public async Task<IActionResult> AssignTeachers(int id, ApplicationUser teacher)
-        {
-            Course course = await db.Courses.Include(c => c.Users).FirstOrDefaultAsync(c => c.Id == id);
+        //[Authorize(Roles = "Teacher,Admin")]
+        //public async Task<IActionResult> AssignTeachers(int id, Teacher teacher)
+        //{
+        //    Course course = await db.Courses.Include(c => c.Teachers).FirstOrDefaultAsync(c => c.Id == id);
 
-            if (course is null)
-            {
-                return NotFound();
-            }
+        //    if (course is null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            if (course.Users is null)
-            {
-                course.Users = new List<ApplicationUser>();
-            }
+        //    if (course.Teachers is null)
+        //    {
+        //        course.Teachers = new List<Teacher>();
+        //    }
 
-            course.Users.Add(teacher);
+        //    course.Teachers.Add(teacher);
 
-            db.Update(course);
-            await db.SaveChangesAsync();
+        //    db.Update(course);
+        //    await db.SaveChangesAsync();
 
-            return View(course);
-        }
+        //    return View();
+        //}
 
-        public bool RemoveTeacher(int id, ApplicationUser teacher)
-        {
-            Course course = db.Courses.Include(c => c.Users).FirstOrDefault(c => c.Id == id);
+        //[Authorize(Roles = "Teacher,Admin")]
+        //public async Task<IActionResult> RemoveTeacher(int? id, string teacherId)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            if (course is null)
-            {
-                return false;
-            }
+        //    var course = await db.Courses
+        //        .FirstOrDefaultAsync(m => m.Id == id);
+        //    var teacher = await db.Teachers.FirstOrDefaultAsync(t => t.Id == teacherId);
+        //    if (course == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            if (course.Users is null)
-            {
-                return false;
-            }
+        //    return View(teacher);
+        //}
 
-            if (!course.Users.Remove(teacher))
-                return false;
+        //[ValidateAntiForgeryToken]
+        //[Authorize(Roles = "Teacher,Admin")]
+        //public async Task<IActionResult> RemoveTeacher(int? courseId, string teacherId)
+        //{
+        //    if (courseId is null || string.IsNullOrEmpty(teacherId))
+        //    {
+        //        return BadRequest();
+        //    }
 
-            db.Update(course);
-            db.SaveChanges();
+        //    Course course = await db.Courses.Include(c => c.Teachers).FirstOrDefaultAsync(c => c.Id == courseId);
+            
+        //    if (course.Teachers is null)
+        //    {
+        //        return BadRequest();
+        //    }
+        //    Teacher teacher = course.Teachers.FirstOrDefault(t => t.Id == teacherId);
 
-            return true;
-        }
+        //    if (!course.Teachers.Remove(teacher))
+        //        return NotFound();
+
+        //    db.Update(course);
+        //    db.SaveChanges();
+
+        //    return View();
+        //}
 
         // GET: Courses/Delete/5
         public async Task<IActionResult> Delete(int? id)
