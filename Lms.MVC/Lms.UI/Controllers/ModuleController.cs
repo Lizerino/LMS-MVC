@@ -15,13 +15,13 @@ using System.Threading.Tasks;
 namespace Lms.MVC.UI
 {
     [Route("courses/{id}/modules/")]
-    public class ModuleWebController : Controller
+    public class ModuleController : Controller
     {
         private ApplicationDbContext db;
         private readonly IMapper mapper;
         private readonly IUoW uow;
 
-        public ModuleWebController(ApplicationDbContext db, IMapper mapper, IUoW uow)
+        public ModuleController(ApplicationDbContext db, IMapper mapper, IUoW uow)
         {
             this.db = db;
             this.mapper = mapper;
@@ -29,7 +29,7 @@ namespace Lms.MVC.UI
         }
 
         [HttpGet]
-        [Route("list")]
+        [Route("Index")]
         public async Task<IActionResult> Index(int id)
         {
             
@@ -86,7 +86,7 @@ namespace Lms.MVC.UI
                 if (await db.SaveChangesAsync() ==1)
                 {
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Module");
                 }
                 else
                 {

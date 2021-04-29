@@ -3,11 +3,11 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<div class="col-sm-3">
+<div class="card-deck">
     @foreach (var module in Model)
     {
         <div class="card">
-            <a asp-controller="/courses/@module.CourseId/modules" asp-action="details" asp-route-id="@module.Title">
+            <a asp-controller="Modules" asp-action="details" asp-route-id="@module.Title">
                 <h5 class="card-title">@module.Title</h5>
                 <p class="card-body">@module.Description</p>
                 <div class="card-footer text-muted">End Date: @module.EndDate</div>
