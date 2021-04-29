@@ -1,18 +1,17 @@
-﻿using Lms.MVC.Data.Data;
+﻿using System.Diagnostics;
+
+using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Models;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Lms.MVC.UI.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+
         private readonly ApplicationDbContext context;
 
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
@@ -23,8 +22,19 @@ namespace Lms.MVC.UI.Controllers
 
         public IActionResult Index()
         {
-           
-            return View();
+            if (User.IsInRole("Teacher"))
+            {
+                return RedirectToAction("Index", "Courses");
+            }
+            else if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index", "ApplicationUsers");
+            }
+            else
+            {
+                // This should be the course page for the student
+                return RedirectToAction("Index", "Students");
+            }            
         }
 
         public IActionResult Privacy()

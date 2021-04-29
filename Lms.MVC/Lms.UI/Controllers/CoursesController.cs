@@ -63,13 +63,13 @@ namespace Lms.MVC.UI.Controllers
             CookieOptions option = new CookieOptions();
             option.Expires = DateTime.Now.AddDays(900);
 
-            if (showOnlyMyCourses == "false")
+            if (showOnlyMyCourses == "true")
             {
-                Response.Cookies.Append("ShowOnlyMyCourses", "true", option);
+                Response.Cookies.Append("ShowOnlyMyCourses", "false", option);
             }
             else
             {
-                Response.Cookies.Append("ShowOnlyMyCourses", "false", option);
+                Response.Cookies.Append("ShowOnlyMyCourses", "true", option);
             }
 
             return RedirectToAction("Index", "Courses");
