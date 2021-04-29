@@ -1,0 +1,22 @@
+﻿@model Lms.MVC.Core.Entities.Module
+
+<div>
+    <h4>@Model.Title</h4>
+    <hr />  
+        <div class="col-sm-4">
+            @foreach(var activity in Model.Activities)
+            {
+            <div class="card">
+                <a asp-controller="activities" asp-action="details" asp-route-id="@activity.Id">
+                <h5 class="card-title">@activity.Title</h5>
+                <p class="card-body">@activity.Description</p>
+                <div class="card-footer text-muted">End Date: @activity.EndDate</div>
+                </a>
+            </div>
+            }      
+        </div>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

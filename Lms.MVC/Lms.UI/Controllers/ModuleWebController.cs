@@ -1,22 +1,15 @@
 ﻿using AutoMapper;
-using Lms.API.Data.Data;
-using Lms.API.Data.Repositories;
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;
-using Lms.MVC.UI.Extensions;
 using Lms.MVC.UI.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace Lms.MVC.UI
@@ -39,14 +32,27 @@ namespace Lms.MVC.UI
         [Route("list")]
         public async Task<IActionResult> Index(int id)
         {
+            
             return View(await db.Modules.Where(m => m.CourseId == id).ToListAsync());
         }
 
-        // GET: ModulerController/Details/5
-        public ActionResult Details(int id)
+        [HttpGet]
+        [Route("details/{title}")]
+        public ActionResult Details(int id, string title)
         {
-            return View();
+            //Find course
+            var course = db.Courses.Find(id);
+            course.Modules = GetModules(course.Id);
+
+            //Find module in course
+            var module = course.Modules.FirstOrDefault(m => m.Title == title);
+
+            //Add Activities
+            module.Activities = GetActivities(module.Id);
+            //mapper.Map<ModuleDto>(module);
+            return View(module);
         }
+
 
         [Authorize(Roles = "Teacher, Admin")]
         [HttpGet]
@@ -159,6 +165,33 @@ namespace Lms.MVC.UI
             {
                 return View();
             }
+        }
+        private List<Module> GetModules(int id)
+        {
+            var modules = new List<Module>();
+
+            foreach(var module in db.Modules)
+            {
+                if(module.CourseId == id)
+                {
+                    modules.Add(module);
+                }
+            }
+            return modules;
+        }
+        private List<Activity> GetActivities(int id)
+        {
+            var activities = new List<Activity>();
+
+            foreach(var activity in db.Activities)
+            {
+                if(activity.ModuleId == id)
+                {
+                    activities.Add(activity);
+                }
+            }
+                
+            return activities;
         }
     }
 }

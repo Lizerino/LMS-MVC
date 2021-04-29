@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lms.MVC.Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -22,6 +23,9 @@ namespace Lms.MVC.UI.Models.DTO
 
         [Display(Name = "End Date")]
         public DateTime EndDate { get; set; }
+
+        public ICollection<Activity> Activities { get; set; }
+
 
     }
 }
