@@ -33,7 +33,7 @@ namespace Lms.MVC.UI.Controllers
         }
 
         // GET: Courses
-        public async Task<IActionResult> Index(string search)
+        public async Task<IActionResult> Index(string search, string sortOrder)
         {
             string showOnlyMyCourses = Request.Cookies["ShowOnlyMyCourses"];
             List<Course> courses;
@@ -51,9 +51,27 @@ namespace Lms.MVC.UI.Controllers
             .Where(c => String.IsNullOrEmpty(search) || (c.Title.Contains(search))).ToListAsync();
             }
 
-            var result = mapper.Map<List<CourseListViewModel>>(courses);
+            var result = mapper.Map<IEnumerable<CourseListViewModel>>(courses);
             
-            return View(result);
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Title_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "StartDate" ? "StartDate_desc" : "StartDate";
+            
+            switch (sortOrder)
+            {
+                case "Title_desc":
+                    result = result.OrderByDescending(s => s.Title);
+                    break;
+                case "StartDate":
+                    result = result.OrderBy(s => s.StartDate);
+                    break;
+                case "StartDate_desc":
+                    result = result.OrderByDescending(s => s.StartDate);
+                    break;
+                default:
+                    result = result.OrderBy(s => s.Title);
+                    break;
+            }
+            return View(result.ToList());
         }
 
         public IActionResult ToggleMyCourses()

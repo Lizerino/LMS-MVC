@@ -4,10 +4,10 @@
 @Context.Request.Cookies.TryGetValue("ShowOnlyMyCourses", out string showOnlyMyCourses);
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Course List";
 }
 
-<h1>Index</h1>
+<h1>Course List</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -40,27 +40,21 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.Title)</a>
+            </th>            
             <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartDate)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">@Html.DisplayNameFor(model => model.StartDate)</a>
             </th>
             <th></th>
         </tr>
-    </thead>
+    </thead>    
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
+                </td>                
                 <td>
                     @Html.DisplayFor(modelItem => item.StartDate)
                 </td>
