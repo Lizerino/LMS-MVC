@@ -177,24 +177,26 @@ namespace Lms.MVC.UI.Controllers
                 return NotFound();
             }
 
-            return View();
+            return View(teacher);
         }
 
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher,Admin")]
-        public async Task<IActionResult> RemoveTeacher(int id, Teacher teacher)
+        public async Task<IActionResult> RemoveTeacher(int? courseId, string teacherId)
         {
-            Course course = await db.Courses.Include(c => c.Teachers).FirstOrDefaultAsync(c => c.Id == id);
-
-            if (course is null)
+            if (courseId is null || string.IsNullOrEmpty(teacherId))
             {
                 return BadRequest();
             }
 
+            Course course = await db.Courses.Include(c => c.Teachers).FirstOrDefaultAsync(c => c.Id == courseId);
+            
             if (course.Teachers is null)
             {
                 return BadRequest();
+            
             }
+            Teacher teacher = course.Teachers.FirstOrDefault(t => t.Id == teacherId);
 
             if (!course.Teachers.Remove(teacher))
                 return NotFound();
@@ -202,7 +204,7 @@ namespace Lms.MVC.UI.Controllers
             db.Update(course);
             db.SaveChanges();
 
-            return View("Index");
+            return View(teacherId);
         }
 
 
