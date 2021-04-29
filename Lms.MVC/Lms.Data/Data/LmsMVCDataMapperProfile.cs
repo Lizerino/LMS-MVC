@@ -9,9 +9,9 @@ using AutoMapper;
 namespace Lms.MVC.Data.Data
 {
     
-public class MapperProfile: Profile
+public class LmsMVCDataMapperProfile: Profile
     {
-        public MapperProfile()
+        public LmsMVCDataMapperProfile()
         {
             //CreateMap<sourceType, DestinationType>().ReverseMap();
         }

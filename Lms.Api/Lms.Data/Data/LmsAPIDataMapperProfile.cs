@@ -9,10 +9,10 @@ using Lms.API.Core.Dto;
 
 namespace Lms.API.Data.Data
 {
-   public class MapperProfile : Profile
+   public class LmsAPIDataMapperProfile : Profile
     {
 
-        public MapperProfile()
+        public LmsAPIDataMapperProfile()
         {
             CreateMap<Course, CourseDto>().ReverseMap();
             CreateMap<Module, ModuleDto>().ReverseMap();
