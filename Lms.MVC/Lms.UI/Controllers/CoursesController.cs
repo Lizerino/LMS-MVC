@@ -39,7 +39,7 @@ namespace Lms.MVC.UI.Controllers
                 return NotFound();
             }
 
-            var course = await db.Courses.Include(c => c.Teachers)
+            var course = await db.Courses.Include(c => c.Users)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (course == null)
             {
