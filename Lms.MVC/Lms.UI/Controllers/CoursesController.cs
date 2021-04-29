@@ -2,32 +2,65 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+
+using AutoMapper;
+
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Data.Data;
-using Microsoft.AspNetCore.Http;
+using Lms.MVC.UI.Models.ViewModels;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace Lms.MVC.UI.Controllers
 {
     public class CoursesController : Controller
     {
         private readonly ApplicationDbContext db;
+
         private readonly UserManager<ApplicationUser> userManager;
 
-        public CoursesController(ApplicationDbContext context)
+        private readonly IMapper mapper;
+
+        public CoursesController(ApplicationDbContext context,  IMapper mapper, UserManager<ApplicationUser> userManager)
         {
             db = context;
+            this.mapper = mapper;
+            this.userManager = userManager;
         }
 
         // GET: Courses
         public async Task<IActionResult> Index()
         {
-            return View(await db.Courses.ToListAsync());
+            var courses = await db.Courses.ToListAsync();
+            var result = mapper.Map<List<CourseListViewModel>>(courses);
+            return View(result);
+        }
+
+        public async Task<IActionResult> RegisterForCourseToggle(int? id)
+        {
+            if (id == null) return NotFound();
+            var course = await db.Courses.Include(m => m.Users).Where(i => i.Id == id).FirstOrDefaultAsync();
+            var currentUser = await userManager.GetUserAsync(User);
+            var teacher = userManager.Users.Include(x => x.Courses).Single(u => u == currentUser);
+
+
+            if (course.Users.Contains(currentUser))
+            {
+                course.Users.Remove(currentUser);
+                currentUser.Courses.Remove(course);
+            }
+            else
+            {
+                course.Users.Add(teacher);
+                currentUser.Courses.Add(course);
+            }
+
+            await db.SaveChangesAsync();
+            return RedirectToAction("Index", "Courses");
         }
 
         // GET: Courses/Details/5
@@ -55,9 +88,8 @@ namespace Lms.MVC.UI.Controllers
             return View();
         }
 
-        // POST: Courses/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Courses/Create To protect from overposting attacks, enable the specific properties
+        // you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [Authorize(Roles = "Teacher,Admin")]
         [ValidateAntiForgeryToken]
@@ -93,9 +125,8 @@ namespace Lms.MVC.UI.Controllers
             return View(course);
         }
 
-        // POST: Courses/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Courses/Edit/5 To protect from overposting attacks, enable the specific properties
+        // you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [Authorize(Roles = "Teacher,Admin")]
         [ValidateAntiForgeryToken]
@@ -178,8 +209,6 @@ namespace Lms.MVC.UI.Controllers
 
             return true;
         }
-
-
 
         // GET: Courses/Delete/5
         public async Task<IActionResult> Delete(int? id)

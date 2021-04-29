@@ -1,4 +1,6 @@
-﻿@model IEnumerable<Lms.MVC.Core.Entities.Course>
+﻿@model IEnumerable<Lms.MVC.UI.Models.ViewModels.CourseListViewModel>
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> userManager
 
 @{
     ViewData["Title"] = "Index";
@@ -25,24 +27,29 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
-                <a asp-action="Teachers" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @if (item.Users.Contains(userManager.GetUserAsync(User).Result))
+                    {
+                        <a type="Button" asp-action="RegisterForCourseToggle" asp-route-id="@item.Id">UnRegisterForCourse</a> <br />
+                    }
+                    else
+                    {
+                        <a type="Button" asp-action="RegisterForCourseToggle" asp-route-id="@item.Id">Register for course</a> <br />
+                    }                    
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
