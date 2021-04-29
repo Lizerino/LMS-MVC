@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 
 namespace Lms.MVC.UI
 {
@@ -34,9 +35,11 @@ namespace Lms.MVC.UI
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
                     CreateRoles.Create(roleManager);
+                   
                     SeedData seedData = new SeedData(db);
 
                     seedData.Seed(userManager, roleManager);
+                    
 
                     try
                     {
