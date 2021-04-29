@@ -103,6 +103,7 @@ namespace Lms.MVC.UI.Controllers
                                                     u => u.Email,
                                                     u => u.Role,
                                                     user => user.PhoneNumber))
+                // ToDo: Connect the role proporty with the role manager.
                 try
                 {
                     await uoW.CompleteAsync();
