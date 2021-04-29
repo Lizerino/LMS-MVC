@@ -95,7 +95,7 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User logged in.");
 
-                    if (User.IsInRole("Admin"))
+                    if (User.IsInRole("Teacher"))
                     {
                         var index = "applicationusers/index";
                         return RedirectToRoute(index);

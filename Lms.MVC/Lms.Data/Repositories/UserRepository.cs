@@ -29,30 +29,14 @@ namespace Lms.MVC.Data.Repositories
                         await db.Users.ToListAsync();
         }
 
-        //public string GetRole(string email)
-        //{
-
-        //    var user = db.Users.FirstOrDefault(u => u.Email == email);
-        //   var roles =  userManager.GetRolesAsync(user);
-        //    var roleEnumrable = roles.Result.AsEnumerable();
-        //    var sb = new StringBuilder();
-        //    foreach (var item in roleEnumrable)
-        //    {
-        //        sb.AppendLine(item);
-        //    }
-        //    var roleLines = sb.ToString();
-
-        //    return roleLines;
-        //}
-
         public string GetRole(ApplicationUser user)
         {
             var sb = new StringBuilder();
-            var roles = userManager.GetRolesAsync(user);
-            var list = roles.Result.ToList();
-            foreach (var item in list)
+            var roles = userManager.GetRolesAsync(user).Result.ToList();
+            
+            foreach (var item in roles)
             {
-                sb.Append($"{item}, \n");
+                sb.AppendLine(item);
             }
             var rolesName = sb.ToString();
             return rolesName;

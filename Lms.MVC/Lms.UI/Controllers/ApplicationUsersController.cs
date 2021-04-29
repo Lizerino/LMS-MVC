@@ -38,12 +38,13 @@ namespace Lms.MVC.UI.Controllers
         }
 
         // GET: ApplicationUsersController
-        public async Task<IActionResult> Index(ApplicationUsersListViewModel viewModel)
+        public async Task<IActionResult> Index()
         {
            var users = await  uoW.UserRepository.GetAllUsersAsync();
 
           var model = mapper.Map<IEnumerable<ApplicationUsersListViewModel>>(users);
-
+            
+            
             return View(model);
         }
 

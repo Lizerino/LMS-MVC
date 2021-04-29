@@ -19,12 +19,13 @@ namespace Lms.MVC.Data.Repositories
         public IModuleRepository ModuleRepository { get; }
         public IUserRepository UserRepository { get; }
 
-        public UoW(ApplicationDbContext db)
+        public UoW(ApplicationDbContext db, UserManager<ApplicationUser> userManager)
         {
             this.db = db;
+            this.userManager = userManager;
             CourseRepository = new CourseRepository(db);
             ModuleRepository = new ModuleRepository(db);
-            UserRepository = new UserRepository(db , userManager);
+            UserRepository = new UserRepository(db, userManager);
         }
 
         public async Task CompleteAsync()

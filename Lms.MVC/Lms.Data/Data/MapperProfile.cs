@@ -16,14 +16,7 @@ namespace Lms.MVC.Data.Data
     
 public class MapperProfile: Profile
     {
-        private readonly IUoW uow;
-
-
-        public MapperProfile(IUoW uow)
-        {
-            this.uow = uow;
-
-        }
+     
         public MapperProfile()
         {
 
@@ -33,14 +26,28 @@ public class MapperProfile: Profile
                 from => from.MapFrom(u => u.Email))
                 .ForMember(
                 dest => dest.Role,
-                from => from.MapFrom(u => GetRole(u))
-                );
+                opt => opt.MapFrom<RoleResolver>());
+
         }
 
-        public string GetRole(ApplicationUser user)
+    }
+    public class RoleResolver : IValueResolver<ApplicationUser, ApplicationUsersListViewModel, string>
+    {
+
+        private readonly IUoW uow;
+
+        public RoleResolver(IUoW uow)
         {
-            var role = uow.UserRepository.GetRole(user);
+            this.uow = uow;
+        }
+        public string Resolve(ApplicationUser source, ApplicationUsersListViewModel destination, string destMember, ResolutionContext context)
+        {
+
+            var role = uow.UserRepository.GetRole(source);
+
             return role;
         }
-    }    
+    }
+
+
 }
