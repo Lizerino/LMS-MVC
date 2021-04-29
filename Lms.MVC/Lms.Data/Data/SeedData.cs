@@ -30,6 +30,7 @@ namespace Lms.MVC.Data.Data
         public int numberOfStudentsPerClass { get; set; }
 
         public int numberOfTeachers { get; set; }
+        public int numberOfTeachersPerClass { get; set; }
 
         public SeedData(ApplicationDbContext db, UserManager<ApplicationUser> userManager)
         {
@@ -44,6 +45,7 @@ namespace Lms.MVC.Data.Data
             numberOfModulesPerCourse = 3;
             numberOfActivititesPerModule = 3;
             numberOfStudentsPerClass = 10;
+            numberOfTeachersPerClass = 1;
 
             numberOfModules = numberOfCourses * numberOfModulesPerCourse;
             numberOfActivities = numberOfModules * numberOfActivititesPerModule;
@@ -82,7 +84,11 @@ namespace Lms.MVC.Data.Data
                 course.Users.Add(GetStudent());
             }
 
-            course.Users.Add(GetTeacher());
+            for (int i = 0; i < numberOfTeachersPerClass; i++)
+            {
+            course.Users.Add(GetTeacher());            
+            }
+
 
             return course;
         }
