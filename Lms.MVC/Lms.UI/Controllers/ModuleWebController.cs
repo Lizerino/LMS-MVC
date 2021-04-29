@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace Lms.MVC.UI
 {
-    [Route("courses/{id}/modules")]
+    [Route("courses/{id}/modules/")]
     public class ModuleWebController : Controller
     {
         private ApplicationDbContext db;
@@ -35,10 +35,11 @@ namespace Lms.MVC.UI
             this.uow = uow;
         }
 
-        // GET: ModulerController
-        public ActionResult Index()
+        [HttpGet]
+        [Route("list")]
+        public async Task<IActionResult> Index(int id)
         {
-            return View();
+            return View(await db.Modules.Where(m => m.CourseId == id).ToListAsync());
         }
 
         // GET: ModulerController/Details/5
@@ -49,7 +50,7 @@ namespace Lms.MVC.UI
 
         [Authorize(Roles = "Teacher, Admin")]
         [HttpGet]
-        [Route("create")]
+        [Route("new")]
         public ActionResult Create()        
         {
             return View();
@@ -58,13 +59,13 @@ namespace Lms.MVC.UI
         [Authorize(Roles = "Teacher, Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("create")]
+        [Route("new")]
         public async Task<IActionResult> Create(int id, Module module)//TODO: Configure API
         {
             if (ModelState.IsValid) 
             {
                 //Find Course
-                var course = db.Courses.FirstOrDefault(c => c.Id == id);//Todo Add Navigation to Course
+                var course = db.Courses.FirstOrDefault(c => c.Id == id);
 
 
 
@@ -78,8 +79,8 @@ namespace Lms.MVC.UI
                  db.Modules.Add(module);
                 if (await db.SaveChangesAsync() ==1)
                 {
-                    
-                    return View(module);
+
+                    return RedirectToAction("Index", "Home");
                 }
                 else
                 {
@@ -91,29 +92,45 @@ namespace Lms.MVC.UI
 
         [Authorize(Roles = "Teacher, Admin")]
         [HttpGet]
-        [Route("edit")]
-        public ActionResult Edit(int id)
+        [Route("edit/{title}")]
+        public ActionResult Edit(string title)
         {
-            return View();
+            //find and create display details of Module
+            var module = db.Modules.FirstOrDefault(c => c.Title == title);
+            ModuleDto model = new ModuleDto()
+            {
+                Id = module.Id,
+                Title = module.Title,
+                Description = module.Description,
+                StartDate = module.StartDate,
+                EndDate = module.EndDate
+            };
+            return View(model);
         }
 
         [Authorize(Roles = "Teacher, Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("edit")]
+        [Route("edit/{title}")]
         public async Task<ActionResult> Edit(int id, [Bind("Id, Title, Description, StartDate, EndDate")] ModuleDto moduleDto)
         {
             if (ModelState.IsValid)
             {
-
+                //find module
                 var module = db.Modules.Find(id);
 
                 try
                 {
-                    mapper.Map(moduleDto, module);
+                    //mapper.Map(moduleDto, module);
+                    module.Title = moduleDto.Title;
+                    module.Description = moduleDto.Description;
+                    module.StartDate = moduleDto.StartDate;
+                    module.EndDate = moduleDto.EndDate;
+                    
+                    db.Update(module);
+                    await db.SaveChangesAsync();
 
-
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("Index", "Home");
                 }
                 catch
                 {
