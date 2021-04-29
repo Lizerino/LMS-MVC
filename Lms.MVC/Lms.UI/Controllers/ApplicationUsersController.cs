@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
-using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
-using Lms.MVC.UI.Areas.Identity.Pages.Account;
 using Lms.MVC.UI.Models.ViewModels;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -15,23 +13,25 @@ namespace Lms.MVC.UI.Controllers
 {
     public class ApplicationUsersController : Controller
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        //private readonly SignInManager<ApplicationUser> _signInManager;
+        //private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<ApplicationUsersController> _logger;
+
+        //private readonly IEmailSender _emailSender;
         private readonly IUoW uoW;
+
         private readonly IMapper mapper;
-        //private readonly MapperProfile mapper;
+
         public ApplicationUsersController(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterModel> logger,
-            IEmailSender emailSender , IUoW uoW, IMapper mapper)
+            // UserManager<ApplicationUser> userManager,
+            //SignInManager<ApplicationUser> signInManager,
+            ILogger<ApplicationUsersController> logger,
+            IEmailSender emailSender, IUoW uoW, IMapper mapper)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            //  _userManager = userManager;
+            //_signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
+            // _emailSender = emailSender;
             this.uoW = uoW;
             this.mapper = mapper;
         }
@@ -39,11 +39,10 @@ namespace Lms.MVC.UI.Controllers
         // GET: ApplicationUsersController
         public async Task<IActionResult> Index()
         {
-           var users = await  uoW.UserRepository.GetAllUsersAsync();
+            var users = await uoW.UserRepository.GetAllUsersAsync();
 
-          var model = mapper.Map<IEnumerable<ApplicationUsersListViewModel>>(users);
-            
-            
+            var model = mapper.Map<IEnumerable<ApplicationUsersListViewModel>>(users);
+
             return View(model);
         }
 
@@ -75,24 +74,56 @@ namespace Lms.MVC.UI.Controllers
         }
 
         // GET: ApplicationUsersController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(string id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var user = await uoW.UserRepository.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return View(user);
         }
 
         // POST: ApplicationUsersController/Edit/5
-        [HttpPost]
+        [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> EditPost(string id)
         {
-            try
+            if (id == null)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            catch
-            {
-                return View();
-            }
+            var user = await uoW.UserRepository.FindAsync(id);
+            if (await TryUpdateModelAsync(user, "", u => u.Name,
+                                                    u => u.Email,
+                                                    u => u.Role,
+                                                    user => user.PhoneNumber))
+                try
+                {
+                    await uoW.CompleteAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!UserExists(user.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool UserExists(string id)
+        {
+            return uoW.UserRepository.Any(id);
         }
 
         // GET: ApplicationUsersController/Delete/5

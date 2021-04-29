@@ -3,6 +3,7 @@
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.UI.Models.ViewModels;
+using Lms.MVC.UI.Models.ViewModels.ApplicationUserViewModels;
 
 namespace Lms.MVC.UI
 {

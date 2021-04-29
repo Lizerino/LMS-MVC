@@ -23,6 +23,13 @@ namespace Lms.MVC.Data.Repositories
             this.userManager = userManager;
         }
 
+        public async Task<ApplicationUser> FindAsync(string id)
+        {
+                 
+            return await db.Users.FindAsync(id);
+
+        }
+
         public async Task<IEnumerable<ApplicationUser>> GetAllUsersAsync()
         {
             return
@@ -40,6 +47,16 @@ namespace Lms.MVC.Data.Repositories
             }
             var rolesName = sb.ToString();
             return rolesName;
+        }
+
+        public void Update(ApplicationUser user)
+        {
+            db.Update(user);
+        }
+
+        public bool Any(string id)
+        {
+            return db.Users.Any(u => u.Id == id);
         }
     }
 }
