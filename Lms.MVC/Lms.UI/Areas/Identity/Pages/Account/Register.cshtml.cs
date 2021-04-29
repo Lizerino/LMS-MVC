@@ -74,23 +74,11 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
             public string Role { get; set; }
-            //public string Role
-            //{
-            //    get { return Role; }
-            //    set 
-            //    {
-            //        if (true)
-            //        {
-
-            //        }
-            //        Role = value;
-            //    }
-            //}
-
+           
            
             
         }
-
+       
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
@@ -152,6 +140,12 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             return Page();
         }
 
+        public async Task GetUsersAsync()
+        {
+            var users = User.Identities.ToList();
+            var teachers = await _userManager.GetUsersInRoleAsync("Teacher");
+            var students = await _userManager.GetUsersInRoleAsync("Student");
+        }
         private ApplicationUser GetUserByRole(string role)
         {
 

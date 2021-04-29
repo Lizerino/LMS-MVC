@@ -94,6 +94,12 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+
+                    if (User.IsInRole("Admin"))
+                    {
+                        var index = "applicationusers/index";
+                        return RedirectToRoute(index);
+                    }
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
@@ -103,6 +109,10 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning("User account locked out.");
+
+
+
+
                     return RedirectToPage("./Lockout");
                 }
                 else
