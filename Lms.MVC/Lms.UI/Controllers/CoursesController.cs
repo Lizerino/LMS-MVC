@@ -10,10 +10,10 @@ using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Models.ViewModels;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
 
 namespace Lms.MVC.UI.Controllers
 {
@@ -25,7 +25,7 @@ namespace Lms.MVC.UI.Controllers
 
         private readonly IMapper mapper;
 
-        public CoursesController(ApplicationDbContext context,  IMapper mapper, UserManager<ApplicationUser> userManager)
+        public CoursesController(ApplicationDbContext context, IMapper mapper, UserManager<ApplicationUser> userManager)
         {
             db = context;
             this.mapper = mapper;
@@ -33,11 +33,46 @@ namespace Lms.MVC.UI.Controllers
         }
 
         // GET: Courses
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search)
         {
-            var courses = await db.Courses.ToListAsync();
+            string showOnlyMyCourses = Request.Cookies["ShowOnlyMyCourses"];
+            List<Course> courses;
+
+            var currentUser = await userManager.GetUserAsync(User);            
+
+            if (showOnlyMyCourses=="true")
+            {
+            courses = await db.Courses.Include(c => c.Users)
+            .Where(c => (String.IsNullOrEmpty(search) || (c.Title.Contains(search))) && (c.Users.Contains(currentUser))).ToListAsync();
+            }
+            else
+            {
+            courses = await db.Courses.Include(c=>c.Users)
+            .Where(c => String.IsNullOrEmpty(search) || (c.Title.Contains(search))).ToListAsync();
+            }
+
             var result = mapper.Map<List<CourseListViewModel>>(courses);
+            
             return View(result);
+        }
+
+        public IActionResult ToggleMyCourses()
+        {
+            string showOnlyMyCourses = Request.Cookies["ShowOnlyMyCourses"];
+
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddDays(900);
+
+            if (showOnlyMyCourses == "false")
+            {
+                Response.Cookies.Append("ShowOnlyMyCourses", "true", option);
+            }
+            else
+            {
+                Response.Cookies.Append("ShowOnlyMyCourses", "false", option);
+            }
+
+            return RedirectToAction("Index", "Courses");
         }
 
         public async Task<IActionResult> RegisterForCourseToggle(int? id)
@@ -46,7 +81,6 @@ namespace Lms.MVC.UI.Controllers
             var course = await db.Courses.Include(m => m.Users).Where(i => i.Id == id).FirstOrDefaultAsync();
             var currentUser = await userManager.GetUserAsync(User);
             var teacher = userManager.Users.Include(x => x.Courses).Single(u => u == currentUser);
-
 
             if (course.Users.Contains(currentUser))
             {
@@ -171,20 +205,13 @@ namespace Lms.MVC.UI.Controllers
         //{
         //    Course course = await db.Courses.Include(c => c.Teachers).FirstOrDefaultAsync(c => c.Id == id);
 
-        //    if (course is null)
-        //    {
-        //        return NotFound();
-        //    }
+        // if (course is null) { return NotFound(); }
 
-        //    if (course.Teachers is null)
-        //    {
-        //        course.Teachers = new List<Teacher>();
-        //    }
+        // if (course.Teachers is null) { course.Teachers = new List<Teacher>(); }
 
-        //    course.Teachers.Add(teacher);
+        // course.Teachers.Add(teacher);
 
-        //    db.Update(course);
-        //    await db.SaveChangesAsync();
+        // db.Update(course); await db.SaveChangesAsync();
 
         //    return View();
         //}
@@ -197,13 +224,9 @@ namespace Lms.MVC.UI.Controllers
         //        return NotFound();
         //    }
 
-        //    var course = await db.Courses
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    var teacher = await db.Teachers.FirstOrDefaultAsync(t => t.Id == teacherId);
-        //    if (course == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // var course = await db.Courses .FirstOrDefaultAsync(m => m.Id == id); var teacher = await
+        // db.Teachers.FirstOrDefaultAsync(t => t.Id == teacherId); if (course == null) { return
+        // NotFound(); }
 
         //    return View(teacher);
         //}
@@ -217,19 +240,15 @@ namespace Lms.MVC.UI.Controllers
         //        return BadRequest();
         //    }
 
-        //    Course course = await db.Courses.Include(c => c.Teachers).FirstOrDefaultAsync(c => c.Id == courseId);
-            
-        //    if (course.Teachers is null)
-        //    {
-        //        return BadRequest();
-        //    }
-        //    Teacher teacher = course.Teachers.FirstOrDefault(t => t.Id == teacherId);
+        // Course course = await db.Courses.Include(c => c.Teachers).FirstOrDefaultAsync(c => c.Id
+        // == courseId);
 
-        //    if (!course.Teachers.Remove(teacher))
-        //        return NotFound();
+        // if (course.Teachers is null) { return BadRequest(); } Teacher teacher =
+        // course.Teachers.FirstOrDefault(t => t.Id == teacherId);
 
-        //    db.Update(course);
-        //    db.SaveChanges();
+        // if (!course.Teachers.Remove(teacher)) return NotFound();
+
+        // db.Update(course); db.SaveChanges();
 
         //    return View();
         //}

@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<Lms.MVC.UI.Models.ViewModels.CourseListViewModel>
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<ApplicationUser> userManager
+@Context.Request.Cookies.TryGetValue("ShowOnlyMyCourses", out string showOnlyMyCourses);
 
 @{
     ViewData["Title"] = "Index";
@@ -10,7 +11,22 @@
 
 <p>
     <a asp-action="Create">Create New</a>
+
+    @if (showOnlyMyCourses == "true")
+    {
+        <a class="btn btn-primary" asp-action="ToggleMyCourses">Show all courses</a>
+    }
+    else
+    {
+        <a class="btn btn-primary" asp-action="ToggleMyCourses">Show only my courses</a>
+    }
 </p>
+<form>
+    <div class="input-group">
+        <input type="submit" value="Search" />
+        <input type="text" name="Search" class="form-control" placeholder="Search..." autofocus>
+    </div>
+</form>
 <table class="table">
     <thead>
         <tr>
@@ -42,12 +58,12 @@
                 <td>
                     @if (item.Users.Contains(userManager.GetUserAsync(User).Result))
                     {
-                        <a type="Button" asp-action="RegisterForCourseToggle" asp-route-id="@item.Id">UnRegisterForCourse</a> <br />
+                        <a class="btn btn-primary" asp-action="RegisterForCourseToggle" asp-route-id="@item.Id">Unregister For Course</a> <br />
                     }
                     else
                     {
-                        <a type="Button" asp-action="RegisterForCourseToggle" asp-route-id="@item.Id">Register for course</a> <br />
-                    }                    
+                        <a class="btn btn-primary" asp-action="RegisterForCourseToggle" asp-route-id="@item.Id">Register for course</a> <br />
+                    }
                 </td>
             </tr>
         }
