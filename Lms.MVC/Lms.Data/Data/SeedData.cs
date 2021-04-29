@@ -7,8 +7,6 @@ using Bogus;
 using Lms.MVC.Core.Entities;
 
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Lms.MVC.Data.Data
 {
@@ -26,8 +24,7 @@ namespace Lms.MVC.Data.Data
         }
 
         public void Seed(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
-        {           
-
+        {
             var courses = GetCourses();
             var students = GetStudents();
             var teachers = GetTeachers();
@@ -35,68 +32,63 @@ namespace Lms.MVC.Data.Data
             var modules = GetModules();
 
             // Add students to courses
-            for (int i = 0; i < 25; i += 5)
+            var i = 0;
+            var step = (students.Count() / courses.Count());
+            foreach (var course in courses)
             {
-                var list = students.Skip(i).ToList();
-                foreach (var course in courses)
+                // need to add course to student
+                if (students != null)
                 {
-                    if (course.Students != null)
+                    var list = students.Skip(i).Take(step).ToList();
+                    foreach (var item in list)
                     {
-                        continue;
+                        course.Students.Add(item);
+                        item.CourseUserTakes = course;
                     }
-                    course.Students = list.Take(5).ToList();
-                    break;
+                    i = i + step;
                 }
             }
 
             // Add teachers to courses
-            for (int i = 0; i < 5; i++)
+            i = 0;
+            foreach (var course in courses)
             {
-                var list = teachers.Skip(i).ToList();
-                foreach (var course in courses)
+                if (course.Teachers != null)
                 {
-                    if (course.Teachers != null)
+                    var list = teachers.Skip(i).Take(1).ToList();
+                    foreach (var item in list)
                     {
-                        continue;
+                        course.Teachers.Add(item);                         
+                        item.CoursesUserTeaches.Add(course);
                     }
-                    course.Teachers = list.Take(1).ToList();
-                    break;
+                    i++;
+                }
+            }
+
+            // Add modules to courses
+            i = 0;
+            step = modules.Count() / courses.Count();
+
+            foreach (var course in courses)
+            {
+                if (course.Modules != null)
+                {
+                    course.Modules = modules.Skip(i).Take(step).ToList();
+                    i = i + step;
                 }
             }
 
             // Add activities to modules
 
-            for (int i = 0; i < 45; i += 3)
+            i = 0;
+            step = activities.Count() / modules.Count();
+            foreach (var module in modules)
             {
-                var list = activities.Skip(i).ToList();
-                foreach (var module in modules)
+                if (module.Activities != null)
                 {
-                    if (module.Activities != null)
-                    {
-                        continue;
-                    }
-                    module.Activities = list.Take(3).ToList();
-                    break;
+                    module.Activities = activities.Skip(step).Take(step).ToList();
                 }
             }
-
-            // Add modules to courses
-
-            for (int i = 0; i < 15; i += 3)
-            {
-                var list = modules.Skip(i).ToList();
-                foreach (var course in courses)
-                {
-                    if (course.Modules != null)
-                    {
-                        continue;
-                    }
-                    course.Modules = list.Take(3).ToList();
-                    break;
-                }
-            }
-
-            
 
             // Add teachers as users
             foreach (var user in teachers)
@@ -179,11 +171,11 @@ namespace Lms.MVC.Data.Data
             return activitys;
         }
 
-        private static List<Teacher> GetTeachers()
+        private static List<ApplicationUser> GetTeachers()
         {
             var fake = new Faker("sv");
 
-            var teachers = new List<Teacher>();
+            var teachers = new List<ApplicationUser>();
             for (int i = 0; i < 20; i++)
             {
                 string email = "";
@@ -198,7 +190,7 @@ namespace Lms.MVC.Data.Data
                     }
                 };
 
-                var teacher = new Teacher
+                var teacher = new ApplicationUser
                 {
                     Name = fake.Name.FullName(),
                     Email = email,
@@ -209,11 +201,11 @@ namespace Lms.MVC.Data.Data
             return teachers;
         }
 
-        private static List<Student> GetStudents()
+        private static List<ApplicationUser> GetStudents()
         {
             var fake = new Faker("sv");
 
-            var students = new List<Student>();
+            var students = new List<ApplicationUser>();
             for (int i = 0; i < 25; i++)
             {
                 string email = "";
@@ -228,7 +220,7 @@ namespace Lms.MVC.Data.Data
                     }
                 };
 
-                var student = new Student
+                var student = new ApplicationUser
                 {
                     Name = fake.Name.FullName(),
                     Email = email,
