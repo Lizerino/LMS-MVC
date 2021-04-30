@@ -15,6 +15,7 @@ namespace Lms.MVC.Core.Entities
 
         // nav prop
         public ICollection<Student> Students { get; set; }
+        public ICollection<ApplicationUser> Users { get; set; }
 
         public ICollection<Module> Modules { get; set; }
 

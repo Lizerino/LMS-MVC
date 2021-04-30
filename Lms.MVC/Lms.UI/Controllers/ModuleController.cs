@@ -5,6 +5,7 @@ using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,38 +15,42 @@ using System.Threading.Tasks;
 
 namespace Lms.MVC.UI
 {
-    [Route("courses/{id}/modules/")]
+    
     public class ModuleController : Controller
     {
         private ApplicationDbContext db;
         private readonly IMapper mapper;
         private readonly IUoW uow;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public ModuleController(ApplicationDbContext db, IMapper mapper, IUoW uow)
+        public ModuleController(ApplicationDbContext db, IMapper mapper, IUoW uow, UserManager<ApplicationUser> userManager)
         {
             this.db = db;
             this.mapper = mapper;
             this.uow = uow;
+            this.userManager = userManager;
         }
 
         [HttpGet]
         [Route("Index")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? courseId)
         {
             //Student View of Modules for Course
             if (User.IsInRole("Student"))
             {
-                //var courses = Request.Cookies["ShowOnlyMyCourses"];
-
-                var user = GetUserByName();
                 
-                var course = db.Courses.FirstOrDefault(c => c.Id == user.CourseId);
-                return View(await db.Modules.Where(m => m.CourseId == course.Id).ToListAsync());
+
+                var user = await userManager.GetUserAsync(User);
+               
+                var userCourse = user.Courses.Select(c => c.Id).FirstOrDefault();
+
+                //var course = db.Courses.FirstOrDefault(c => c.Id == user.CourseId);
+                return View(await db.Modules.Where(m => m.CourseId == userCourse).ToListAsync());
             }
             if (User.IsInRole("Teacher"))
             {
                 var user = GetUserByName();
-                var courses = db.Courses.Where(c => c.Id == user.CourseId).ToList();
+                var courses = db.Courses.Where(c => c.Id == courseId).ToList();
                 var modules = new List<Module>();
 
                 foreach(var course in courses)
