@@ -12,5 +12,8 @@ namespace Lms.MVC.Core.Repositories
 
         Task<IEnumerable<ApplicationUser>> GetAllUsersAsync();
         string GetRole(ApplicationUser user);
+        Task<ApplicationUser> FindAsync(string id);
+        void Update(ApplicationUser user);
+        public bool Any(string id);
     }
 }
