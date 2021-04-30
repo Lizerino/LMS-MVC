@@ -35,8 +35,10 @@ namespace Lms.MVC.UI
             //Student View of Modules for Course
             if (User.IsInRole("Student"))
             {
-                var courses = Request.Cookies["ShowOnlyMyCourses"];
+                //var courses = Request.Cookies["ShowOnlyMyCourses"];
+
                 var user = GetUserByName();
+                
                 var course = db.Courses.FirstOrDefault(c => c.Id == user.CourseId);
                 return View(await db.Modules.Where(m => m.CourseId == course.Id).ToListAsync());
             }
