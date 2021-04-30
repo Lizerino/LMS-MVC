@@ -30,10 +30,37 @@ namespace Lms.MVC.UI
 
         [HttpGet]
         [Route("Index")]
-        public async Task<IActionResult> Index(int id)
+        public async Task<IActionResult> Index()
         {
-            
-            return View(await db.Modules.Where(m => m.CourseId == id).ToListAsync());
+            //Student View of Modules for Course
+            if (User.IsInRole("Student"))
+            {
+                var courses = Request.Cookies["ShowOnlyMyCourses"];
+                var user = GetUserByName();
+                var course = db.Courses.FirstOrDefault(c => c.Id == user.CourseId);
+                return View(await db.Modules.Where(m => m.CourseId == course.Id).ToListAsync());
+            }
+            if (User.IsInRole("Teacher"))
+            {
+                var user = GetUserByName();
+                var courses = db.Courses.Where(c => c.Id == user.CourseId).ToList();
+                var modules = new List<Module>();
+
+                foreach(var course in courses)
+                {
+                    var modulesInCourse = db.Modules.Where(m => m.CourseId == course.Id).ToList();
+                    modules.AddRange(modulesInCourse);
+                }
+                return View(modules);
+            }
+            if (User.IsInRole("Admin"))
+                return View(await db.Modules.ToListAsync());
+            else return View();
+        }
+
+        private ApplicationUser GetUserByName()
+        {
+            return db.Users.FirstOrDefault(u => u.Name == User.Identity.Name);
         }
 
         [HttpGet]
