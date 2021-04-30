@@ -17,7 +17,7 @@ namespace Lms.MVC.Core.Entities
         public ICollection<Course> Courses { get; set; }
         // nav prop
         public ICollection<Document> Documents { get; set; }
-        public ICollection<Course> Courses { get; set; }
+        
 
     }
 }

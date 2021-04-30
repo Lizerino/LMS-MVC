@@ -41,8 +41,10 @@ namespace Lms.MVC.UI
                 
 
                 var user = await userManager.GetUserAsync(User);
-               
-                var userCourse = user.Courses.Select(c => c.Id).FirstOrDefault();
+
+                var userCourse = db.Users.Include(u => u.Courses).Where(c => c.Id == user.Id)
+                                         .Select(u => u.Courses.FirstOrDefault().Id)
+                                         .FirstOrDefault();
 
                 //var course = db.Courses.FirstOrDefault(c => c.Id == user.CourseId);
                 return View(await db.Modules.Where(m => m.CourseId == userCourse).ToListAsync());
@@ -71,7 +73,7 @@ namespace Lms.MVC.UI
         }
 
         [HttpGet]
-        [Route("details/{title}")]
+        [Route("details/{title}")]//Todo Fix Navigation
         public ActionResult Details(int id, string title)
         {
             //Find course

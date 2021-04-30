@@ -14,8 +14,8 @@ namespace Lms.API.Data.Data
 
         public LmsAPIDataMapperProfile()
         {
-            CreateMap<Course, CourseDto>().ReverseMap();
-            CreateMap<Module, ModuleDto>().ReverseMap();
+            //CreateMap<Course, CourseDto>().ReverseMap();
+            //CreateMap<Module, ModuleDto>().ReverseMap();
         }
     }
 }
