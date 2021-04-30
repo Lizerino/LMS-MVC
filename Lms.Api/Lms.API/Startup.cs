@@ -59,7 +59,7 @@ namespace Lms.API.UI
             services.AddDbContext<LmsAPIContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("LmsAPIContext")));
             services.AddScoped<IUoW, UoW>();
-            //services.AddAutoMapper(typeof(MapperProfile));
+            services.AddAutoMapper(typeof(LmsAPIDataMapperProfile));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

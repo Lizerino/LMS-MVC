@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 namespace Lms.MVC.Core.Entities
 {
     public class ApplicationUser : IdentityUser
-    {        
+    {                
         public string Name { get; set; }
+        public string Role { get; set; }
 
-        //[ForeignKey("Course")]
-        //public int CourseId { get; set; }
-
+        // If a student its the course the student takes. If a teacher its the courses the teacher teaches
+        public ICollection<Course> Courses { get; set; }
         // nav prop
         public ICollection<Document> Documents { get; set; }
         public ICollection<Course> Courses { get; set; }

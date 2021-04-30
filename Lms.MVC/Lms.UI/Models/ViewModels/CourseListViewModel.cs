@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Lms.MVC.Core.Entities
+using Lms.MVC.Core.Entities;
+
+namespace Lms.MVC.UI.Models.ViewModels
 {
-    public class Course
-    {
-        [Key]
+    public class CourseListViewModel
+    {        
         public int Id { get; set; }
 
         public string Title { get; set; }
@@ -15,9 +17,13 @@ namespace Lms.MVC.Core.Entities
 
         public DateTime StartDate { get; set; }
 
+        public bool ShowOnlyMyCourses { get; set; }
+
         // nav prop        
         public ICollection<ApplicationUser> Users { get; set; }
         public ICollection<Module> Modules { get; set; }
         public ICollection<Document> Documents { get; set; }
+
     }
 }
+
