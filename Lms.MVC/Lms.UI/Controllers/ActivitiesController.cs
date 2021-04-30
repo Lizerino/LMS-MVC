@@ -66,7 +66,9 @@ namespace Lms.MVC.UI.Controllers
             db.Add(activity);
             var x = ModelState.IsValid;
             await db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");//, "Activities");
+
+            //return RedirectToAction(nameof(Index));
         }
 
         // GET: Activities/Edit/5

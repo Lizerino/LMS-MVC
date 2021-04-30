@@ -124,13 +124,19 @@ namespace Lms.MVC.Data.Data
                 StartDate = startdtime,
                 EndDate = startdtime.AddHours(fake.Random.Int(1, 8)),
                 Description = fake.Lorem.Sentence(),
-                ActivityType = GetActivityType(ran)//,
+                ActivityType = GetActivityType(ran),
+                ModuleId = GetModuleIdForActivity()
                                                    //ActivityTypeId = i,
                                                    //Id = i,
-                                                   //ModuleId = i
             };
 
             return activity;
+        }
+        private static Int32 i = 0;
+        private Int32 GetModuleIdForActivity()
+        {
+                i++;
+                return i; 
         }
 
         //private static List<Activity> GetActivities()

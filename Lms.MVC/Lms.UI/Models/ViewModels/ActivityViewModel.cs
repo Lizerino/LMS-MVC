@@ -24,6 +24,8 @@ namespace Lms.MVC.UI.Models.ViewModels
         //public int ModuleId { get; set ; }
         [Display(Name = "Type Of Activity")]
         public int ActivityTypeId { get; set; }
+        //[Display(Name = "For Module")]
+       // public int ModuleId { get; set; }
 
         // nav prop
         public ActivityType ActivityType { get; set; }
