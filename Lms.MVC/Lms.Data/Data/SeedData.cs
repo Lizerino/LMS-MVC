@@ -115,17 +115,50 @@ namespace Lms.MVC.Data.Data
         {
             var fake = new Faker("sv");
 
+            fake = new Faker("sv");
             var ran = fake.Random.Int(0, 4);
+            var startdtime = DateTime.Now.AddDays(fake.Random.Int(0, 7));
             var activity = new Activity
             {
                 Title = fake.Name.JobTitle(),
-                StartDate = fake.Date.Soon(),
+                StartDate = startdtime,
+                EndDate = startdtime.AddHours(fake.Random.Int(1, 8)),
                 Description = fake.Lorem.Sentence(),
-                ActivityType = GetActivityType(ran)
+                ActivityType = GetActivityType(ran)//,
+                                                   //ActivityTypeId = i,
+                                                   //Id = i,
+                                                   //ModuleId = i
             };
 
             return activity;
         }
+
+        //private static List<Activity> GetActivities()
+        //{
+        //    Faker fake;
+        //    var activitys = new List<Activity>();
+        //    for (int i = 0; i < 45; i++)
+        //    {
+        //        fake = new Faker("sv");
+        //        var ran = fake.Random.Int(0, 4);
+        //        var startdtime = DateTime.Now.AddDays(fake.Random.Int(0, 7));
+        //
+        //        var activity = new Activity
+        //        {
+        //            Title = fake.Name.JobTitle(),
+        //            StartDate = startdtime,
+        //            EndDate = startdtime.AddHours(fake.Random.Int(1, 8)),
+        //            Description = fake.Lorem.Sentence(),
+        //            ActivityType = GetActivityType(ran)//,
+        //                                               //ActivityTypeId = i,
+        //                                               //Id = i,
+        //                                               //ModuleId = i
+        //        };
+        //        activitys.Add(activity);
+        //    }
+        //    return activitys;
+        //}
+
 
         private ApplicationUser GetTeacher()
         {

@@ -1,34 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿
+using AutoMapper;
+using Bogus;
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Filters;
+using Lms.MVC.UI.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Lms.MVC.UI.Controllers
 {
+    [Authorize(Roles = "Teacher,Admin")]
     public class ActivitiesController : Controller
     {
         private readonly ApplicationDbContext db;
+        private readonly IMapper mapper;
 
-        public ActivitiesController(ApplicationDbContext context)
+        public ActivitiesController(ApplicationDbContext context, IMapper mapper)
         {
             db = context;
+            this.mapper = mapper;
         }
 
         // GET: Activities
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = db.Activities.Include(a => a.ActivityType);
-            return View(await applicationDbContext.ToListAsync());
+            var activities = await db.Activities.ToListAsync();
+            return View(mapper.Map<IEnumerable<ActivityViewModel>>(activities));
         }
 
         // GET: Activities/Details/5
-        [ModelValidAndNotNull]
+        [ModelValid]
         public async Task<IActionResult> Details(int? id)
         {
 
@@ -51,23 +58,21 @@ namespace Lms.MVC.UI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,StartDate,EndDate,ModuleId,ActivityTypeId")] Activity activity)
+        [ModelNotNull, ModelValid]
+        //public async Task<IActionResult> Create([Bind("Id,Title,Description,StartDate,EndDate,ModuleId,ActivityTypeId")] ActivityViewModel activityViewModel)
+        public async Task<IActionResult> Create(ActivityViewModel activityViewModel)
         {
-            if (ModelState.IsValid)
-            {
-                db.Add(activity);
-                await db.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["ActivityTypeId"] = new SelectList(db.ActivityTypes, "Id", "Id", activity.ActivityTypeId);
-            return View(activity);
+            var activity = mapper.Map<Activity>(activityViewModel);
+            db.Add(activity);
+            var x = ModelState.IsValid;
+            await db.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Activities/Edit/5
-        [ModelValidAndNotNull]
+        [ModelNotNull, ModelValid]
         public async Task<IActionResult> Edit(int? id)
         {
-
             var activity = await db.Activities.FindAsync(id);
 
             ViewData["ActivityTypeId"] = new SelectList(db.ActivityTypes, "Id", "Id", activity.ActivityTypeId);
@@ -79,6 +84,7 @@ namespace Lms.MVC.UI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ModelValid]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,StartDate,EndDate,ModuleId,ActivityTypeId")] Activity activity)
         {
             if (id != activity.Id)
@@ -86,8 +92,8 @@ namespace Lms.MVC.UI.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
                 try
                 {
                     db.Update(activity);
@@ -105,13 +111,13 @@ namespace Lms.MVC.UI.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
-            ViewData["ActivityTypeId"] = new SelectList(db.ActivityTypes, "Id", "Id", activity.ActivityTypeId);
-            return View(activity);
+            //}
+            //ViewData["ActivityTypeId"] = new SelectList(db.ActivityTypes, "Id", "Id", activity.ActivityTypeId);
+            //return View(activity);
         }
 
         // GET: Activities/Delete/5
-        [ModelValidAndNotNull]
+        [ModelNotNull, ModelValid]
         public async Task<IActionResult> Delete(int? id)
         {
             var activity = await db.Activities

@@ -1,4 +1,4 @@
-﻿@model ApplicationUser
+﻿@model ApplicationUserEditViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -31,13 +31,17 @@
             </div>
             @if (User.IsInRole("Admin"))
 	{
-            <div class="form-group">
-                <input type="radio" value="Student" asp-for="Role" />
-                <label for="Student">Student</label>
-                <input type="radio" value="Teacher" asp-for="Role" />
-                <label for="Teacher">Teacher</label>
-                <span asp-validation-for="Role" class="text-danger"></span>
-            </div>
+        <div class="form-group">
+            <input type="radio" value="Student" asp-for="Role" />
+            <label for="Student">Student</label>
+            <input type="radio" value="Teacher" asp-for="Role" />
+            <label for="Teacher">Teacher</label>
+            <input type="radio" value="Admin" asp-for="Role" />
+            <label for="Teacher">Admin</label>
+
+
+            <span asp-validation-for="Role" class="text-danger"></span>
+        </div>
 	}
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
