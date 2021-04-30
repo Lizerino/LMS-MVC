@@ -21,7 +21,10 @@ namespace Lms.MVC.UI.Models.ViewModels
         [Display(Name = "EndDate")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd, HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime EndDate { get; set; }
-        //public int ModuleId { get; set ; }
+        [Display(Name = "For Module")]
+        public int ModuleId { get; set ; }
+        [Display(Name = "Module Title")]
+        public string ModuleTitle { get; set; }
         [Display(Name = "Type Of Activity")]
         public int ActivityTypeId { get; set; }
 

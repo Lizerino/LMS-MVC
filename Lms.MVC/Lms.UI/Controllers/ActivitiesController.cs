@@ -23,12 +23,12 @@ namespace Lms.MVC.UI.Controllers
 
         public ActivitiesController(ApplicationDbContext context, IMapper mapper)
         {
-            db = context;
+            this.db = context;
             this.mapper = mapper;
         }
 
         // GET: Activities
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
             var activities = await db.Activities.ToListAsync();
             return View(mapper.Map<IEnumerable<ActivityViewModel>>(activities));
@@ -66,7 +66,8 @@ namespace Lms.MVC.UI.Controllers
             db.Add(activity);
             var x = ModelState.IsValid;
             await db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");//, "Activities");
+            //return RedirectToAction(nameof(Index));
         }
 
         // GET: Activities/Edit/5

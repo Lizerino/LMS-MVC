@@ -124,13 +124,19 @@ namespace Lms.MVC.Data.Data
                 StartDate = startdtime,
                 EndDate = startdtime.AddHours(fake.Random.Int(1, 8)),
                 Description = fake.Lorem.Sentence(),
-                ActivityType = GetActivityType(ran)//,
+                ActivityType = GetActivityType(ran),
+                ModuleId = GetModuleIdForActivity()
                                                    //ActivityTypeId = i,
                                                    //Id = i,
-                                                   //ModuleId = i
             };
 
             return activity;
+        }
+        private static Int32 i = 0;
+        private Int32 GetModuleIdForActivity()
+        {
+                i++;
+                return i; 
         }
 
         //private static List<Activity> GetActivities()
@@ -194,6 +200,13 @@ namespace Lms.MVC.Data.Data
             return student;
         }
 
+        private static ActivityType GetActivityType()
+        {
+            Array values = Enum.GetValues(typeof(ActivityTypeEnum));
+            Random random = new Random();
+            ActivityType r = (ActivityType)values.GetValue(random.Next(values.Length));
+            return r;
+        }
         private static ActivityType GetActivityType(int ran)
         {
             var activityTypeEnum = (ActivityTypeEnum)ran;
