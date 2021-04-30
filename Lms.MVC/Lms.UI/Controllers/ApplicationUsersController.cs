@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.UI.Models.ViewModels;
+using Lms.MVC.UI.Models.ViewModels.ApplicationUserViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -80,32 +81,66 @@ namespace Lms.MVC.UI.Controllers
             {
                 return NotFound();
             }
-            var user = await uoW.UserRepository.FindAsync(id);
+            var user = await uoW.UserRepository.FindAsync(id, true);
+
+            var model = mapper.Map<ApplicationUserEditViewModel>(user);
+
             if (user == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+            return View(model);
         }
 
         // POST: ApplicationUsersController/Edit/5
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPost(string id)
+        public async Task<IActionResult> EditPost(string id , ApplicationUserEditViewModel viewmodel)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var user = await uoW.UserRepository.FindAsync(id);
-            if (await TryUpdateModelAsync(user, "", u => u.Name,
+            var user = await uoW.UserRepository.FindAsync(id, true);
+            viewmodel.Courses = user.Courses;
+            if (user.Email.ToLower().Contains("admin@lms.se"))
+            {
+                ModelState.AddModelError("Email", "You can't edit the admin");
+            }
+
+            if (await TryUpdateModelAsync(viewmodel, "", u => u.Name,
                                                     u => u.Email,
                                                     u => u.Role,
-                                                    user => user.PhoneNumber))
-                // ToDo: Connect the role proporty with the role manager.
+                                                    user => user.PhoneNumber,
+                                                    user => user.Courses))
+                if ( viewmodel.Role is null)
+                {
+                    ModelState.AddModelError("Role", "Choose a role");
+                }
+            if (viewmodel.Role != "Admin" && viewmodel.Role != "Teacher" && viewmodel.Role != "Student")
+            {
+
+                ModelState.AddModelError("Role", "Choose a valid role");
+
+            }
+            if (ModelState.IsValid)
+            {
+                mapper.Map(viewmodel, user);
+
+             await uoW.UserRepository.ChangeRoleAsync(user);
+            }
+
+
+
+            // ToDo: Connect the role proporty with the role manager.
+
+            if (ModelState.IsValid)
+            {
+
                 try
                 {
+
                     await uoW.CompleteAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -120,6 +155,9 @@ namespace Lms.MVC.UI.Controllers
                     }
                 }
             return RedirectToAction(nameof(Index));
+            }
+
+            return View(viewmodel);
         }
 
         private bool UserExists(string id)

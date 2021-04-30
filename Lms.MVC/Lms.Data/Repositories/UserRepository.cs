@@ -1,6 +1,7 @@
 ﻿using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;
+using Lms.MVC.Data.Repositories.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,7 +14,6 @@ namespace Lms.MVC.Data.Repositories
 {
     public class UserRepository : IUserRepository
     {
-
         private readonly ApplicationDbContext db;
         private readonly UserManager<ApplicationUser> userManager;
 
@@ -23,11 +23,14 @@ namespace Lms.MVC.Data.Repositories
             this.userManager = userManager;
         }
 
-        public async Task<ApplicationUser> FindAsync(string id)
+        public async Task<ApplicationUser> FindAsync(string id, bool includeCourses = false)
         {
-                 
-            return await db.Users.FindAsync(id);
+            if (includeCourses)
+            {
+                return await db.Users.Include(u => u.Courses).FirstOrDefaultAsync(u => u.Id == id);
+            }
 
+            return await db.Users.FindAsync(id);
         }
 
         public async Task<IEnumerable<ApplicationUser>> GetAllUsersAsync()
@@ -40,7 +43,7 @@ namespace Lms.MVC.Data.Repositories
         {
             var sb = new StringBuilder();
             var roles = userManager.GetRolesAsync(user).Result.ToList();
-            
+
             foreach (var item in roles)
             {
                 sb.AppendLine(item);
@@ -57,6 +60,37 @@ namespace Lms.MVC.Data.Repositories
         public bool Any(string id)
         {
             return db.Users.Any(u => u.Id == id);
+        }
+
+        public async Task ChangeRoleAsync(ApplicationUser user)
+        {
+            if (user is null) throw new ArgumentNullException();
+            var role = user.Role;
+            if (role == RoleHelper.Student && user.Courses.Count > 1 && await userManager.IsInRoleAsync(user, RoleHelper.Student))
+            {
+                await userManager.RemoveFromRoleAsync(user, RoleHelper.Student);
+            }
+            else if (role == RoleHelper.Admin)
+            {
+                await userManager.AddToRoleAsync(user, RoleHelper.Admin);
+                await userManager.AddToRoleAsync(user, RoleHelper.Teacher);
+            }
+            else if (role == RoleHelper.Teacher)
+            {
+                await userManager.RemoveFromRoleAsync(user, RoleHelper.Student);
+                await userManager.RemoveFromRoleAsync(user, RoleHelper.Admin);
+                await userManager.AddToRoleAsync(user, RoleHelper.Teacher);
+            }
+            else if (role == RoleHelper.Student && user.Courses.Count == 1)
+            {
+                await userManager.AddToRoleAsync(user, RoleHelper.Student);
+            }
+            else
+            {
+                await userManager.RemoveFromRoleAsync(user, RoleHelper.Teacher);
+                await userManager.RemoveFromRoleAsync(user, RoleHelper.Admin);
+                await userManager.AddToRoleAsync(user, RoleHelper.Student);
+            }
         }
     }
 }

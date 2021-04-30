@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lms.MVC.Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,11 +13,11 @@ namespace Lms.MVC.UI.Models.ViewModels.ApplicationUserViewModels
         public string Name { get; set; }
         [EmailAddress]
         public string Email { get; set; }
-
-        [Compare("Email", ErrorMessage = "The Email and confirmation Email do not match.")]
-        public string EmailConfirmed { get; set; }
         [Phone]
+        [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; }
+        public string Role { get; set; }
+        public ICollection<Course> Courses  { get; set; }
 
     }
 }

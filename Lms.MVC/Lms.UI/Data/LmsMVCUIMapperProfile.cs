@@ -20,6 +20,12 @@ namespace Lms.MVC.UI
               .ForMember(
               dest => dest.Role,
               opt => opt.MapFrom<RoleResolver>());
+
+            CreateMap<ApplicationUser, ApplicationUserEditViewModel>();
+            //.ForMember(u => u.Courses, act => act.Ignore());
+            CreateMap<ApplicationUserEditViewModel, ApplicationUser>()
+                                                                .ForMember(u => u.Courses, act => act.Ignore());
+                                                                
         }
     }
 
