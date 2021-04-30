@@ -8,6 +8,7 @@ using AutoMapper;
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Models.ViewModels;
+using Lms.MVC.UI.Utilities.Pagination;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -33,8 +34,13 @@ namespace Lms.MVC.UI.Controllers
         }
 
         // GET: Courses
-        public async Task<IActionResult> Index(string search, string sortOrder)
-        {
+        public async Task<IActionResult> Index(string search, string sortOrder, int page)
+        {            
+            if (search != null)
+            {
+                page = 1;
+            }            
+
             string showOnlyMyCourses = Request.Cookies["ShowOnlyMyCourses"];
             List<Course> courses;
 
@@ -52,7 +58,9 @@ namespace Lms.MVC.UI.Controllers
             }
 
             var result = mapper.Map<IEnumerable<CourseListViewModel>>(courses);
-            
+
+            ViewData["CurrentFilter"] = search;
+            ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Title_desc" : "";
             ViewData["DateSortParm"] = sortOrder == "StartDate" ? "StartDate_desc" : "StartDate";
             
@@ -71,7 +79,10 @@ namespace Lms.MVC.UI.Controllers
                     result = result.OrderBy(s => s.Title);
                     break;
             }
-            return View(result.ToList());
+
+            var paginatedResult = result.AsQueryable().GetPagination(page, 10);
+
+            return View(paginatedResult);            
         }
 
         public IActionResult ToggleMyCourses()

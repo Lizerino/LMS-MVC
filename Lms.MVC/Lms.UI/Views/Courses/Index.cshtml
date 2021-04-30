@@ -1,5 +1,7 @@
-﻿@model IEnumerable<Lms.MVC.UI.Models.ViewModels.CourseListViewModel>
+﻿@model PaginationResult<CourseListViewModel>
 @using Microsoft.AspNetCore.Identity
+@using Lms.MVC.UI.Utilities.Pagination
+@using Lms.MVC.UI.Views.Shared.Components.Pagination
 @inject UserManager<ApplicationUser> userManager
 @Context.Request.Cookies.TryGetValue("ShowOnlyMyCourses", out string showOnlyMyCourses);
 
@@ -28,7 +30,7 @@
         <button type="reset" class="btn bg-transparent" tabindex="-1" style="margin-left: -40px; z-index: 100;">
             <i class="fa fa-times"></i>
         </button>
-    </div>   
+    </div>
 </form>
 
 <form id="ClearSearchForm">
@@ -40,21 +42,21 @@
     <thead>
         <tr>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.Title)</a>
-            </th>            
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Title</a>
+            </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">@Html.DisplayNameFor(model => model.StartDate)</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Start Date</a>
             </th>
             <th></th>
         </tr>
-    </thead>    
+    </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Results)
         {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
-                </td>                
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.StartDate)
                 </td>
@@ -72,12 +74,4 @@
         }
     </tbody>
 </table>
-<nav aria-label="Page navigation example">
-    <ul class="pagination">
-        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item"><a class="page-link" href="#">Next</a></li>
-    </ul>
-</nav>
+@(await Component.InvokeAsync<PaginationViewComponent>(Model))
