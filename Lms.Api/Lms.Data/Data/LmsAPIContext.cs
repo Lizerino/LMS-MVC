@@ -18,5 +18,11 @@ namespace Lms.API.Data.Data
 
 
         public DbSet<Module> Modules { get; set; }
+
+        public DbSet<Author> Authors { get; set; }
+        public DbSet<Literature> Literature { get; set; }
+        public DbSet<Level> Levels { get; set; }
+        public DbSet<Subject> Subjects { get; set; }
+
     }
 }

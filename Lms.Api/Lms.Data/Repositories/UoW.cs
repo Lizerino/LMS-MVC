@@ -15,11 +15,17 @@ namespace Lms.API.Data.Repositories
 
         public IModuleRepository ModuleRepository { get; }
 
+        public ILiteratureRepository LiteratureRepository { get; }
+
+        public IAuthorRepository AuthorRepository { get; }
+
         public UoW(LmsAPIContext db)
         {
             this.db = db;
             CourseRepository = new CourseRepository(db);
             ModuleRepository = new ModuleRepository(db);
+            LiteratureRepository = new LiteratureRepository(db);
+            AuthorRepository = new AuthorRepository(db);
         }
 
         public async Task CompleteAsync()
