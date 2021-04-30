@@ -1,4 +1,4 @@
-﻿using Lms.API.Core.Entities;
+﻿using Lms.MVC.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
-using Lms.API.Core.Entities;
+using Lms.API.Core.Dto;
+using Lms.MVC.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Lms.API.Core.Dto;
 
-namespace Lms.API.Data.Data
+namespace Lms.MVC.UI.Extensions
 {
-   public class MapperProfile : Profile
+    public class MapperProfile : Profile
     {
 
         public MapperProfile()

@@ -2,32 +2,128 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+
+using AutoMapper;
+
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Data.Data;
-using Microsoft.AspNetCore.Http;
+using Lms.MVC.UI.Models.ViewModels;
+using Lms.MVC.UI.Utilities.Pagination;
+
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Lms.MVC.UI.Controllers
 {
     public class CoursesController : Controller
     {
         private readonly ApplicationDbContext db;
-        private readonly UserManager<Teacher> userManager;
 
-        public CoursesController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> userManager;
+
+        private readonly IMapper mapper;
+
+        public CoursesController(ApplicationDbContext context, IMapper mapper, UserManager<ApplicationUser> userManager)
         {
             db = context;
+            this.mapper = mapper;
+            this.userManager = userManager;
         }
 
         // GET: Courses
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search, string sortOrder, int page)
+        {            
+            if (search != null)
+            {
+                page = 1;
+            }            
+
+            string showOnlyMyCourses = Request.Cookies["ShowOnlyMyCourses"];
+            List<Course> courses;
+
+            var currentUser = await userManager.GetUserAsync(User);            
+
+            if (showOnlyMyCourses=="true")
+            {
+            courses = await db.Courses.Include(c => c.Users)
+            .Where(c => (String.IsNullOrEmpty(search) || (c.Title.Contains(search))) && (c.Users.Contains(currentUser))).ToListAsync();
+            }
+            else
+            {
+            courses = await db.Courses.Include(c=>c.Users)
+            .Where(c => String.IsNullOrEmpty(search) || (c.Title.Contains(search))).ToListAsync();
+            }
+
+            var result = mapper.Map<IEnumerable<CourseListViewModel>>(courses);
+
+            ViewData["CurrentFilter"] = search;
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Title_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "StartDate" ? "StartDate_desc" : "StartDate";
+            
+            switch (sortOrder)
+            {
+                case "Title_desc":
+                    result = result.OrderByDescending(s => s.Title);
+                    break;
+                case "StartDate":
+                    result = result.OrderBy(s => s.StartDate);
+                    break;
+                case "StartDate_desc":
+                    result = result.OrderByDescending(s => s.StartDate);
+                    break;
+                default:
+                    result = result.OrderBy(s => s.Title);
+                    break;
+            }
+
+            var paginatedResult = result.AsQueryable().GetPagination(page, 10);
+
+            return View(paginatedResult);            
+        }
+
+        public IActionResult ToggleMyCourses()
         {
-            return View(await db.Courses.ToListAsync());
+            string showOnlyMyCourses = Request.Cookies["ShowOnlyMyCourses"];
+
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddDays(900);
+
+            if (showOnlyMyCourses == "true")
+            {
+                Response.Cookies.Append("ShowOnlyMyCourses", "false", option);
+            }
+            else
+            {
+                Response.Cookies.Append("ShowOnlyMyCourses", "true", option);
+            }
+
+            return RedirectToAction("Index", "Courses");
+        }
+
+        public async Task<IActionResult> RegisterForCourseToggle(int? id)
+        {
+            if (id == null) return NotFound();
+            var course = await db.Courses.Include(m => m.Users).Where(i => i.Id == id).FirstOrDefaultAsync();
+            var currentUser = await userManager.GetUserAsync(User);
+            var teacher = userManager.Users.Include(x => x.Courses).Single(u => u == currentUser);
+
+            if (course.Users.Contains(currentUser))
+            {
+                course.Users.Remove(currentUser);
+                currentUser.Courses.Remove(course);
+            }
+            else
+            {
+                course.Users.Add(teacher);
+                currentUser.Courses.Add(course);
+            }
+
+            await db.SaveChangesAsync();
+            return RedirectToAction("Index", "Courses");
         }
 
         // GET: Courses/Details/5
@@ -38,7 +134,7 @@ namespace Lms.MVC.UI.Controllers
                 return NotFound();
             }
 
-            var course = await db.Courses
+            var course = await db.Courses.Include(c => c.Users)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (course == null)
             {
@@ -55,9 +151,8 @@ namespace Lms.MVC.UI.Controllers
             return View();
         }
 
-        // POST: Courses/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Courses/Create To protect from overposting attacks, enable the specific properties
+        // you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [Authorize(Roles = "Teacher,Admin")]
         [ValidateAntiForgeryToken]
@@ -65,9 +160,9 @@ namespace Lms.MVC.UI.Controllers
         {
             if (ModelState.IsValid)
             {
-                course.Teachers = new List<Teacher>();
+                course.Users = new List<ApplicationUser>();
                 if (User.IsInRole("Teacher"))
-                    course.Teachers.Add(userManager.FindByIdAsync(userManager.GetUserId(User)).Result);
+                    course.Users.Add(userManager.FindByIdAsync(userManager.GetUserId(User)).Result);
                 db.Add(course);
                 await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -93,9 +188,8 @@ namespace Lms.MVC.UI.Controllers
             return View(course);
         }
 
-        // POST: Courses/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Courses/Edit/5 To protect from overposting attacks, enable the specific properties
+        // you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [Authorize(Roles = "Teacher,Admin")]
         [ValidateAntiForgeryToken]
@@ -129,57 +223,64 @@ namespace Lms.MVC.UI.Controllers
             return View(course);
         }
 
-        public IActionResult AssignTeachers()
-        {
-            return View();
-        }
+        //[Authorize(Roles = "Teacher,Admin")]
+        //public IActionResult AssignTeachers()
+        //{
+        //    return View();
+        //}
 
-        public async Task<IActionResult> AssignTeachers(int id, Teacher teacher)
-        {
-            Course course = await db.Courses.Include(c => c.Teachers).FirstOrDefaultAsync(c => c.Id == id);
+        //[Authorize(Roles = "Teacher,Admin")]
+        //public async Task<IActionResult> AssignTeachers(int id, Teacher teacher)
+        //{
+        //    Course course = await db.Courses.Include(c => c.Teachers).FirstOrDefaultAsync(c => c.Id == id);
 
-            if (course is null)
-            {
-                return NotFound();
-            }
+        // if (course is null) { return NotFound(); }
 
-            if (course.Teachers is null)
-            {
-                course.Teachers = new List<Teacher>();
-            }
+        // if (course.Teachers is null) { course.Teachers = new List<Teacher>(); }
 
-            course.Teachers.Add(teacher);
+        // course.Teachers.Add(teacher);
 
-            db.Update(course);
-            await db.SaveChangesAsync();
+        // db.Update(course); await db.SaveChangesAsync();
 
-            return View(course);
-        }
+        //    return View();
+        //}
 
-        public bool RemoveTeacher(int id, Teacher teacher)
-        {
-            Course course = db.Courses.Include(c => c.Teachers).FirstOrDefault(c => c.Id == id);
+        //[Authorize(Roles = "Teacher,Admin")]
+        //public async Task<IActionResult> RemoveTeacher(int? id, string teacherId)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            if (course is null)
-            {
-                return false;
-            }
+        // var course = await db.Courses .FirstOrDefaultAsync(m => m.Id == id); var teacher = await
+        // db.Teachers.FirstOrDefaultAsync(t => t.Id == teacherId); if (course == null) { return
+        // NotFound(); }
 
-            if (course.Teachers is null)
-            {
-                return false;
-            }
+        //    return View(teacher);
+        //}
 
-            if (!course.Teachers.Remove(teacher))
-                return false;
+        //[ValidateAntiForgeryToken]
+        //[Authorize(Roles = "Teacher,Admin")]
+        //public async Task<IActionResult> RemoveTeacher(int? courseId, string teacherId)
+        //{
+        //    if (courseId is null || string.IsNullOrEmpty(teacherId))
+        //    {
+        //        return BadRequest();
+        //    }
 
-            db.Update(course);
-            db.SaveChanges();
+        // Course course = await db.Courses.Include(c => c.Teachers).FirstOrDefaultAsync(c => c.Id
+        // == courseId);
 
-            return true;
-        }
+        // if (course.Teachers is null) { return BadRequest(); } Teacher teacher =
+        // course.Teachers.FirstOrDefault(t => t.Id == teacherId);
 
+        // if (!course.Teachers.Remove(teacher)) return NotFound();
 
+        // db.Update(course); db.SaveChanges();
+
+        //    return View();
+        //}
 
         // GET: Courses/Delete/5
         public async Task<IActionResult> Delete(int? id)

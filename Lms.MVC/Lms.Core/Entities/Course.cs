@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Lms.MVC.Core.Entities
 {
     public class Course
     {
+        [Key]
         public int Id { get; set; }
 
         public string Title { get; set; }
@@ -13,13 +15,9 @@ namespace Lms.MVC.Core.Entities
 
         public DateTime StartDate { get; set; }
 
-        // nav prop
-        public ICollection<Student> Students { get; set; }
-
+        // nav prop        
+        public ICollection<ApplicationUser> Users { get; set; }
         public ICollection<Module> Modules { get; set; }
-
-        public ICollection<Teacher> Teachers { get; set; }
-
         public ICollection<Document> Documents { get; set; }
     }
 }

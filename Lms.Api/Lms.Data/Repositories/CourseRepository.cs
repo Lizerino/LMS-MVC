@@ -1,6 +1,6 @@
-﻿using Lms.API.Core.Entities;
+﻿using Lms.MVC.Core.Entities;
 using Lms.API.Core.Repositories;
-using Lms.API.Data.Data;
+using Lms.MVC.Data.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,11 +12,11 @@ namespace Lms.API.Data.Repositories
 {
     class CourseRepository : ICourseRepository
     {
-        private readonly LmsAPIContext db;
+        private readonly ApplicationDbContext db;
        
 
 
-        public CourseRepository(LmsAPIContext db)
+        public CourseRepository(ApplicationDbContext db)
         {
             this.db = db;
         }

@@ -1,5 +1,5 @@
 ﻿using Lms.API.Core.Repositories;
-using Lms.API.Data.Data;
+using Lms.MVC.Data.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +10,12 @@ namespace Lms.API.Data.Repositories
 {
   public  class UoW : IUoW
     {
-        private readonly LmsAPIContext db;
+        private readonly ApplicationDbContext db;
         public ICourseRepository CourseRepository { get; }
 
         public IModuleRepository ModuleRepository { get; }
 
-        public UoW(LmsAPIContext db)
+        public UoW(ApplicationDbContext db)
         {
             this.db = db;
             CourseRepository = new CourseRepository(db);

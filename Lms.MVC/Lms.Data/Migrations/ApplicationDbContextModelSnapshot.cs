@@ -19,6 +19,21 @@ namespace Lms.MVC.Data.Migrations
                 .HasAnnotation("ProductVersion", "5.0.4")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("ApplicationUserCourse", b =>
+                {
+                    b.Property<int>("CoursesId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("CoursesId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("ApplicationUserCourse");
+                });
+
             modelBuilder.Entity("Lms.MVC.Core.Entities.Activity", b =>
                 {
                     b.Property<int>("Id")
@@ -80,10 +95,6 @@ namespace Lms.MVC.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -117,6 +128,9 @@ namespace Lms.MVC.Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Role")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -138,8 +152,6 @@ namespace Lms.MVC.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("ApplicationUser");
                 });
 
             modelBuilder.Entity("Lms.MVC.Core.Entities.Course", b =>
@@ -374,29 +386,19 @@ namespace Lms.MVC.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Lms.MVC.Core.Entities.Student", b =>
+            modelBuilder.Entity("ApplicationUserCourse", b =>
                 {
-                    b.HasBaseType("Lms.MVC.Core.Entities.ApplicationUser");
+                    b.HasOne("Lms.MVC.Core.Entities.Course", null)
+                        .WithMany()
+                        .HasForeignKey("CoursesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("CourseId")
-                        .HasColumnType("int");
-
-                    b.HasIndex("CourseId");
-
-                    b.HasDiscriminator().HasValue("Student");
-                });
-
-            modelBuilder.Entity("Lms.MVC.Core.Entities.Teacher", b =>
-                {
-                    b.HasBaseType("Lms.MVC.Core.Entities.ApplicationUser");
-
-                    b.Property<int?>("CourseId")
-                        .HasColumnType("int")
-                        .HasColumnName("Teacher_CourseId");
-
-                    b.HasIndex("CourseId");
-
-                    b.HasDiscriminator().HasValue("Teacher");
+                    b.HasOne("Lms.MVC.Core.Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Lms.MVC.Core.Entities.Activity", b =>
@@ -495,24 +497,6 @@ namespace Lms.MVC.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Lms.MVC.Core.Entities.Student", b =>
-                {
-                    b.HasOne("Lms.MVC.Core.Entities.Course", "Course")
-                        .WithMany("Students")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-                });
-
-            modelBuilder.Entity("Lms.MVC.Core.Entities.Teacher", b =>
-                {
-                    b.HasOne("Lms.MVC.Core.Entities.Course", null)
-                        .WithMany("Teachers")
-                        .HasForeignKey("CourseId");
-                });
-
             modelBuilder.Entity("Lms.MVC.Core.Entities.Activity", b =>
                 {
                     b.Navigation("Documents");
@@ -528,10 +512,6 @@ namespace Lms.MVC.Data.Migrations
                     b.Navigation("Documents");
 
                     b.Navigation("Modules");
-
-                    b.Navigation("Students");
-
-                    b.Navigation("Teachers");
                 });
 
             modelBuilder.Entity("Lms.MVC.Core.Entities.Module", b =>

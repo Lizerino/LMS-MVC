@@ -74,7 +74,7 @@ namespace Lms.MVC.UI
             });
             
             services.AddScoped<IUoW, UoW>();
-            services.AddAutoMapper(typeof(MapperProfile));
+            services.AddAutoMapper(typeof(LmsMVCDataMapperProfile),typeof(LmsMVCUIMapperProfile));
 
         }
 
@@ -101,7 +101,7 @@ namespace Lms.MVC.UI
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseCookiePolicy();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

@@ -8,13 +8,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Lms.MVC.UI
 {
-    //[Route("courses/{id}/modules/")]
+    
     public class ModuleController : Controller
     {
         private ApplicationDbContext db;
@@ -32,21 +33,47 @@ namespace Lms.MVC.UI
 
         [HttpGet]
         [Route("Index")]
-        public async Task<IActionResult> Index(int id)
+        public async Task<IActionResult> Index(int? courseId)
         {
-            //if (User.IsInRole("Student"))
-            //{
-            //    var userName = User.Identity.Name;
-            //    var user = db.Users.FirstOrDefault(u => u.Name == userName);
-            //    var course = db.Courses.Find(user.CourseId);
+            //Student View of Modules for Course
+            if (User.IsInRole("Student"))
+            {
+                
 
-            //    return View(await db.Modules.Where(m => m.CourseId == course.Id).ToListAsync());
-            //}
-            return View(await db.Modules.Where(m => m.CourseId == id).ToListAsync());
+                var user = await userManager.GetUserAsync(User);
+
+                var userCourse = db.Users.Include(u => u.Courses).Where(c => c.Id == user.Id)
+                                         .Select(u => u.Courses.FirstOrDefault().Id)
+                                         .FirstOrDefault();
+
+                //var course = db.Courses.FirstOrDefault(c => c.Id == user.CourseId);
+                return View(await db.Modules.Where(m => m.CourseId == userCourse).ToListAsync());
+            }
+            if (User.IsInRole("Teacher"))
+            {
+                var user = GetUserByName();
+                var courses = db.Courses.Where(c => c.Id == courseId).ToList();
+                var modules = new List<Module>();
+
+                foreach(var course in courses)
+                {
+                    var modulesInCourse = db.Modules.Where(m => m.CourseId == course.Id).ToList();
+                    modules.AddRange(modulesInCourse);
+                }
+                return View(modules);
+            }
+            if (User.IsInRole("Admin"))
+                return View(await db.Modules.ToListAsync());
+            else return View();
+        }
+
+        private ApplicationUser GetUserByName()
+        {
+            return db.Users.FirstOrDefault(u => u.Name == User.Identity.Name);
         }
 
         [HttpGet]
-        [Route("details/{title}")]
+        [Route("details/{title}")]//Todo Fix Navigation
         public ActionResult Details(int id, string title)
         {
             //Find course
@@ -112,7 +139,7 @@ namespace Lms.MVC.UI
         {
             //find and create display details of Module
             var module = db.Modules.FirstOrDefault(c => c.Title == title);
-            ModuleViewModel model = new ModuleViewModel()
+            ModuleDto model = new ModuleDto()
             {
                 Id = module.Id,
                 Title = module.Title,
@@ -127,7 +154,7 @@ namespace Lms.MVC.UI
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("edit/{title}")]
-        public async Task<ActionResult> Edit(int id, [Bind("Id, Title, Description, StartDate, EndDate")] ModuleViewModel moduleDto)
+        public async Task<ActionResult> Edit(int id, [Bind("Id, Title, Description, StartDate, EndDate")] ModuleDto moduleDto)
         {
             if (ModelState.IsValid)
             {
