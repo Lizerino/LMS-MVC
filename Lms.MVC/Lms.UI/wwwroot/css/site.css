@@ -1,5 +1,7 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
+@import url('https://fonts.googleapis.com/css?family=Numans');
+
 
 a.navbar-brand {
   white-space: normal;
@@ -59,8 +61,12 @@ html {
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    background-image: url('../Assets/College-background-blured.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100%;
+    font-family: 'Numans', sans-serif;
+    margin-bottom: 60px;
 }
 .footer {
   position: absolute;
@@ -69,3 +75,134 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+.container {
+    height: 40%;
+    align-content: center;
+   
+}
+
+.card {
+    border-radius: 15px 50px 30px !important;
+    /*box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;*/
+    /*box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;*/
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+    height: 370px;
+    margin-top: auto;
+    margin-bottom: 5rem;
+    width: 400px;
+    background-color: rgba(256, 256, 256, 0.5) !important;
+}
+.gradient-text {
+   
+    background-color: #CA4246;
+    
+    background-image: linear-gradient( 45deg, #CA4246 16.666%, #E16541 16.666%, #E16541 33.333%, #F18F43 33.333%, #F18F43 50%, #8B9862 50%, #8B9862 66.666%, #476098 66.666%, #476098 83.333%, #A7489B 83.333%);
+    
+    background-size: 100%;
+    background-repeat: repeat;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbow-text-simple-animation-rev 0.75s ease forwards;
+}
+
+    .gradient-text:hover {
+        animation: rainbow-text-simple-animation 0.5s ease-in forwards;
+    }
+@keyframes rainbow-text-simple-animation-rev {
+    0% {
+        background-size: 650%;
+    }
+
+    40% {
+        background-size: 650%;
+    }
+
+    100% {
+        background-size: 100%;
+    }
+}
+@keyframes rainbow-text-simple-animation {
+    0% {
+        background-size: 100%;
+    }
+
+    80% {
+        background-size: 650%;
+    }
+
+    100% {
+        background-size: 650%;
+    }
+}
+.header {
+    margin-top: 1em;
+    /*margin-top: calc(50vh - 3em);*/
+}
+.welcome {
+    font-family: "Archivo Black", sans-serif;
+    font-weight: normal;
+    font-size: 3em;
+    text-align: center;
+    margin-bottom: 0;
+    margin-bottom: -0.25em;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+    width: 605px;
+}
+.card-holder {
+    align-content: center;
+}
+
+.lms-logo {
+    height: 245px;
+    margin-top: 5rem;
+    margin-bottom: auto;
+    width: 265px;
+}
+.card-header h3 {
+    color: black;
+}
+
+.input-group-prepend span {
+    width: 50px;
+    background-color: #FFC312;
+    color: black;
+    border: 0 !important;
+}
+
+input:focus {
+    outline: 0 0 0 0 !important;
+    box-shadow: 0 0 0 0 !important;
+}
+
+.remember {
+    color: black;
+}
+
+    .remember input {
+        width: 20px;
+        height: 20px;
+        margin-left: 15px;
+        margin-right: 5px;
+    }
+
+.login_btn {
+    color: black;
+    background-color: #FFC312;
+    width: 100px;
+}
+
+    .login_btn:hover {
+        color: black;
+        background-color: white;
+    }
+
+.links {
+    color: black;
+}
+
+    .links a {
+        margin-left: 4px;
+    }
