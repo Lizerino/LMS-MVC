@@ -12,12 +12,12 @@ namespace Lms.MVC.UI.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        private readonly ApplicationDbContext context;
+        private readonly ApplicationDbContext db;
 
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
             _logger = logger;
-            this.context = context;
+            this.db = context;
         }
 
         public IActionResult Index()

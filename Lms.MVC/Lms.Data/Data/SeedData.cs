@@ -15,22 +15,22 @@ namespace Lms.MVC.Data.Data
 
         private readonly UserManager<ApplicationUser> userManager;
 
-        public int numberOfCourses { get; set; }
-
-        public int numberOfModules { get; set; }
-
-        public int numberOfModulesPerCourse { get; set; }
-
-        public int numberOfActivities { get; set; }
-
-        public int numberOfActivititesPerModule { get; set; }
-
-        public int numberOfStudents { get; set; }
-
-        public int numberOfStudentsPerClass { get; set; }
-
-        public int numberOfTeachers { get; set; }
-        public int numberOfTeachersPerClass { get; set; }
+        public int NumberOfCourses { get; set; }
+                   
+        public int NumberOfModules { get; set; }
+                   
+        public int NumberOfModulesPerCourse { get; set; }
+                   
+        public int NumberOfActivities { get; set; }
+                   
+        public int NumberOfActivititesPerModule { get; set; }
+                   
+        public int NumberOfStudents { get; set; }
+                   
+        public int NumberOfStudentsPerClass { get; set; }
+                   
+        public int NumberOfTeachers { get; set; }
+        public int NumberOfTeachersPerClass { get; set; }
 
         public SeedData(ApplicationDbContext db, UserManager<ApplicationUser> userManager)
         {
@@ -41,21 +41,21 @@ namespace Lms.MVC.Data.Data
             // new Random(12345);
             Randomizer.Seed = new Random();
 
-            numberOfCourses = 5;
-            numberOfModulesPerCourse = 3;
-            numberOfActivititesPerModule = 3;
-            numberOfStudentsPerClass = 10;
-            numberOfTeachersPerClass = 1;
-
-            numberOfModules = numberOfCourses * numberOfModulesPerCourse;
-            numberOfActivities = numberOfModules * numberOfActivititesPerModule;
-            numberOfStudents = numberOfCourses * numberOfStudentsPerClass;
-            numberOfTeachers = numberOfCourses;
+            NumberOfCourses = 5;
+            NumberOfModulesPerCourse = 3;
+            NumberOfActivititesPerModule = 3;
+            NumberOfStudentsPerClass = 10;
+            NumberOfTeachersPerClass = 1;
+            
+            NumberOfModules = NumberOfCourses * NumberOfModulesPerCourse;
+            NumberOfActivities = NumberOfModules * NumberOfActivititesPerModule;
+            NumberOfStudents = NumberOfCourses * NumberOfStudentsPerClass;
+            NumberOfTeachers = NumberOfCourses;
         }
 
         public void Seed(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
-            for (int i = 0; i < numberOfCourses; i++)
+            for (int i = 0; i < NumberOfCourses; i++)
             {
                 db.Courses.Add(GetCourse());
             }
@@ -72,19 +72,19 @@ namespace Lms.MVC.Data.Data
 
             course.Modules = new List<Module>();
 
-            for (int i = 0; i < numberOfModulesPerCourse; i++)
+            for (int i = 0; i < NumberOfModulesPerCourse; i++)
             {
                 course.Modules.Add(GetModule());
             }
 
             course.Users = new List<ApplicationUser>();
 
-            for (int i = 0; i < numberOfStudentsPerClass; i++)
+            for (int i = 0; i < NumberOfStudentsPerClass; i++)
             {
                 course.Users.Add(GetStudent());
             }
 
-            for (int i = 0; i < numberOfTeachersPerClass; i++)
+            for (int i = 0; i < NumberOfTeachersPerClass; i++)
             {
             course.Users.Add(GetTeacher());            
             }
@@ -103,7 +103,7 @@ namespace Lms.MVC.Data.Data
             module.StartDate = fake.Date.Soon();
 
             module.Activities = new List<Activity>();
-            for (int i = 0; i < numberOfActivititesPerModule; i++)
+            for (int i = 0; i < NumberOfActivititesPerModule; i++)
             {
                 module.Activities.Add(GetActivity());
             }
@@ -124,20 +124,20 @@ namespace Lms.MVC.Data.Data
                 StartDate = startdtime,
                 EndDate = startdtime.AddHours(fake.Random.Int(1, 8)),
                 Description = fake.Lorem.Sentence(),
-                ActivityType = GetActivityType(ran),
-                ModuleId = GetModuleIdForActivity()
+                //ActivityType = //GetActivityType(ran),
+                //ModuleId = //GetModuleIdForActivity()
                                                    //ActivityTypeId = i,
                                                    //Id = i,
             };
 
             return activity;
         }
-        private static Int32 i = 0;
-        private Int32 GetModuleIdForActivity()
-        {
-                i++;
-                return i; 
-        }
+        //private static Int32 i = 0;
+        //private static Int32 GetModuleIdForActivity()
+        //{
+        //        i++;
+        //        return i; 
+        //}
 
         //private static List<Activity> GetActivities()
         //{
@@ -200,35 +200,35 @@ namespace Lms.MVC.Data.Data
             return student;
         }
 
-        private static ActivityType GetActivityType()
-        {
-            Array values = Enum.GetValues(typeof(ActivityTypeEnum));
-            Random random = new Random();
-            ActivityType r = (ActivityType)values.GetValue(random.Next(values.Length));
-            return r;
-        }
-        private static ActivityType GetActivityType(int ran)
-        {
-            var activityTypeEnum = (ActivityTypeEnum)ran;
-            var activityTypeName = activityTypeEnum.ToString();
-            var activityType = new ActivityType
-            {
-                Name = activityTypeName
-            };
-            return activityType;
-        }
-    }
-
-    public enum ActivityTypeEnum
-    {
-        Lecture,
-
-        ELearning,
-
-        Practise,
-
-        Assignment,
-
-        Other
-    }
+        //private static ActivityType GetActivityType()
+        //{
+        //    Array values = Enum.GetValues(typeof(ActivityTypeEnum));
+        //    Random random = new();
+        //    ActivityType r = (ActivityType)values.GetValue(random.Next(values.Length));
+        //    return r;
+        //}
+   //     private static ActivityType GetActivityType(int ran)
+   //     {
+   //         var activityTypeEnum = (ActivityTypeEnum)ran;
+   //         var activityTypeName = activityTypeEnum.ToString();
+   //         var activityType = new ActivityType
+   //         {
+   //             Name = activityTypeName
+   //         };
+   //         return activityType;
+   //     }
+   // }
+   //
+   // public enum ActivityTypeEnum
+   // {
+   //     Lecture,
+   //
+   //     ELearning,
+   //
+   //     Practise,
+   //
+   //     Assignment,
+   //
+   //     Other
+   // }
 }

@@ -1,11 +1,16 @@
-﻿
+﻿using System.Collections.Generic;
 using AutoMapper;
 using Bogus;
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Models.ViewModels;
-using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Lms.MVC.UI.Controllers
 {
@@ -15,30 +20,27 @@ namespace Lms.MVC.UI.Controllers
         private readonly ApplicationDbContext db;
         private readonly IMapper mapper;
 
-        public ActivitiesController(ApplicationDbContext context, IMapper mapper)
+        public ActivitiesController(ApplicationDbContext db, IMapper mapper)
         {
-            this.db = context;
+            this.db = db;
             this.mapper = mapper;
         }
 
         // GET: Activities
         public async Task<IActionResult> Index(int? Id)
         {
-            var activities = await db.Activities.Include(a => a.ActivityType).Where(a => a.ModuleId == Id).ToListAsync(); ;
-            var result = mapper.Map<IEnumerable<ActivityViewModel>>(activities);
-            
+            var result = mapper.Map<IEnumerable<ActivityViewModel>>(await db.Activities.Include(a => a.ActivityType).Where(a => a.ModuleId == Id).ToListAsync());
             var moduleTitle = db.Modules.Where(m => m.Id == Id).FirstOrDefault().Title;
-            foreach (var activity in result)
-            {
-                activity.ModuleTitle = moduleTitle;
-            }
-
+            foreach (var activity in result) activity.ModuleTitle = moduleTitle;
+            //foreach (ActivityViewModel activity in result) activity.ModuleTitle = db.Modules.Where(m => m.Id == Id).FirstOrDefault().Title;
             return View(result);
-        public async Task<IActionResult> Index(int? id)
-        {
-            var activities = await db.Activities.ToListAsync();
-            return View(mapper.Map<IEnumerable<ActivityViewModel>>(activities));
+
         }
+       //public async Task<IActionResult> Index(int? id)
+       //{
+       //    var activities = await db.Activities.ToListAsync();
+       //    return View(mapper.Map<IEnumerable<ActivityViewModel>>(activities));
+       //}
 
         // GET: Activities/Details/5
         [ModelValid]
