@@ -5,13 +5,7 @@ using Lms.MVC.Core.Entities;
 using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Models.ViewModels;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using AutoMapper;
 
 namespace Lms.MVC.UI.Controllers
 {
@@ -28,6 +22,18 @@ namespace Lms.MVC.UI.Controllers
         }
 
         // GET: Activities
+        public async Task<IActionResult> Index(int? Id)
+        {
+            var activities = await db.Activities.Include(a => a.ActivityType).Where(a => a.ModuleId == Id).ToListAsync(); ;
+            var result = mapper.Map<IEnumerable<ActivityViewModel>>(activities);
+            
+            var moduleTitle = db.Modules.Where(m => m.Id == Id).FirstOrDefault().Title;
+            foreach (var activity in result)
+            {
+                activity.ModuleTitle = moduleTitle;
+            }
+
+            return View(result);
         public async Task<IActionResult> Index(int? id)
         {
             var activities = await db.Activities.ToListAsync();

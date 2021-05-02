@@ -13,6 +13,9 @@ namespace Lms.MVC.UI
         {
             CreateMap<Course, CourseListViewModel>().ReverseMap();
             CreateMap<Activity, ActivityViewModel>().ReverseMap();
+            CreateMap<Module, ModuleViewModel>().ReverseMap();
+            CreateMap<Activity, ActivityViewModel>().ReverseMap();
+
             CreateMap<ApplicationUser, ApplicationUsersListViewModel>()
               .ForMember(
               dest => dest.Email,

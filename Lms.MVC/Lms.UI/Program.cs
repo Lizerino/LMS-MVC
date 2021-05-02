@@ -38,7 +38,7 @@ namespace Lms.MVC.UI
                    
                     SeedData seedData = new SeedData(db,userManager);
 
-                    seedData.Seed(userManager, roleManager);
+                    //seedData.Seed(userManager, roleManager);
                     
 
                     try

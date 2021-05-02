@@ -3,6 +3,8 @@ using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Models.DTO;
+using Lms.MVC.UI.Models.ViewModels;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -16,14 +18,14 @@ using System.Threading.Tasks;
 namespace Lms.MVC.UI
 {
     
-    public class ModuleController : Controller
+    public class ModulesController : Controller
     {
         private ApplicationDbContext db;
         private readonly IMapper mapper;
         private readonly IUoW uow;
         private readonly UserManager<ApplicationUser> userManager;
 
-        public ModuleController(ApplicationDbContext db, IMapper mapper, IUoW uow, UserManager<ApplicationUser> userManager)
+        public ModulesController(ApplicationDbContext db, IMapper mapper, IUoW uow, UserManager<ApplicationUser> userManager)
         {
             this.db = db;
             this.mapper = mapper;
@@ -33,13 +35,14 @@ namespace Lms.MVC.UI
 
         [HttpGet]
         [Route("Index")]
-        public async Task<IActionResult> Index(int? courseId)
+        public async Task<IActionResult> Index(int? Id)
         {
+            // Todo: Should we make this a part of the entity?
+            var courseTitle = db.Courses.Where(c => c.Id == Id).FirstOrDefault().Title;            
+
             //Student View of Modules for Course
             if (User.IsInRole("Student"))
             {
-                
-
                 var user = await userManager.GetUserAsync(User);
 
                 var userCourse = db.Users.Include(u => u.Courses).Where(c => c.Id == user.Id)
@@ -47,24 +50,49 @@ namespace Lms.MVC.UI
                                          .FirstOrDefault();
 
                 //var course = db.Courses.FirstOrDefault(c => c.Id == user.CourseId);
-                return View(await db.Modules.Where(m => m.CourseId == userCourse).ToListAsync());
-            }
-            if (User.IsInRole("Teacher"))
-            {
-                var user = GetUserByName();
-                var courses = db.Courses.Where(c => c.Id == courseId).ToList();
-                var modules = new List<Module>();
+                var modules = await db.Modules.Where(m => m.CourseId == userCourse).ToListAsync();
+                var result = mapper.Map<IEnumerable<ModuleViewModel>>(modules);
 
-                foreach(var course in courses)
+                foreach (var module in result)
                 {
-                    var modulesInCourse = db.Modules.Where(m => m.CourseId == course.Id).ToList();
-                    modules.AddRange(modulesInCourse);
+                    module.CourseTitle = courseTitle;
                 }
-                return View(modules);
+
+                return View(result);
             }
-            if (User.IsInRole("Admin"))
-                return View(await db.Modules.ToListAsync());
-            else return View();
+            else
+            {
+                var modules = await db.Modules.Where(m => m.CourseId == Id).ToListAsync();
+                var result = mapper.Map<IEnumerable<ModuleViewModel>>(modules);
+
+                foreach (var module in result)
+                {
+                    module.CourseTitle = courseTitle;
+                }
+
+                return View(result);
+            }
+
+            // TODO: Everyone execept students go to modules and activities via course list no??
+
+            //if (User.IsInRole("Teacher"))
+            //{
+            //    var user = GetUserByName();
+            //    var courses = db.Courses.Where(c => c.Id == courseId).ToList();
+            //    var modules = new List<Module>();
+
+            //    foreach(var course in courses)
+            //    {
+            //        var modulesInCourse = db.Modules.Where(m => m.CourseId == course.Id).ToList();
+            //        modules.AddRange(modulesInCourse);
+            //    }
+            //    return View(modules);
+            //}
+            //if (User.IsInRole("Admin"))
+            //{
+            //    return View(await db.Modules.ToListAsync());
+            //}
+            //else return View();
         }
 
         private ApplicationUser GetUserByName()
@@ -72,6 +100,8 @@ namespace Lms.MVC.UI
             return db.Users.FirstOrDefault(u => u.Name == User.Identity.Name);
         }
 
+
+        // This is an unneccecary method.. the link should redirecto to activities
         [HttpGet]
         [Route("details/{title}")]//Todo Fix Navigation
         public ActionResult Details(int id, string title)
@@ -86,33 +116,35 @@ namespace Lms.MVC.UI
             //Add Activities
             module.Activities = GetActivities(module.Id);
             //mapper.Map<ModuleDto>(module);
-            return View(module);
+           
+            return View(module);            
         }
 
 
         [Authorize(Roles = "Teacher, Admin")]
         [HttpGet]
         [Route("new")]
-        public ActionResult Create()        
+        public ActionResult Create(ModuleViewModel moduleViewModel)        
         {
-            return View();
+            return View(moduleViewModel);
         }
 
         [Authorize(Roles = "Teacher, Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("new")]
-        public async Task<IActionResult> Create(int id, Module module)//TODO: Configure API
+        public async Task<IActionResult> Create(int id, ModuleViewModel moduleViewModel)//TODO: Configure API
         {
             if (ModelState.IsValid) 
             {
                 //Find Course
-                var course = db.Courses.FirstOrDefault(c => c.Id == id);
+                var course = await db.Courses.Include(c=>c.Modules).FirstOrDefaultAsync(c => c.Id == moduleViewModel.CourseId);
 
+                
 
+                var module = mapper.Map<Module>(moduleViewModel);
 
-                //Add Module to Course
-                course.Modules = new List<Module>();
+                //Add Module to Course                
                 course.Modules.Add(module);
 
                 //Unassign ID from module
