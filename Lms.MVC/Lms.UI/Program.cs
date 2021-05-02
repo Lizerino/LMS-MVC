@@ -37,8 +37,11 @@ namespace Lms.MVC.UI
                     CreateRoles.Create(roleManager);
                    
                     SeedData seedData = new SeedData(db,userManager);
-
+                    if (!db.Users.Any())
+                    {
                     seedData.Seed(userManager, roleManager);
+                    }
+
                     
 
                     try
