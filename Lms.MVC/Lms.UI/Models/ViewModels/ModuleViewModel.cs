@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Lms.MVC.UI.Models.DTO
+namespace Lms.MVC.UI.Models.ViewModels
 {
     public class ModuleViewModel
     {
@@ -22,10 +22,12 @@ namespace Lms.MVC.UI.Models.DTO
         public DateTime StartDate { get; set; }
 
         [Display(Name = "End Date")]
-        public DateTime EndDate { get; set; }
+        public DateTime EndDate { get; set; }        
 
         public ICollection<Activity> Activities { get; set; }
 
+        public int CourseId { get; set; }
 
+        public string CourseTitle { get; set; }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lms.MVC.UI.Models.ViewModels
+namespace Lms.MVC.UI.Models.ViewModels.ApplicationUserViewModels
 {
   public class ApplicationUsersListViewModel
     {

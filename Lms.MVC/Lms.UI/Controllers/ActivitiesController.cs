@@ -8,23 +8,35 @@ using Microsoft.EntityFrameworkCore;
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Filters;
+using Lms.MVC.UI.Models.ViewModels;
+using AutoMapper;
 
 namespace Lms.MVC.UI.Controllers
 {
     public class ActivitiesController : Controller
     {
         private readonly ApplicationDbContext db;
+        private readonly IMapper mapper;
 
-        public ActivitiesController(ApplicationDbContext context)
+        public ActivitiesController(ApplicationDbContext db, IMapper mapper)
         {
-            db = context;
+            this.db = db;
+            this.mapper = mapper;
         }
 
         // GET: Activities
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? Id)
         {
-            var applicationDbContext = db.Activities.Include(a => a.ActivityType);
-            return View(await applicationDbContext.ToListAsync());
+            var activities = await db.Activities.Include(a => a.ActivityType).Where(a => a.ModuleId == Id).ToListAsync(); ;
+            var result = mapper.Map<IEnumerable<ActivityViewModel>>(activities);
+            
+            var moduleTitle = db.Modules.Where(m => m.Id == Id).FirstOrDefault().Title;
+            foreach (var activity in result)
+            {
+                activity.ModuleTitle = moduleTitle;
+            }
+
+            return View(result);
         }
 
         // GET: Activities/Details/5
