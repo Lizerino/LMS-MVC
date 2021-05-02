@@ -148,7 +148,9 @@ namespace Lms.MVC.UI.Controllers
         [Authorize(Roles = "Teacher,Admin")]
         public IActionResult Create()
         {
-            return View();
+            var courseViewModel = new CourseViewModel();
+            courseViewModel.StartDate = DateTime.Now;            
+            return View(courseViewModel);
         }
 
         // POST: Courses/Create To protect from overposting attacks, enable the specific properties
@@ -156,19 +158,23 @@ namespace Lms.MVC.UI.Controllers
         [HttpPost]
         [Authorize(Roles = "Teacher,Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,StartDate")] Course course)
+        public async Task<IActionResult> Create(CourseViewModel courseViewModel)
         {
             if (ModelState.IsValid)
             {
-                course.Users = new List<ApplicationUser>();
+                courseViewModel.Users = new List<ApplicationUser>();
                 if (User.IsInRole("Teacher"))
-                    course.Users.Add(userManager.FindByIdAsync(userManager.GetUserId(User)).Result);
+                {
+                    courseViewModel.Users.Add(userManager.FindByIdAsync(userManager.GetUserId(User)).Result);
+                }
+
+                var course = mapper.Map<Course>(courseViewModel);
                 db.Add(course);
                 await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(course);
+            return RedirectToAction("Index");
         }
 
         // GET: Courses/Edit/5

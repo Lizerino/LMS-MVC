@@ -35,11 +35,12 @@ namespace Lms.MVC.UI
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
                     CreateRoles.Create(roleManager);
+                    CreateActivityTypes.Create(db);
                    
                     SeedData seedData = new SeedData(db,userManager);
                     if (!db.Users.Any())
                     {
-                    seedData.Seed(userManager, roleManager);
+                    seedData.Seed(userManager, roleManager,db);
                     }
 
                     

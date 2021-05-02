@@ -1,23 +1,28 @@
-﻿@model IEnumerable<Lms.MVC.UI.Models.ViewModels.ActivityViewModel>
+﻿@model Lms.MVC.UI.Models.ViewModels.ActivityViewModel
 
-@{
-    ViewData["Title"] = "Index";
+@if (Model.ActivityList.Count() != 0)
+{
+    <h1>@Model.ModuleTitle</h1>
+    <p>
+        <a asp-action="Create" asp-route-id="@Model.ModuleId">Create New</a>
+    </p>
+    <div class="card-deck">
+        @foreach (var activity in Model.ActivityList)
+        {
+            <div class="card">
+                <a asp-controller="Activities" asp-action="Details" asp-route-id="@activity.Id">
+                    <h5 class="card-title">@activity.Title</h5>
+                    <p class="card-body">@activity.Description</p>
+                    <div class="card-footer text-muted">End Date: @activity.EndDate</div>
+                </a>
+            </div>
+        }
+    </div>
 }
-
-<h1>@Model.FirstOrDefault().ModuleTitle</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<div class="card-deck">
-    @foreach (var activity in Model)
-    {
-        <div class="card">
-            <a asp-controller="Activities" asp-action="Details" asp-route-id="@activity.Id">
-                <h5 class="card-title">@activity.Title</h5>
-                <p class="card-body">@activity.Description</p>
-                <div class="card-footer text-muted">End Date: @activity.EndDate</div>
-            </a>
-        </div>
-    }
-</div>
+else
+{
+    <p>
+        <a asp-action="Create" asp-route-id="@Model.ModuleId">Create New</a>
+    </p>
+    <p>No activities in this module</p>
+}

@@ -35,7 +35,7 @@ namespace Lms.MVC.UI
 
         [HttpGet]
         [Route("Index")]
-        public async Task<IActionResult> Index(int? Id)
+        public async Task<IActionResult> Index(int Id)
         {
             // Todo: Should we make this a part of the entity?
             var courseTitle = db.Courses.Where(c => c.Id == Id).FirstOrDefault().Title;            
@@ -48,29 +48,26 @@ namespace Lms.MVC.UI
                 var userCourse = db.Users.Include(u => u.Courses).Where(c => c.Id == user.Id)
                                          .Select(u => u.Courses.FirstOrDefault().Id)
                                          .FirstOrDefault();
-
-                //var course = db.Courses.FirstOrDefault(c => c.Id == user.CourseId);
+                
                 var modules = await db.Modules.Where(m => m.CourseId == userCourse).ToListAsync();
-                var result = mapper.Map<IEnumerable<ModuleViewModel>>(modules);
 
-                foreach (var module in result)
-                {
-                    module.CourseTitle = courseTitle;
-                }
+                var moduleViewModel = new ModuleViewModel();
+                moduleViewModel.ModuleList = modules;
 
-                return View(result);
+                moduleViewModel.CourseId = Id;
+                moduleViewModel.CourseTitle = courseTitle;                
+                
+                return View(moduleViewModel);
             }
             else
             {
-                var modules = await db.Modules.Where(m => m.CourseId == Id).ToListAsync();
-                var result = mapper.Map<IEnumerable<ModuleViewModel>>(modules);
+                var moduleViewModel = new ModuleViewModel();
+                moduleViewModel.ModuleList = await db.Modules.Where(m => m.CourseId == Id).ToListAsync();
 
-                foreach (var module in result)
-                {
-                    module.CourseTitle = courseTitle;
-                }
+                moduleViewModel.CourseId = Id;
+                moduleViewModel.CourseTitle = courseTitle;
 
-                return View(result);
+                return View(moduleViewModel);
             }
 
             // TODO: Everyone execept students go to modules and activities via course list no??
@@ -124,8 +121,12 @@ namespace Lms.MVC.UI
         [Authorize(Roles = "Teacher, Admin")]
         [HttpGet]
         [Route("new")]
-        public ActionResult Create(ModuleViewModel moduleViewModel)        
+        public ActionResult Create(int Id)        
         {
+            var moduleViewModel = new ModuleViewModel();
+            moduleViewModel.CourseId = Id;
+            moduleViewModel.StartDate = DateTime.Now;
+            moduleViewModel.EndDate = moduleViewModel.StartDate.AddDays(1);            
             return View(moduleViewModel);
         }
 
@@ -133,28 +134,23 @@ namespace Lms.MVC.UI
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("new")]
-        public async Task<IActionResult> Create(int id, ModuleViewModel moduleViewModel)//TODO: Configure API
+        public async Task<IActionResult> Create(ModuleViewModel moduleViewModel)//TODO: Configure API
         {
             if (ModelState.IsValid) 
             {
                 //Find Course
                 var course = await db.Courses.Include(c=>c.Modules).FirstOrDefaultAsync(c => c.Id == moduleViewModel.CourseId);
 
-                
-
+                // Map view model to model
                 var module = mapper.Map<Module>(moduleViewModel);
 
                 //Add Module to Course                
                 course.Modules.Add(module);
-
-                //Unassign ID from module
-                module.Id = 0;
-                //Update Database
-                 db.Modules.Add(module);
-                if (await db.SaveChangesAsync() ==1)
+                
+                if (await db.SaveChangesAsync() == 1)
                 {
-
-                    return RedirectToAction("Index", "Module");
+                    // Send user back to list of modules for that course
+                    return RedirectToAction("Index", new { id=moduleViewModel.CourseId});
                 }
                 else
                 {

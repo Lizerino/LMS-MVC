@@ -15,9 +15,11 @@ namespace Lms.MVC.Core.Entities
 
         public DateTime StartDate { get; set; }
 
-        // nav prop        
+        // nav prop
         public ICollection<ApplicationUser> Users { get; set; }
+
         public ICollection<Module> Modules { get; set; }
+
         public ICollection<Document> Documents { get; set; }
     }
 }

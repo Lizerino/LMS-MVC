@@ -25,18 +25,16 @@ namespace Lms.MVC.UI.Controllers
         }
 
         // GET: Activities
-        public async Task<IActionResult> Index(int? Id)
+        public async Task<IActionResult> Index(int Id)
         {
-            var activities = await db.Activities.Include(a => a.ActivityType).Where(a => a.ModuleId == Id).ToListAsync(); ;
-            var result = mapper.Map<IEnumerable<ActivityViewModel>>(activities);
-            
             var moduleTitle = db.Modules.Where(m => m.Id == Id).FirstOrDefault().Title;
-            foreach (var activity in result)
-            {
-                activity.ModuleTitle = moduleTitle;
-            }
+            var activityViewModel = new ActivityViewModel();
+            activityViewModel.ActivityList = await db.Activities.Where(a => a.ModuleId == Id).ToListAsync();
 
-            return View(result);
+            activityViewModel.ModuleId = Id;
+            activityViewModel.ModuleTitle = moduleTitle;
+
+            return View(activityViewModel);            
         }
 
         // GET: Activities/Details/5
@@ -52,27 +50,45 @@ namespace Lms.MVC.UI.Controllers
         }
 
         // GET: Activities/Create
-        public IActionResult Create()
+        public IActionResult Create(int Id)
         {
-            ViewData["ActivityTypeId"] = new SelectList(db.ActivityTypes, "Id", "Id");
-            return View();
+            var activityViewModel = new ActivityViewModel();
+            activityViewModel.ModuleId = Id;
+            activityViewModel.StartDate = DateTime.Now;
+            activityViewModel.EndDate = activityViewModel.StartDate.AddDays(1);
+            activityViewModel.ActivityTypes = new SelectList(db.ActivityTypes, nameof(ActivityType.Id), nameof(ActivityType.Name));            
+            return View(activityViewModel);            
         }
 
         // POST: Activities/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,StartDate,EndDate,ModuleId,ActivityTypeId")] Activity activity)
+        [ValidateAntiForgeryToken]        
+        public async Task<IActionResult> Create(ActivityViewModel activityViewModel)
         {
             if (ModelState.IsValid)
             {
-                db.Add(activity);
-                await db.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                //Find Module
+                var module = await db.Modules.Include(c => c.Activities).FirstOrDefaultAsync(c => c.Id == activityViewModel.ModuleId);
+
+                // Map view model to model
+                var activity = mapper.Map<Activity>(activityViewModel);
+
+                //Add activity to module                
+                module.Activities.Add(activity);
+
+                if (await db.SaveChangesAsync() == 1)
+                {
+                    // Send user back to list of modules for that course
+                    return RedirectToAction("Index", new { id = activityViewModel.ModuleId });
+                }
+                else
+                {
+                    return View();
+                }
             }
-            ViewData["ActivityTypeId"] = new SelectList(db.ActivityTypes, "Id", "Id", activity.ActivityTypeId);
-            return View(activity);
+            return View();
         }
 
         // GET: Activities/Edit/5

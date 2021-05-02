@@ -17,7 +17,9 @@ namespace Lms.MVC.UI.Models.ViewModels
         public DateTime EndDate { get; set; }
         public int ModuleId { get; set; }
         public string ModuleTitle { get; set; }
-        public int ActivityTypeId { get; set; }
+
+        public List<Activity> ActivityList { get; set; }
+        public Microsoft.AspNetCore.Mvc.Rendering.SelectList ActivityTypes { get; set; }
 
         // nav prop
         public ActivityType ActivityType { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Bogus;
 
@@ -53,28 +54,28 @@ namespace Lms.MVC.Data.Data
             numberOfTeachers = numberOfCourses;
         }
 
-        public void Seed(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public void Seed(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager,ApplicationDbContext db)
         {
             for (int i = 0; i < numberOfCourses; i++)
             {
-                db.Courses.Add(GetCourse());
+                db.Courses.Add(GetCourse(db));
             }
             db.SaveChanges();
         }
 
-        private Course GetCourse()
+        private Course GetCourse(ApplicationDbContext db)
         {
             var fake = new Faker("sv");
             var course = new Course();
 
-            course.Title = fake.Company.CatchPhrase();
+            course.Title = fake.Company.CatchPhrase()+" Course";
             course.StartDate = DateTime.Now.AddDays(fake.Random.Int(-2, 2));
 
             course.Modules = new List<Module>();
 
             for (int i = 0; i < numberOfModulesPerCourse; i++)
             {
-                course.Modules.Add(GetModule());
+                course.Modules.Add(GetModule(db));
             }
 
             course.Users = new List<ApplicationUser>();
@@ -93,35 +94,35 @@ namespace Lms.MVC.Data.Data
             return course;
         }
 
-        private Module GetModule()
+        private Module GetModule(ApplicationDbContext db)
         {
             var fake = new Faker("sv");
 
             var module = new Module();
 
-            module.Title = fake.Name.JobTitle();
+            module.Title = fake.Name.JobTitle()+" Module";
             module.StartDate = fake.Date.Soon();
 
             module.Activities = new List<Activity>();
             for (int i = 0; i < numberOfActivititesPerModule; i++)
             {
-                module.Activities.Add(GetActivity());
+                module.Activities.Add(GetActivity(db));
             }
 
             return module;
         }
 
-        private Activity GetActivity()
+        private Activity GetActivity(ApplicationDbContext db)
         {
             var fake = new Faker("sv");
 
-            var ran = fake.Random.Int(0, 4);
+            var ran = fake.Random.Int(1, 5);
             var activity = new Activity
             {
-                Title = fake.Name.JobTitle(),
+                Title = fake.Name.JobTitle()+" Activity",
                 StartDate = fake.Date.Soon(),
                 Description = fake.Lorem.Sentence(),
-                ActivityType = GetActivityType(ran)
+                ActivityType = GetActivityType(ran,db)
             };
 
             return activity;
@@ -161,28 +162,10 @@ namespace Lms.MVC.Data.Data
             return student;
         }
 
-        private static ActivityType GetActivityType(int ran)
+        private static ActivityType GetActivityType(int ran,ApplicationDbContext db)
         {
-            var activityTypeEnum = (ActivityTypeEnum)ran;
-            var activityTypeName = activityTypeEnum.ToString();
-            var activityType = new ActivityType
-            {
-                Name = activityTypeName
-            };
-            return activityType;
+            var result = db.ActivityTypes.Where(a => a.Id == ran).FirstOrDefault();
+            return result;
         }
-    }
-
-    public enum ActivityTypeEnum
-    {
-        Lecture,
-
-        ELearning,
-
-        Practise,
-
-        Assignment,
-
-        Other
-    }
+    }   
 }

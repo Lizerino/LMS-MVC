@@ -26,6 +26,8 @@ namespace Lms.MVC.UI.Models.ViewModels
 
         public ICollection<Activity> Activities { get; set; }
 
+        public List<Module> ModuleList { get; set; }
+
         public int CourseId { get; set; }
 
         public string CourseTitle { get; set; }
