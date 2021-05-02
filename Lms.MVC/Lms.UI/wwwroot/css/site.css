@@ -69,14 +69,16 @@ html {
 }
 
 body {
-    background-image: url('../Assets/College-background-blured.png');
+    background-image: url('../Assets/background2.png');
+   
     background-size: cover;
     background-repeat: no-repeat;
     height: 100%;
-    background-position:center;
+    background-position: center;
     font-family: 'Numans', sans-serif;
     margin-bottom: 60px;
 }
+
 .footer {
   position: absolute;
   bottom: 0;
