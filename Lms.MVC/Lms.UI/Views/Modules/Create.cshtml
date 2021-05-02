@@ -1,5 +1,4 @@
-﻿@using Lms.MVC.Core.Entities
-@model Module
+﻿@model Lms.MVC.UI.Models.ViewModels.ModuleViewModel
 
 
 @{
@@ -33,6 +32,9 @@
                 <label asp-for="EndDate" class="control-label"></label>
                 <input asp-for="EndDate" class="form-control" />
                 <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">                
+                <input asp-for="CourseId" type="hidden" value="@Model.CourseId"/>               
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

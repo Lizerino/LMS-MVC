@@ -31,9 +31,7 @@ namespace Lms.MVC.UI.Controllers
                 return RedirectToAction("Index", "ApplicationUsers");
             }
             else
-            {
-                // TODO: This should be the course page for the student
-                // return RedirectToAction("Index", "Students");
+            {                
                 return RedirectToAction("Module", "Index");
             }            
         }
