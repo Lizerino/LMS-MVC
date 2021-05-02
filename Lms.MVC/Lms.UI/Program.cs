@@ -26,7 +26,7 @@ namespace Lms.MVC.UI
                     var config = services.GetRequiredService<IConfiguration>();
 
                     // TODO: REMOVE IN PRODUCTION
-                    //db.Database.EnsureDeleted();
+                    db.Database.EnsureDeleted();
                     db.Database.EnsureCreated();
 
                     var adminPW = config["AdminPW"];
@@ -35,11 +35,13 @@ namespace Lms.MVC.UI
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
                     CreateRoles.Create(roleManager);
-                   
-                    SeedData seedData = new SeedData(db,userManager);
+                    CreateActivityTypes.Create(db);
 
-                    seedData.Seed(userManager, roleManager);
-                    
+                    SeedData seedData = new SeedData(db,userManager);
+                    if (!db.Users.Any())
+                    {
+                        seedData.Seed(userManager, roleManager, db);
+                    }
 
                     try
                     {

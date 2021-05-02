@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using Bogus;
 
 using Lms.MVC.Core.Entities;
@@ -16,19 +16,19 @@ namespace Lms.MVC.Data.Data
         private readonly UserManager<ApplicationUser> userManager;
 
         public int NumberOfCourses { get; set; }
-                   
+
         public int NumberOfModules { get; set; }
-                   
+
         public int NumberOfModulesPerCourse { get; set; }
-                   
+
         public int NumberOfActivities { get; set; }
-                   
+
         public int NumberOfActivititesPerModule { get; set; }
-                   
+
         public int NumberOfStudents { get; set; }
-                   
+
         public int NumberOfStudentsPerClass { get; set; }
-                   
+
         public int NumberOfTeachers { get; set; }
         public int NumberOfTeachersPerClass { get; set; }
 
@@ -46,23 +46,23 @@ namespace Lms.MVC.Data.Data
             NumberOfActivititesPerModule = 3;
             NumberOfStudentsPerClass = 10;
             NumberOfTeachersPerClass = 1;
-            
+
             NumberOfModules = NumberOfCourses * NumberOfModulesPerCourse;
             NumberOfActivities = NumberOfModules * NumberOfActivititesPerModule;
             NumberOfStudents = NumberOfCourses * NumberOfStudentsPerClass;
             NumberOfTeachers = NumberOfCourses;
         }
 
-        public void Seed(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public void Seed(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext db)
         {
             for (int i = 0; i < NumberOfCourses; i++)
             {
-                db.Courses.Add(GetCourse());
+                db.Courses.Add(GetCourse(db));
             }
             db.SaveChanges();
         }
 
-        private Course GetCourse()
+        private Course GetCourse(ApplicationDbContext db)
         {
             var fake = new Faker("sv");
             var course = new Course();
@@ -74,7 +74,7 @@ namespace Lms.MVC.Data.Data
 
             for (int i = 0; i < NumberOfModulesPerCourse; i++)
             {
-                course.Modules.Add(GetModule());
+                course.Modules.Add(GetModule(db));
             }
 
             course.Users = new List<ApplicationUser>();
@@ -86,14 +86,14 @@ namespace Lms.MVC.Data.Data
 
             for (int i = 0; i < NumberOfTeachersPerClass; i++)
             {
-            course.Users.Add(GetTeacher());            
+                course.Users.Add(GetTeacher());
             }
 
 
             return course;
         }
 
-        private Module GetModule()
+        private Module GetModule(ApplicationDbContext db)
         {
             var fake = new Faker("sv");
 
@@ -105,17 +105,15 @@ namespace Lms.MVC.Data.Data
             module.Activities = new List<Activity>();
             for (int i = 0; i < NumberOfActivititesPerModule; i++)
             {
-                module.Activities.Add(GetActivity());
+                module.Activities.Add(GetActivity(db));
             }
 
             return module;
         }
 
-        private Activity GetActivity()
+        private Activity GetActivity(ApplicationDbContext db)
         {
             var fake = new Faker("sv");
-
-            fake = new Faker("sv");
             var ran = fake.Random.Int(0, 4);
             var startdtime = DateTime.Now.AddDays(fake.Random.Int(0, 7));
             var activity = new Activity
@@ -124,47 +122,11 @@ namespace Lms.MVC.Data.Data
                 StartDate = startdtime,
                 EndDate = startdtime.AddHours(fake.Random.Int(1, 8)),
                 Description = fake.Lorem.Sentence(),
-                //ActivityType = //GetActivityType(ran),
-                //ModuleId = //GetModuleIdForActivity()
-                                                   //ActivityTypeId = i,
-                                                   //Id = i,
+                ActivityType = GetActivityType(ran, db)
             };
 
             return activity;
         }
-        //private static Int32 i = 0;
-        //private static Int32 GetModuleIdForActivity()
-        //{
-        //        i++;
-        //        return i; 
-        //}
-
-        //private static List<Activity> GetActivities()
-        //{
-        //    Faker fake;
-        //    var activitys = new List<Activity>();
-        //    for (int i = 0; i < 45; i++)
-        //    {
-        //        fake = new Faker("sv");
-        //        var ran = fake.Random.Int(0, 4);
-        //        var startdtime = DateTime.Now.AddDays(fake.Random.Int(0, 7));
-        //
-        //        var activity = new Activity
-        //        {
-        //            Title = fake.Name.JobTitle(),
-        //            StartDate = startdtime,
-        //            EndDate = startdtime.AddHours(fake.Random.Int(1, 8)),
-        //            Description = fake.Lorem.Sentence(),
-        //            ActivityType = GetActivityType(ran)//,
-        //                                               //ActivityTypeId = i,
-        //                                               //Id = i,
-        //                                               //ModuleId = i
-        //        };
-        //        activitys.Add(activity);
-        //    }
-        //    return activitys;
-        //}
-
 
         private ApplicationUser GetTeacher()
         {
@@ -199,36 +161,11 @@ namespace Lms.MVC.Data.Data
 
             return student;
         }
+        private static ActivityType GetActivityType(int ran, ApplicationDbContext db)
+        {
+            var result = db.ActivityTypes.Where(a => a.Id == ran).FirstOrDefault();
+            return result;
+        }
+    }
 
-        //private static ActivityType GetActivityType()
-        //{
-        //    Array values = Enum.GetValues(typeof(ActivityTypeEnum));
-        //    Random random = new();
-        //    ActivityType r = (ActivityType)values.GetValue(random.Next(values.Length));
-        //    return r;
-        //}
-   //     private static ActivityType GetActivityType(int ran)
-   //     {
-   //         var activityTypeEnum = (ActivityTypeEnum)ran;
-   //         var activityTypeName = activityTypeEnum.ToString();
-   //         var activityType = new ActivityType
-   //         {
-   //             Name = activityTypeName
-   //         };
-   //         return activityType;
-   //     }
-   // }
-   //
-   // public enum ActivityTypeEnum
-   // {
-   //     Lecture,
-   //
-   //     ELearning,
-   //
-   //     Practise,
-   //
-   //     Assignment,
-   //
-   //     Other
-   // }
 }

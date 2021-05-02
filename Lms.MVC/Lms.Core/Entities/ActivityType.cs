@@ -1,5 +1,4 @@
-﻿using Lms.MVC.Core.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +10,5 @@ namespace Lms.MVC.Core.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; }
-
-       // public ActivityEnumType activityEnumType{ get; set; }
     }
 }
