@@ -7,7 +7,7 @@
     @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
     {
         <p>
-            <a asp-action="Create" asp-route-id=@Model.CourseId>Create New</a>
+            <a asp-action="Create" asp-route-id=@Model.CourseId>Create New Module</a>
         </p>
     }
 
