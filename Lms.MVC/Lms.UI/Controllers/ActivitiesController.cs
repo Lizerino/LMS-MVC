@@ -27,18 +27,24 @@ namespace Lms.MVC.UI.Controllers
         }
 
         // GET: Activities
-        public async Task<IActionResult> Index(int Id)
+        public async Task<IActionResult> Index(int? Id)
         {
-
+            if(Id != null)
+            {
             var moduleTitle = db.Modules.Where(m => m.Id == Id).FirstOrDefault().Title;
             var activityViewModel = new ActivityViewModel();
             activityViewModel.ActivityList = await db.Activities.Where(a => a.ModuleId == Id).ToListAsync();
 
-            activityViewModel.ModuleId = Id;
+            activityViewModel.ModuleId = (int)Id;
             activityViewModel.ModuleTitle = moduleTitle;
 
             return View(activityViewModel);            
-
+            }
+            else
+            {
+                if (User.IsInRole("Student")) return RedirectToAction("Index", "Modules");
+                return RedirectToAction("Index", "Courses");
+            }
         }
 
         // GET: Activities/Details/5

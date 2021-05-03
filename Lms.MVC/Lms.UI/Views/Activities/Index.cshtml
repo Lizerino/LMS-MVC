@@ -1,12 +1,16 @@
-@model Lms.MVC.UI.Models.ViewModels.ActivityViewModel
+@model ActivityViewModel
 
 
 @if (Model.ActivityList.Count() != 0)
 {
     <h1>@Model.ModuleTitle</h1>
-    <p>
-        <a asp-action="Create" asp-route-id="@Model.ModuleId">Create New</a>
-    </p>
+    @if (User.IsInRole("Admin")|| User.IsInRole("Teacher"))
+    {
+        <p>
+            <a asp-action="Create" asp-route-id="@Model.ModuleId">Create New Activity</a>
+        </p>
+    }
+
     <div class="card-deck">
         @foreach (var activity in Model.ActivityList)
         {
@@ -14,7 +18,7 @@
                 <a asp-controller="Activities" asp-action="Details" asp-route-id="@activity.Id">
                     <h5 class="card-title">@activity.Title</h5>
                     <p class="card-body">@activity.Description</p>
-                    <div class="card-footer text-muted">End Date: @activity.EndDate</div>
+                    <div class="card-footer">End Date: @activity.EndDate</div>
                 </a>
             </div>
         }
