@@ -12,6 +12,7 @@ namespace Lms.MVC.UI
         public LmsMVCUIMapperProfile()
         {
             CreateMap<Course, CourseListViewModel>().ReverseMap();
+            CreateMap<Activity, ActivityViewModel>().ReverseMap();
             CreateMap<Module, ModuleViewModel>().ReverseMap();
             CreateMap<Activity, ActivityViewModel>().ReverseMap();
             CreateMap<Course, CourseViewModel>().ReverseMap();

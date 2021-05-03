@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using Bogus;
-
 using Lms.MVC.Core.Entities;
-
 using Microsoft.AspNetCore.Identity;
 
 namespace Lms.MVC.Data.Data
@@ -16,22 +13,22 @@ namespace Lms.MVC.Data.Data
 
         private readonly UserManager<ApplicationUser> userManager;
 
-        public int numberOfCourses { get; set; }
+        public int NumberOfCourses { get; set; }
 
-        public int numberOfModules { get; set; }
+        public int NumberOfModules { get; set; }
 
-        public int numberOfModulesPerCourse { get; set; }
+        public int NumberOfModulesPerCourse { get; set; }
 
-        public int numberOfActivities { get; set; }
+        public int NumberOfActivities { get; set; }
 
-        public int numberOfActivititesPerModule { get; set; }
+        public int NumberOfActivititesPerModule { get; set; }
 
-        public int numberOfStudents { get; set; }
+        public int NumberOfStudents { get; set; }
 
-        public int numberOfStudentsPerClass { get; set; }
+        public int NumberOfStudentsPerClass { get; set; }
 
-        public int numberOfTeachers { get; set; }
-        public int numberOfTeachersPerClass { get; set; }
+        public int NumberOfTeachers { get; set; }
+        public int NumberOfTeachersPerClass { get; set; }
 
         public SeedData(ApplicationDbContext db, UserManager<ApplicationUser> userManager)
         {
@@ -42,21 +39,21 @@ namespace Lms.MVC.Data.Data
             // new Random(12345);
             Randomizer.Seed = new Random();
 
-            numberOfCourses = 5;
-            numberOfModulesPerCourse = 3;
-            numberOfActivititesPerModule = 3;
-            numberOfStudentsPerClass = 10;
-            numberOfTeachersPerClass = 1;
+            NumberOfCourses = 5;
+            NumberOfModulesPerCourse = 3;
+            NumberOfActivititesPerModule = 3;
+            NumberOfStudentsPerClass = 10;
+            NumberOfTeachersPerClass = 1;
 
-            numberOfModules = numberOfCourses * numberOfModulesPerCourse;
-            numberOfActivities = numberOfModules * numberOfActivititesPerModule;
-            numberOfStudents = numberOfCourses * numberOfStudentsPerClass;
-            numberOfTeachers = numberOfCourses;
+            NumberOfModules = NumberOfCourses * NumberOfModulesPerCourse;
+            NumberOfActivities = NumberOfModules * NumberOfActivititesPerModule;
+            NumberOfStudents = NumberOfCourses * NumberOfStudentsPerClass;
+            NumberOfTeachers = NumberOfCourses;
         }
 
         public void Seed(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager,ApplicationDbContext db)
         {
-            for (int i = 0; i < numberOfCourses; i++)
+            for (int i = 0; i < NumberOfCourses; i++)
             {
                 db.Courses.Add(GetCourse(db));
             }
@@ -73,21 +70,21 @@ namespace Lms.MVC.Data.Data
 
             course.Modules = new List<Module>();
 
-            for (int i = 0; i < numberOfModulesPerCourse; i++)
+            for (int i = 0; i < NumberOfModulesPerCourse; i++)
             {
                 course.Modules.Add(GetModule(db));
             }
 
             course.Users = new List<ApplicationUser>();
 
-            for (int i = 0; i < numberOfStudentsPerClass; i++)
+            for (int i = 0; i < NumberOfStudentsPerClass; i++)
             {
                 course.Users.Add(GetStudent());
             }
 
-            for (int i = 0; i < numberOfTeachersPerClass; i++)
+            for (int i = 0; i < NumberOfTeachersPerClass; i++)
             {
-            course.Users.Add(GetTeacher());            
+                course.Users.Add(GetTeacher());
             }
 
 
@@ -104,7 +101,7 @@ namespace Lms.MVC.Data.Data
             module.StartDate = fake.Date.Soon();
 
             module.Activities = new List<Activity>();
-            for (int i = 0; i < numberOfActivititesPerModule; i++)
+            for (int i = 0; i < NumberOfActivititesPerModule; i++)
             {
                 module.Activities.Add(GetActivity(db));
             }
@@ -117,13 +114,14 @@ namespace Lms.MVC.Data.Data
             var fake = new Faker("sv");
 
             var ran = fake.Random.Int(1, 5);
-            var activity = new Activity
-            {
-                Title = fake.Name.JobTitle()+" Activity",
-                StartDate = fake.Date.Soon(),
-                Description = fake.Lorem.Sentence(),
-                ActivityType = GetActivityType(ran,db)
-            };
+            var activity = new Activity()
+            
+                activity.Title = fake.Name.JobTitle()+" Activity";
+                activity.StartDate = fake.Date.Soon();
+              activity.EndDate = startdtime.AddHours(fake.Random.Int(1, 8));
+                activity.Description = fake.Lorem.Sentence();
+                activity.ActivityType = GetActivityType(ran,db);
+            
 
             return activity;
         }
@@ -163,6 +161,7 @@ namespace Lms.MVC.Data.Data
         }
 
         private static ActivityType GetActivityType(int ran,ApplicationDbContext db)
+
         {
             var result = db.ActivityTypes.Where(a => a.Id == ran).FirstOrDefault();
             return result;

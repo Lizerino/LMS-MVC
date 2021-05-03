@@ -1,18 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Models.ViewModels;
-using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Lms.MVC.UI.Controllers
 {
+    [Authorize(Roles = "Teacher,Admin")]
     public class ActivitiesController : Controller
     {
         private readonly ApplicationDbContext db;
@@ -27,6 +29,7 @@ namespace Lms.MVC.UI.Controllers
         // GET: Activities
         public async Task<IActionResult> Index(int Id)
         {
+
             var moduleTitle = db.Modules.Where(m => m.Id == Id).FirstOrDefault().Title;
             var activityViewModel = new ActivityViewModel();
             activityViewModel.ActivityList = await db.Activities.Where(a => a.ModuleId == Id).ToListAsync();
@@ -35,17 +38,16 @@ namespace Lms.MVC.UI.Controllers
             activityViewModel.ModuleTitle = moduleTitle;
 
             return View(activityViewModel);            
+
         }
 
         // GET: Activities/Details/5
-        [ModelValidAndNotNull]
+        [ModelValid]
         public async Task<IActionResult> Details(int? id)
         {
-
             var activity = await db.Activities
                 .Include(a => a.ActivityType)
                 .FirstOrDefaultAsync(m => m.Id == id);
-
             return View(activity);
         }
 
@@ -58,13 +60,17 @@ namespace Lms.MVC.UI.Controllers
             activityViewModel.EndDate = activityViewModel.StartDate.AddDays(1);
             activityViewModel.ActivityTypes = new SelectList(db.ActivityTypes, nameof(ActivityType.Id), nameof(ActivityType.Name));            
             return View(activityViewModel);            
+
+          
         }
 
         // POST: Activities/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]        
+
+        [ValidateAntiForgeryToken]  
+        [ModelNotNull, ModelValid]
         public async Task<IActionResult> Create(ActivityViewModel activityViewModel)
         {
             if (ModelState.IsValid)
@@ -85,17 +91,16 @@ namespace Lms.MVC.UI.Controllers
                 }
                 else
                 {
-                    return View();
+                    return RedirectToAction("Index");
                 }
             }
-            return View();
+            return RedirectToAction("Index");
         }
 
         // GET: Activities/Edit/5
-        [ModelValidAndNotNull]
+        [ModelNotNull, ModelValid]
         public async Task<IActionResult> Edit(int? id)
         {
-
             var activity = await db.Activities.FindAsync(id);
 
             ViewData["ActivityTypeId"] = new SelectList(db.ActivityTypes, "Id", "Id", activity.ActivityTypeId);
@@ -107,39 +112,34 @@ namespace Lms.MVC.UI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ModelValid]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,StartDate,EndDate,ModuleId,ActivityTypeId")] Activity activity)
         {
             if (id != activity.Id)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    db.Update(activity);
-                    await db.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ActivityExists(activity.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                db.Update(activity);
+                await db.SaveChangesAsync();
             }
-            ViewData["ActivityTypeId"] = new SelectList(db.ActivityTypes, "Id", "Id", activity.ActivityTypeId);
-            return View(activity);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ActivityExists(activity.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Activities/Delete/5
-        [ModelValidAndNotNull]
+        [ModelNotNull, ModelValid]
         public async Task<IActionResult> Delete(int? id)
         {
             var activity = await db.Activities
