@@ -2,6 +2,12 @@
 for details on configuring this project to bundle and minify static web assets. */
 @import url('https://fonts.googleapis.com/css?family=Numans');
 
+:root {
+    --text-color: whitesmoke;
+    --a-color: whitesmoke;
+    --a-hover-color: #ffaf4d;
+}
+
 
 a.navbar-brand {
   white-space: normal;
@@ -64,19 +70,39 @@ button.accept-policy {
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;    
 }
 
 body {
     background-image: url('../Assets/background2.png');
-   
+    color: var(--text-color);
     background-size: cover;
     background-repeat: no-repeat;
     height: 100%;
     background-position: center;
     font-family: 'Numans', sans-serif;
     margin-bottom: 60px;
+}
+
+a:hover{
+    color: var(--a-hover-color)
+}
+a {
+    color: var(--a-color);
+}
+
+table {
+    color: var(--text-color);
+}
+th {
+    color: var(--text-color);
+}
+td {
+    color: var(--text-color);
+}
+tbody {
+    color: var(--text-color);
 }
 
 .footer {
