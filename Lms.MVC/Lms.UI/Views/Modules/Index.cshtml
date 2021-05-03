@@ -4,37 +4,31 @@
 {
 
     <h1>@Model.CourseTitle</h1>
-    @if (User.IsInRole("Admin"))
-{
-<p>
-    <a asp-action="Create" asp-route-id=@Model.CourseId>Create New</a>
-</p>
-
-}@if (User.IsInRole("Teacher"))
-{
-<p>
-    <a asp-action="Create" asp-route-id=@Model.CourseId>Create New</a>
-</p>
-
-}
-<div class="card-deck">
-    @foreach (var module in Model.ModuleList)
+    @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
     {
-        <div class="card">
-            <a asp-controller="Activities" asp-action="Index" asp-route-id="@module.Id">
-                <h5 class="card-title">@module.Title</h5>
-                <p class="card-body">@module.Description</p>
-                <div class="card-footer text-muted">End Date: @module.EndDate</div>
-            </a>
+        <p>
+            <a asp-action="Create" asp-route-id=@Model.CourseId>Create New</a>
+        </p>
+    }
+
+        <div class="card-deck">
+            @foreach (var module in Model.ModuleList)
+            {
+                <div class="card">
+                    <a asp-controller="Activities" asp-action="Index" asp-route-id="@module.Id">
+                        <h5 class="card-title">@module.Title</h5>
+                        <p class="card-body">@module.Description</p>
+                        <div class="card-footer text-muted">End Date: @module.EndDate</div>
+                    </a>
+                </div>
+            }
         </div>
     }
-</div>
-}
-else
-{
-<p>
-    <a asp-action="Create" asp-route-id=@Model.CourseId>Create New</a>
-</p>
-<p>No modules in this course</p>
-}
+    else
+    {
+        <p>
+            <a asp-action="Create" asp-route-id=@Model.CourseId>Create New</a>
+        </p>
+        <p>No modules in this course</p>
+    }
 

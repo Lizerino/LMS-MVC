@@ -4,9 +4,13 @@
 @if (Model.ActivityList.Count() != 0)
 {
     <h1>@Model.ModuleTitle</h1>
-    <p>
-        <a asp-action="Create" asp-route-id="@Model.ModuleId">Create New</a>
-    </p>
+    @if (User.IsInRole("Admin")|| User.IsInRole("Teacher"))
+    {
+        <p>
+            <a asp-action="Create" asp-route-id="@Model.ModuleId">Create New Activity</a>
+        </p>
+    }
+
     <div class="card-deck">
         @foreach (var activity in Model.ActivityList)
         {
