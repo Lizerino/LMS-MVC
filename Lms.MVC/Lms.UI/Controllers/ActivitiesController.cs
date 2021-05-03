@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Lms.MVC.UI.Controllers
 {
-    [Authorize(Roles = "Teacher,Admin")]
+    
     public class ActivitiesController : Controller
     {
         private readonly ApplicationDbContext db;
@@ -51,6 +51,7 @@ namespace Lms.MVC.UI.Controllers
             return View(activity);
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         // GET: Activities/Create
         public IActionResult Create(int Id)
         {
@@ -64,6 +65,7 @@ namespace Lms.MVC.UI.Controllers
           
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         // POST: Activities/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.

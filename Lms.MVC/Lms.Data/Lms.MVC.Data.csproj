@@ -6,8 +6,11 @@
 
   <ItemGroup>
     <Compile Remove="Data\Migrations\**" />
+    <Compile Remove="Extensions\**" />
     <EmbeddedResource Remove="Data\Migrations\**" />
+    <EmbeddedResource Remove="Extensions\**" />
     <None Remove="Data\Migrations\**" />
+    <None Remove="Extensions\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,10 +30,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Lms.Core\Lms.MVC.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Extensions\" />
   </ItemGroup>
 
 </Project>
