@@ -54,7 +54,8 @@ namespace Lms.MVC.UI.Controllers
             var activity = await db.Activities
                 .Include(a => a.ActivityType)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            return View(activity);
+            var activityViewModel = mapper.Map<ActivityViewModel>(activity);
+            return View(activityViewModel);
         }
 
         [Authorize(Roles = "Teacher,Admin")]
