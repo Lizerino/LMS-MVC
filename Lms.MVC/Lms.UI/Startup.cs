@@ -12,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Repositories;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Lms.MVC.UI.Services;
 
 namespace Lms.MVC.UI
 {
@@ -75,6 +77,12 @@ namespace Lms.MVC.UI
             
             services.AddScoped<IUoW, UoW>();
             services.AddAutoMapper(typeof(LmsMVCDataMapperProfile),typeof(LmsMVCUIMapperProfile));
+
+            // Email services
+            services
+                .AddFluentEmail("Info@LMS.Com")                
+                .AddSmtpSender("127.0.0.1", 25);
+            services.AddTransient<IEmailSender, EmailSender>();
 
         }
 
