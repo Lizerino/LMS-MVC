@@ -4,7 +4,7 @@
 @if (Model.ActivityList.Count() != 0)
 {
     <h1>@Model.ModuleTitle</h1>
-    @if (User.IsInRole("Admin")|| User.IsInRole("Teacher"))
+    @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
     {
         <p>
             <a asp-action="Create" asp-route-id="@Model.ModuleId">Create New Activity</a>
@@ -26,8 +26,11 @@
 }
 else
 {
-    <p>
-        <a asp-action="Create" asp-route-id="@Model.ModuleId">Create New</a>
-    </p>
-    <p>No activities in this module</p>
+    @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
+    {
+        <p>
+            <a asp-action="Create" asp-route-id="@Model.ModuleId">Create New Activity</a>
+        </p>
+        <p>No activities in this module</p>
+    }
 }
