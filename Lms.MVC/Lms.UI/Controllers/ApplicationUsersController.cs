@@ -1,48 +1,67 @@
 ﻿using AutoMapper;
 using Lms.MVC.Core.Repositories;
-using Lms.MVC.UI.Models.ViewModels;
 using Lms.MVC.UI.Models.ViewModels.ApplicationUserViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Lms.MVC.UI.Controllers
 {
     public class ApplicationUsersController : Controller
     {
-        //private readonly SignInManager<ApplicationUser> _signInManager;
-        //private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<ApplicationUsersController> _logger;
 
-        //private readonly IEmailSender _emailSender;
         private readonly IUoW uoW;
 
         private readonly IMapper mapper;
 
         public ApplicationUsersController(
-            // UserManager<ApplicationUser> userManager,
-            //SignInManager<ApplicationUser> signInManager,
+
             ILogger<ApplicationUsersController> logger,
             IEmailSender emailSender, IUoW uoW, IMapper mapper)
         {
-            //  _userManager = userManager;
-            //_signInManager = signInManager;
             _logger = logger;
-            // _emailSender = emailSender;
+
             this.uoW = uoW;
             this.mapper = mapper;
         }
 
         // GET: ApplicationUsersController
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search, string sortOrder, int page)
         {
             var users = await uoW.UserRepository.GetAllUsersAsync();
 
             var model = mapper.Map<IEnumerable<ApplicationUsersListViewModel>>(users);
+
+            ViewData["CurrentFilter"] = search;
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Email_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "StartDate" ? "StartDate_desc" : "StartDate";
+
+            switch (sortOrder)
+            {
+                case "Email_desc":
+                    model = model.OrderByDescending(s => s.Email);
+                    break;
+                case "StartDate":
+                    model = model.OrderBy(s => s.Name);
+                    break;
+                case "StartDate_desc":
+                    result = result.OrderByDescending(s => s.StartDate);
+                    break;
+                default:
+                    result = result.OrderBy(s => s.Title);
+                    break;
+            }
+
+            var paginatedResult = result.AsQueryable().GetPagination(page, 10);
+
 
             return View(model);
         }
@@ -96,7 +115,7 @@ namespace Lms.MVC.UI.Controllers
         // POST: ApplicationUsersController/Edit/5
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPost(string id , ApplicationUserEditViewModel viewmodel)
+        public async Task<IActionResult> EditPost(string id, ApplicationUserEditViewModel viewmodel)
         {
             if (id == null)
             {
@@ -114,33 +133,27 @@ namespace Lms.MVC.UI.Controllers
                                                     u => u.Role,
                                                     user => user.PhoneNumber,
                                                     user => user.Courses))
-                if ( viewmodel.Role is null)
+                if (viewmodel.Role is null)
                 {
                     ModelState.AddModelError("Role", "Choose a role");
                 }
             if (viewmodel.Role != "Admin" && viewmodel.Role != "Teacher" && viewmodel.Role != "Student")
             {
-
                 ModelState.AddModelError("Role", "Choose a valid role");
-
             }
             if (ModelState.IsValid)
             {
                 mapper.Map(viewmodel, user);
 
-             await uoW.UserRepository.ChangeRoleAsync(user);
+                await uoW.UserRepository.ChangeRoleAsync(user);
             }
-
-
 
             // ToDo: Connect the role proporty with the role manager.
 
             if (ModelState.IsValid)
             {
-
                 try
                 {
-
                     await uoW.CompleteAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -154,7 +167,7 @@ namespace Lms.MVC.UI.Controllers
                         throw;
                     }
                 }
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
             }
 
             return View(viewmodel);
