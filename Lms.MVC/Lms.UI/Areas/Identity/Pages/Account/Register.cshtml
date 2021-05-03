@@ -41,14 +41,14 @@
                         <span asp-validation-for="Input.Email" class="text-danger"></span>
                     </div>
 
-                    <div class="input-group form-group">
+                    @*<div class="input-group form-group">
                         <input asp-for="Input.Password" class="form-control" placeholder="Password" />
                         <span asp-validation-for="Input.Password" class="text-danger"></span>
                     </div>
                     <div class="input-group form-group">
                         <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Confirm Password" />
                         <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-                    </div>
+                    </div>*@
 
                     @if (User.IsInRole("Admin"))
                     {

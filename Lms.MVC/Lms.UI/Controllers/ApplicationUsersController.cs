@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.UI.Models.ViewModels.ApplicationUserViewModels;
+using Lms.MVC.UI.Utilities.Pagination;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -35,35 +36,48 @@ namespace Lms.MVC.UI.Controllers
         // GET: ApplicationUsersController
         public async Task<IActionResult> Index(string search, string sortOrder, int page)
         {
+            if (search != null)
+            {
+                page = 1;
+            }
+
             var users = await uoW.UserRepository.GetAllUsersAsync();
 
             var model = mapper.Map<IEnumerable<ApplicationUsersListViewModel>>(users);
 
             ViewData["CurrentFilter"] = search;
             ViewData["CurrentSort"] = sortOrder;
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Email_desc" : "";
-            ViewData["DateSortParm"] = sortOrder == "StartDate" ? "StartDate_desc" : "StartDate";
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Name_desc" : "";
+            ViewData["EmailSortParm"] = sortOrder == "Email" ? "Email_desc" : "Email";
+            ViewData["RoleSortParm"] = sortOrder == "Email" ? "Role_desc" : "Role";
 
             switch (sortOrder)
             {
+                case "Name_desc":
+                    model = model.OrderByDescending(s => s.Name);
+                    break;
+                case "Email":
+                    model = model.OrderBy(s => s.Email);
+                    break;
                 case "Email_desc":
                     model = model.OrderByDescending(s => s.Email);
                     break;
-                case "StartDate":
-                    model = model.OrderBy(s => s.Name);
+                case "Role":
+                    model = model.OrderBy(s => s.Role);
                     break;
-                case "StartDate_desc":
-                    result = result.OrderByDescending(s => s.StartDate);
+
+                case "Role_desc":
+                    model = model.OrderByDescending(s => s.Role);
                     break;
                 default:
-                    result = result.OrderBy(s => s.Title);
+                    model = model.OrderBy(s => s.Name);
                     break;
             }
 
-            var paginatedResult = result.AsQueryable().GetPagination(page, 10);
+            var paginatedResult = model.AsQueryable().GetPagination(page, 10);
 
 
-            return View(model);
+            return View(paginatedResult);
         }
 
         // GET: ApplicationUsersController/Details/5

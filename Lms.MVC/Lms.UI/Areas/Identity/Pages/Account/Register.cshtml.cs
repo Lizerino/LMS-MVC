@@ -62,7 +62,7 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
 
             public string Name => $"{FirstName} {LastName}";
 
-            [Required]
+            //[Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
@@ -91,9 +91,10 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                var password = "password";
 
-              
-                
+                Input.Password = password;
+                Input.ConfirmPassword = password;
                 if (User.IsInRole("Teacher"))
                 {
                     Input.Role = "Student";
@@ -115,6 +116,24 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+
+                    var passwordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    passwordToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(passwordToken));
+                    var resetPasswordCallbackUrl = Url.Page(
+                        "/Account/ResetPassword",
+                        pageHandler: null,
+                        values: new { area = "Identity", passwordToken },
+                        protocol: Request.Scheme);
+
+                    if (!_userManager.Options.SignIn.RequireConfirmedAccount)
+                    {
+                    await _emailSender.SendEmailAsync(
+                        Input.Email,
+                        "You are registered in Lms",
+                        $"Your password is {Input.Password} \n Please reset your password by <a href='{HtmlEncoder.Default.Encode(resetPasswordCallbackUrl)}'>clicking here</a>.");
+                    }
+
 
                     return LocalRedirect(returnUrl);
 
