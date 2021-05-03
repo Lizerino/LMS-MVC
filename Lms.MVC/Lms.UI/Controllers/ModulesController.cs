@@ -59,6 +59,8 @@ namespace Lms.MVC.UI
             }
             else
             {
+                if (Id != null)
+                {
                 var courseTitle = db.Courses.Where(c => c.Id == Id).FirstOrDefault().Title;            
                 var moduleViewModel = new ModuleViewModel();
                 moduleViewModel.ModuleList = await db.Modules.Where(m => m.CourseId == Id).ToListAsync();
@@ -67,7 +69,10 @@ namespace Lms.MVC.UI
                 moduleViewModel.CourseTitle = courseTitle;
 
                 return View(moduleViewModel);
+                }
+                return RedirectToAction("Index", "Courses");
             }
+            
 
             // TODO: Everyone execept students go to modules and activities via course list no??
 
@@ -214,17 +219,33 @@ namespace Lms.MVC.UI
         [Route("delete")]
         public ActionResult Delete(int id)
         {
-            return View();
+            var module = db.Modules.Find(id);
+            if (module == null)
+                return NotFound();
+
+
+            var model = mapper.Map<ModuleViewModel>(module);
+            if (model == null) return View();
+
+            return View(model);
         }
 
-        // POST: ModulerController/Delete/5
+        [Route("delete")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id, ModuleViewModel module)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var moduleDb = db.Modules.Find(id);
+
+                if (moduleDb == null || moduleDb.Id != module.Id)
+                    return View();
+
+                db.Modules.Remove(moduleDb);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+
             }
             catch
             {
