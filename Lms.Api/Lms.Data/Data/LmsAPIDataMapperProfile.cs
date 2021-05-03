@@ -14,8 +14,9 @@ namespace Lms.API.Data.Data
 
         public LmsAPIDataMapperProfile()
         {
-            //CreateMap<Course, CourseDto>().ReverseMap();
-            //CreateMap<Module, ModuleDto>().ReverseMap();
+            CreateMap<Course, CourseDto>().ReverseMap();
+            CreateMap<Module, ModuleDto>().ReverseMap();
+            CreateMap<Author, AuthorDto>().ForMember(dest => dest.Age, opt => opt.MapFrom(src => DateTime.Now - src.BirthDate)).ReverseMap();
         }
     }
 }
