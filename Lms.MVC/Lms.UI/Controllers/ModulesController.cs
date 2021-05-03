@@ -38,29 +38,28 @@ namespace Lms.MVC.UI
         public async Task<IActionResult> Index(int? Id)
         {
             // Todo: Should we make this a part of the entity?
-            var courseTitle = db.Courses.Where(c => c.Id == Id).FirstOrDefault().Title;            
 
             //Student View of Modules for Course
             if (User.IsInRole("Student"))
-            {
+            {                
                 var user = await userManager.GetUserAsync(User);
 
-                var userCourse = db.Users.Include(u => u.Courses).Where(c => c.Id == user.Id)
-                                         .Select(u => u.Courses.FirstOrDefault().Id)
-                                         .FirstOrDefault();
+
+                var userCourse = db.Courses.Where(c => c.Users.Any(u => u.Id == user.Id)).FirstOrDefault(); ;
                 
-                var modules = await db.Modules.Where(m => m.CourseId == userCourse).ToListAsync();
+                var modules = await db.Modules.Where(m => m.CourseId == userCourse.Id).ToListAsync();
 
                 var moduleViewModel = new ModuleViewModel();
                 moduleViewModel.ModuleList = modules;
 
-                moduleViewModel.CourseId = (int)Id;
-                moduleViewModel.CourseTitle = courseTitle;                
+                moduleViewModel.CourseId = userCourse.Id;
+                moduleViewModel.CourseTitle = userCourse.Title;
                 
                 return View(moduleViewModel);
             }
             else
             {
+                var courseTitle = db.Courses.Where(c => c.Id == Id).FirstOrDefault().Title;            
                 var moduleViewModel = new ModuleViewModel();
                 moduleViewModel.ModuleList = await db.Modules.Where(m => m.CourseId == Id).ToListAsync();
 
