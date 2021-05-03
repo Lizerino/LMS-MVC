@@ -35,7 +35,7 @@ namespace Lms.MVC.UI
 
         [HttpGet]
         [Route("Index")]
-        public async Task<IActionResult> Index(int Id)
+        public async Task<IActionResult> Index(int? Id)
         {
             // Todo: Should we make this a part of the entity?
             var courseTitle = db.Courses.Where(c => c.Id == Id).FirstOrDefault().Title;            
@@ -54,7 +54,7 @@ namespace Lms.MVC.UI
                 var moduleViewModel = new ModuleViewModel();
                 moduleViewModel.ModuleList = modules;
 
-                moduleViewModel.CourseId = Id;
+                moduleViewModel.CourseId = (int)Id;
                 moduleViewModel.CourseTitle = courseTitle;                
                 
                 return View(moduleViewModel);
@@ -64,7 +64,7 @@ namespace Lms.MVC.UI
                 var moduleViewModel = new ModuleViewModel();
                 moduleViewModel.ModuleList = await db.Modules.Where(m => m.CourseId == Id).ToListAsync();
 
-                moduleViewModel.CourseId = Id;
+                moduleViewModel.CourseId = (int)Id;
                 moduleViewModel.CourseTitle = courseTitle;
 
                 return View(moduleViewModel);

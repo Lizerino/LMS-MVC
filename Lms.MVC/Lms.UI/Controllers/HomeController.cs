@@ -32,7 +32,7 @@ namespace Lms.MVC.UI.Controllers
             }
             else
             {                
-                return RedirectToAction("Module", "Index");
+                return RedirectToAction("Index", "Modules");
             }            
         }
 

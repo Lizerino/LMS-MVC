@@ -114,11 +114,12 @@ namespace Lms.MVC.Data.Data
             var fake = new Faker("sv");
 
             var ran = fake.Random.Int(1, 5);
-            var activity = new Activity()
-            
+            var activity = new Activity();
+
+
                 activity.Title = fake.Name.JobTitle()+" Activity";
                 activity.StartDate = fake.Date.Soon();
-              activity.EndDate = startdtime.AddHours(fake.Random.Int(1, 8));
+              activity.EndDate = activity.StartDate.AddHours(fake.Random.Int(1, 8));
                 activity.Description = fake.Lorem.Sentence();
                 activity.ActivityType = GetActivityType(ran,db);
             
