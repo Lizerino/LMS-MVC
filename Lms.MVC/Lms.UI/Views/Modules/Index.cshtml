@@ -6,9 +6,11 @@
     <h1>@Model.CourseTitle</h1>
     @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
     {
-        <p>
-            <a asp-action="Create" asp-route-id=@Model.CourseId>Create New Module</a>
-        </p>
+<p>
+    <a asp-action="Create" asp-route-id=@Model.CourseId>Create New Module</a> <span>|</span>
+    <a asp-area="Identity" asp-page="/Account/Register" asp-route-id="@Model.CourseId" class="btn btn-primary">Add a student to this course</a>
+</p>
+
     }
 
     <div class="card-deck">
