@@ -23,7 +23,7 @@ namespace Lms.API.Data.Data
                     return;
                 }
 
-                var levels = new List<Level>();
+                List<Level> levels;
                 if (!db.Levels.Any())
                 {
                     levels = GetLevels();
@@ -36,29 +36,10 @@ namespace Lms.API.Data.Data
 
                 var authors = GetAuthors();
                 var literature = GetLiterature(authors, levels, subjects);
-                //if (db.Courses.Any())
-                //{
-                //    return;
-                //}
-
-                //var modules = GetModules();
-                //var courses = GetCourses();
-
-                //for (int i = 0; i < 30; i += 3)
-                //{
-                //    var list = authors.Skip(i).ToList();
-                //    foreach (var course in courses)
-                //    {
-                //        if (course.Modules != null)
-                //        {
-                //            continue;
-                //        }
-                //        course.Modules = list.Take(3).ToList();
-                //        break;
-                //    }
-                //}
+                
                 await db.AddRangeAsync(authors);
                 await db.AddRangeAsync(literature);
+                await db.AddRangeAsync(subjects);
 
                 await db.SaveChangesAsync();
             };
@@ -69,14 +50,31 @@ namespace Lms.API.Data.Data
             var fake = new Faker("sv");
             var literature = new List<Literature>();
 
-            for(int i = 0; i < 40; i++)
+            for(int i = 0; i < 30; i++)
             {
+                var authorInsert = new List<Author>();
+                for (int j = 0; j < fake.Random.Int(1, 3); j++)
+                {
+                    int r = fake.Random.Int(0, authors.Count - 1);
+                    if (!authorInsert.Contains(authors[r]))
+                        authorInsert.Add(authors[r]);
+                }
+
                 var lit = new Literature
                 {
                     Title = fake.Company.CompanyName(),
                     Description = fake.Lorem.Paragraph(),
-                    ReleaseDate = fake.Date.Between(DateTime.Now.AddYears(-30),DateTime.Now.AddMonths(-3))
+                    ReleaseDate = fake.Date.Between(DateTime.Now.AddYears(-30), DateTime.Now.AddMonths(-3)),
+                    Url = fake.Internet.Url(),
+                    Subject = subjects[fake.Random.Int(0, subjects.Count - 1)],
+                    Authors = authors
                 };
+
+                foreach(Author a in authorInsert)
+                {
+                    a.Bibliography.Add(lit);
+                }
+
                 literature.Add(lit);
             }
 
@@ -93,7 +91,8 @@ namespace Lms.API.Data.Data
                 {
                     FirstName = fake.Name.FirstName(),
                     LastName = fake.Name.LastName(),
-                    BirthDate = fake.Date.Between(DateTime.Today.AddYears(-100), DateTime.Today.AddYears(-20))
+                    BirthDate = fake.Date.Between(DateTime.Today.AddYears(-100), DateTime.Today.AddYears(-20)),
+                    Bibliography = new List<Literature>()
                 };
                 authors.Add(author);
             }
@@ -108,7 +107,7 @@ namespace Lms.API.Data.Data
             {
                 subjects.Add(new Subject
                 {
-                    Title = fake.Company.Bs()
+                    Title = fake.Commerce.Product()
                 }); 
             }
             return subjects;
@@ -116,46 +115,15 @@ namespace Lms.API.Data.Data
 
         private static List<Level> GetLevels()
         {
-            var levels = new List<Level>();
-
-            levels.Add(new Level { Name = "Beginner" });
-            levels.Add(new Level { Name = "Intermediate" });
-            levels.Add(new Level { Name = "Advanced" });
+            var levels = new List<Level>
+            {
+                new Level { Name = "Beginner" },
+                new Level { Name = "Intermediate" },
+                new Level { Name = "Advanced" }
+            };
 
             return levels;
         }
-        //private static List<Module> GetModules()
-        //{
-        //    var fake = new Faker("sv");
-        //    var modules = new List<Module>();
-        //    for (int i = 0; i < 30; i++)
-        //    {
-        //        var module = new Module
-        //        {
-        //            Title = fake.Name.JobTitle(),
-        //            StartDate = fake.Date.Soon()
-
-        //        };
-        //        modules.Add(module);
-        //    }
-        //    return modules;
-        //}
-
-        //private static List<Course> GetCourses()
-        //{
-        //    var fake = new Faker("sv");
-        //    var courses = new List<Course>();
-        //    for (int i = 0; i < 10; i++)
-        //    {
-        //        var course = new Course
-        //        {
-        //            Title = fake.Company.CatchPhrase(),
-        //            StartDate = DateTime.Now.AddDays(fake.Random.Int(-2, 2)),
-        //        };
-        //        courses.Add(course);
-        //    }
-        //    return courses;
-        //}
 
     }
 }

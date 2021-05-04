@@ -14,11 +14,6 @@ namespace Lms.API.Data.Data
         {
         }
 
-        public DbSet<Course> Courses { get; set; }
-
-
-        public DbSet<Module> Modules { get; set; }
-
         public DbSet<Author> Authors { get; set; }
         public DbSet<Literature> Literature { get; set; }
         public DbSet<Level> Levels { get; set; }

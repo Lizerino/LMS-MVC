@@ -4,14 +4,16 @@ using Lms.API.Data.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lms.API.Data.Migrations
 {
     [DbContext(typeof(LmsAPIContext))]
-    partial class LmsAPIContextModelSnapshot : ModelSnapshot
+    [Migration("20210503140513_0503")]
+    partial class _0503
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -150,12 +152,17 @@ namespace Lms.API.Data.Migrations
                         .HasForeignKey("LevelId");
 
                     b.HasOne("Lms.API.Core.Entities.Subject", "Subject")
-                        .WithMany()
+                        .WithMany("Literature")
                         .HasForeignKey("SubjectId");
 
                     b.Navigation("Level");
 
                     b.Navigation("Subject");
+                });
+
+            modelBuilder.Entity("Lms.API.Core.Entities.Subject", b =>
+                {
+                    b.Navigation("Literature");
                 });
 #pragma warning restore 612, 618
         }

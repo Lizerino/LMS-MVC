@@ -4,14 +4,16 @@ using Lms.API.Data.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lms.API.Data.Migrations
 {
     [DbContext(typeof(LmsAPIContext))]
-    partial class LmsAPIContextModelSnapshot : ModelSnapshot
+    [Migration("20210504072850_0504b")]
+    partial class _0504b
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

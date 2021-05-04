@@ -14,6 +14,5 @@ namespace Lms.API.Core.Entities
         [Required]
         [MaxLength(30)]
         public string Title { get; set; }
-        public IQueryable<Literature> Literature { get; set; }
     }
 }

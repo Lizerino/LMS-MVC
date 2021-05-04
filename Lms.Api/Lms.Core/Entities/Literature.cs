@@ -24,6 +24,6 @@ namespace Lms.API.Core.Entities
         public Level Level { get; set; }
         
         [Required]
-        public IQueryable<Author> Authors { get; set; }
+        public ICollection<Author> Authors { get; set; }
     }
 }

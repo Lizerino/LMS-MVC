@@ -10,8 +10,6 @@ namespace Lms.API.Core.Repositories
     {
         ILiteratureRepository LiteratureRepository { get; }
         IAuthorRepository AuthorRepository { get; }
-        ICourseRepository CourseRepository { get; }
-        IModuleRepository ModuleRepository { get; }
         Task CompleteAsync();
     }
 }
