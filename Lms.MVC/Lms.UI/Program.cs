@@ -27,6 +27,7 @@ namespace Lms.MVC.UI
 
                     // TODO: REMOVE IN PRODUCTION
                     //db.Database.EnsureDeleted();
+
                     db.Database.EnsureCreated();
 
                     var adminPW = config["AdminPW"];
