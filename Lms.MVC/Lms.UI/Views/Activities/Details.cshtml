@@ -1,4 +1,4 @@
-﻿@model ActivityViewModel
+﻿@model Lms.MVC.UI.Models.ViewModels.ActivityViewModels.DetailsActivityViewModel
 
 
 @{
@@ -44,6 +44,10 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    @if(User.IsInRole("Teacher")|| User.IsInRole("Admin"))
+            {
+                <a asp-action="Edit" asp-route-id="@Model.Id">Edit Activity</a> 
+            }
+        |        
     <a asp-action="Index">Back to List</a>
 </div>

@@ -3,6 +3,7 @@ using Lms.MVC.Core.Entities;
 using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Models.ViewModels;
+using Lms.MVC.UI.Models.ViewModels.ActivityViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -54,7 +55,9 @@ namespace Lms.MVC.UI.Controllers
             var activity = await db.Activities
                 .Include(a => a.ActivityType)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            return View(activity);
+
+            var model = mapper.Map<DetailsActivityViewModel>(activity);
+            return View(model);
         }
 
         [Authorize(Roles = "Teacher,Admin")]
@@ -83,6 +86,8 @@ namespace Lms.MVC.UI.Controllers
         {
             if (ModelState.IsValid)
             {
+                
+
                 //Find Module
                 var module = await db.Modules.Include(c => c.Activities).FirstOrDefaultAsync(c => c.Id == activityViewModel.ModuleId);
 
@@ -109,10 +114,15 @@ namespace Lms.MVC.UI.Controllers
         [ModelNotNull, ModelValid]
         public async Task<IActionResult> Edit(int? id)
         {
+            //find activity in database
             var activity = await db.Activities.FindAsync(id);
 
+            //create viewModel
+            
+            var model = mapper.Map<EditActivityViewModel>(activity);
+
             ViewData["ActivityTypeId"] = new SelectList(db.ActivityTypes, "Id", "Id", activity.ActivityTypeId);
-            return View(activity);
+            return View(model);
         }
 
         // POST: Activities/Edit/5
@@ -121,12 +131,10 @@ namespace Lms.MVC.UI.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ModelValid]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,StartDate,EndDate,ModuleId,ActivityTypeId")] Activity activity)
+        public async Task<IActionResult> Edit(int id, EditActivityViewModel activityModel)// TODO Finish This
         {
-            if (id != activity.Id)
-            {
-                return NotFound();
-            }
+                var activity = mapper.Map<Activity>(activityModel);
+            
             try
             {
                 db.Update(activity);

@@ -2,6 +2,7 @@
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;
+using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Models.DTO;
 using Lms.MVC.UI.Models.ViewModels;
 
@@ -138,10 +139,9 @@ namespace Lms.MVC.UI
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("new")]
-        public async Task<IActionResult> Create(ModuleViewModel moduleViewModel)//TODO: Configure API
-        {
-            if (ModelState.IsValid) 
-            {
+        [ModelValid]
+        public async Task<IActionResult> Create(ModuleViewModel moduleViewModel)
+        {          
                 //Find Course
                 var course = await db.Courses.Include(c=>c.Modules).FirstOrDefaultAsync(c => c.Id == moduleViewModel.CourseId);
 
@@ -160,18 +160,18 @@ namespace Lms.MVC.UI
                 {
                     return View();
                 }               
-            }
-            return View();
+            
+            
         }
 
-        [Authorize(Roles = "Teacher, Admin")]
         [HttpGet]
-        [Route("edit/{title}")]
-        public ActionResult Edit(string title)
+        [Route("edit/{id}")]
+        [Authorize(Roles = "Teacher, Admin")]
+        public ActionResult Edit(int Id)
         {
             //find and create display details of Module
-            var module = db.Modules.FirstOrDefault(c => c.Title == title);
-            ModuleDto model = new ModuleDto()
+            var module = db.Modules.FirstOrDefault(m => m.Id == Id);
+            EditModuleViewModel model = new EditModuleViewModel()
             {
                 Id = module.Id,
                 Title = module.Title,
@@ -182,24 +182,23 @@ namespace Lms.MVC.UI
             return View(model);
         }
 
-        [Authorize(Roles = "Teacher, Admin")]
         [HttpPost]
+        [Route("edit/{id}")]
+        [Authorize(Roles = "Teacher, Admin")]
         [ValidateAntiForgeryToken]
-        [Route("edit/{title}")]
-        public async Task<ActionResult> Edit(int id, [Bind("Id, Title, Description, StartDate, EndDate")] ModuleDto moduleDto)
+        [ModelValid]
+        public async Task<ActionResult> Edit(int id, EditModuleViewModel moduleViewModel)
         {
-            if (ModelState.IsValid)
-            {
                 //find module
                 var module = db.Modules.Find(id);
 
                 try
-                {
+                {                    
                     //mapper.Map(moduleDto, module);
-                    module.Title = moduleDto.Title;
-                    module.Description = moduleDto.Description;
-                    module.StartDate = moduleDto.StartDate;
-                    module.EndDate = moduleDto.EndDate;
+                    module.Title = moduleViewModel.Title;
+                    module.Description = moduleViewModel.Description;
+                    module.StartDate = moduleViewModel.StartDate;
+                    module.EndDate = moduleViewModel.EndDate;
                     
                     db.Update(module);
                     await db.SaveChangesAsync();
@@ -209,9 +208,7 @@ namespace Lms.MVC.UI
                 catch
                 {
                     return View();
-                }
-            }
-            return View();
+                }            
         }
 
         // GET: ModulerController/Delete/5
