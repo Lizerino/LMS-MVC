@@ -46,7 +46,6 @@ namespace Lms.MVC.UI
             {
                 var user = await userManager.GetUserAsync(User);
 
-
                 var userCourse = db.Courses.Where(c => c.Users.Any(u => u.Id == user.Id)).FirstOrDefault(); ;
 
                 var modules = await db.Modules.Where(m => m.CourseId == userCourse.Id).ToListAsync();
