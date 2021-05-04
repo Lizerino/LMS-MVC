@@ -1,52 +1,74 @@
 ﻿@model Lms.MVC.UI.Models.ViewModels.Admin.AdminOverviewViewModel;
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Admin Overview</title>    
-</head>
+    <!DOCTYPE html>
+    <html lang="en">
 
-<body>
-    <div class="row" style="padding: 30px;">
-        <div class="col-xl-3" style="text-align: center;">
-            <p>Number of users: @Model.NumberOfUsers</p>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+        <title>Admin Home Page</title>
+        
+    </head>
+
+    <body>
+        <div class="row">
+            <div class="col" style="text-align: center;">
+                <div class="row">
+                    <div class="col">
+                        <p style="margin: 0px;height: 38px;">Number of users: @Model.NumberOfUsers</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p style="height: 38px;margin: 0px;">Number of admins: @Model.NumberOfAdmins</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p style="height: 38px;margin: 0px;">Number of teachers: @Model.NumberOfTeachers</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p style="height: 38px;margin: 0px;">Number of students: @Model.NumberOfStudents</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p style="height: 38px;margin: 1px;">Number of courses: @Model.NumberOfCourses</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p style="height: 38px;margin: 0px;">Number of modules: @Model.NumberOfModules</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p style="height: 38px;margin: 0px;">Number of activities: @Model.NumberOfActivities</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col" style="min-width: 160px;text-align: left;">
+                <div class="row">
+                    <div class="col"><a asp-action="Index" asp-controller="ApplicationUsers" class="btn btn-primary" type="button" style="width: 200px;">Show All Users</a></div>
+                </div>
+                <div class="row">
+                    <div class="col"><a asp-action="Index" asp-route-search="Admin" asp-controller="ApplicationUsers" class="btn btn-primary" type="button" style="width: 200px;">Show All Admins</a></div>
+                </div>
+                <div class="row">
+                    <div class="col"><a asp-action="Index" asp-route-search="Teacher" asp-controller="ApplicationUsers" class="btn btn-primary" type="button" style="width: 200px;">Show All Teachers</a></div>
+                </div>
+                <div class="row">
+                    <div class="col"><a asp-action="Index" asp-route-search="Student" asp-controller="ApplicationUsers" class="btn btn-primary" type="button" style="width: 200px;">Show All Students</a></div>
+                </div>
+                <div class="row">
+                    <div class="col"><a asp-action="Index" asp-controller="Courses" class="btn btn-primary" type="button" style="width: 200px;">Show All Courses</a></div>
+                </div>
+            </div>
         </div>
-        <div class="col-xl-3" style="text-align: center;">
-            <p>Number of admins: @Model.NumberOfAdmins</p>
-        </div>
-        <div class="col-xl-3" style="text-align: center;">
-            <p>Number of teachers: @Model.NumberOfTeachers</p>
-        </div>
-        <div class="col-xl-3" style="text-align: center;">
-            <p>Number of students: @Model.NumberOfStudents</p>
-        </div>
-    </div>
-    <div class="row" style="margin: 0px -15px;padding: 30px;">
-        <div class="col-xl-3" style="text-align: center;"><a asp-action="Index" asp-controller="ApplicationUsers" class="btn btn-primary" type="button">Show All Users</a></div>
-        <div class="col-xl-3" style="text-align: center;"><a asp-action="ListAdmins" asp-controller="ApplicationUsers" class="btn btn-primary" type="button">Show All Admins</a></div>
-        <div class="col-xl-3" style="text-align: center;"><a asp-action="ListTeachers" asp-controller="ApplicationUsers" class="btn btn-primary" type="button">Show All Teachers</a></div>
-        <div class="col-xl-3" style="text-align: center;"><a asp-action="ListStudents" asp-controller="ApplicationUsers" class="btn btn-primary" type="button">Show All Students</a></div>
-    </div>
-    <div class="row" style="padding: 30px;">
-        <div class="col-xl-4" style="text-align: center;">
-            <p>Number of courses: @Model.NumberOfCourses</p>
-        </div>
-        <div class="col-xl-4" style="text-align: center;">
-            <p>Number of modules: @Model.NumberOfModules</p>
-        </div>
-        <div class="col-xl-4" style="text-align: center;">
-            <p>Number of activities: @Model.NumberOfActivities</p>
-        </div>
-    </div>
-    <div class="row" style="padding: 30px;">
-        <div class="col-xl-4" style="text-align: center;"><a asp-action="Index" asp-controller="Courses" class="btn btn-primary" type="button">Show All Courses</a></div>
-        <div class="col-xl-4" style="text-align: center;"><a asp-action="ListModules" asp-controller="Modules" class="btn btn-primary" type="button">Show All Modules</a></div>
-        <div class="col-xl-4" style="text-align: center;"><a asp-action="ListActivities" asp-controller="Activities" class="btn btn-primary" type="button">Show All Activities</a></div>
-    </div>
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-</body>
+        <script src="assets/js/jquery.min.js"></script>
+        <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    </body>
 
 </html>
