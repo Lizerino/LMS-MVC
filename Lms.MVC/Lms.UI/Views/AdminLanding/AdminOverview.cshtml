@@ -24,10 +24,10 @@
         </div>
     </div>
     <div class="row" style="margin: 0px -15px;padding: 30px;">
-        <div class="col-xl-3" style="text-align: center;"><button class="btn btn-primary" type="button">Show All Users</button></div>
-        <div class="col-xl-3" style="text-align: center;"><button class="btn btn-primary" type="button">Show All Admins</button></div>
-        <div class="col-xl-3" style="text-align: center;"><button class="btn btn-primary" type="button">Show All&nbsp;Teachers</button></div>
-        <div class="col-xl-3" style="text-align: center;"><button class="btn btn-primary" type="button">Show All&nbsp;Students</button></div>
+        <div class="col-xl-3" style="text-align: center;"><a asp-action="Index" asp-controller="ApplicationUsers" class="btn btn-primary" type="button">Show All Users</a></div>
+        <div class="col-xl-3" style="text-align: center;"><a asp-action="ListAdmins" asp-controller="ApplicationUsers" class="btn btn-primary" type="button">Show All Admins</a></div>
+        <div class="col-xl-3" style="text-align: center;"><a asp-action="ListTeachers" asp-controller="ApplicationUsers" class="btn btn-primary" type="button">Show All Teachers</a></div>
+        <div class="col-xl-3" style="text-align: center;"><a asp-action="ListStudents" asp-controller="ApplicationUsers" class="btn btn-primary" type="button">Show All Students</a></div>
     </div>
     <div class="row" style="padding: 30px;">
         <div class="col-xl-4" style="text-align: center;">
@@ -41,9 +41,9 @@
         </div>
     </div>
     <div class="row" style="padding: 30px;">
-        <div class="col-xl-4" style="text-align: center;"><button class="btn btn-primary" type="button">Show All Courses</button></div>
-        <div class="col-xl-4" style="text-align: center;"><button class="btn btn-primary" type="button">Show All Modules</button></div>
-        <div class="col-xl-4" style="text-align: center;"><button class="btn btn-primary" type="button">Show All Activities</button></div>
+        <div class="col-xl-4" style="text-align: center;"><a asp-action="Index" asp-controller="Courses" class="btn btn-primary" type="button">Show All Courses</a></div>
+        <div class="col-xl-4" style="text-align: center;"><a asp-action="ListModules" asp-controller="Modules" class="btn btn-primary" type="button">Show All Modules</a></div>
+        <div class="col-xl-4" style="text-align: center;"><a asp-action="ListActivities" asp-controller="Activities" class="btn btn-primary" type="button">Show All Activities</a></div>
     </div>
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
