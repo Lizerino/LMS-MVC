@@ -80,7 +80,7 @@ namespace Lms.MVC.UI.Controllers
 
         [ValidateAntiForgeryToken]
         [ModelNotNull, ModelValid]
-        public async Task<IActionResult> Create([Bind("Title,Description,StartDate,EndDate,ModuleId,ModuleTitle,ActivityList,ActivityTypes,ActivityTypeId,ActivityType,Documents")] ListActivityViewModel activityViewModel)
+        public async Task<IActionResult> Create(CreateActivityViewModel activityViewModel)
         {
             //Find Module
             var module = await db.Modules.Include(c => c.Activities).FirstOrDefaultAsync(c => c.Id == activityViewModel.ModuleId);

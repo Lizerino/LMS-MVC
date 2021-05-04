@@ -11,7 +11,7 @@ namespace Lms.MVC.UI.Models.ViewModels.ActivityViewModels
 {
     public class CreateActivityViewModel
     {
-        public int Id { get; set; }
+       
         [Display(Name = "Title")]
         public string Title { get; set; }
         [Display(Name = "Description")]
