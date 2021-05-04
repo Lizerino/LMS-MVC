@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 
 using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Models;
+using Lms.MVC.UI.Models.ViewModels.Admin;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -28,9 +30,17 @@ namespace Lms.MVC.UI.Controllers
             }
             else if (User.IsInRole("Admin"))
             {
-                return RedirectToAction("Index", "ApplicationUsers");
+                var adminOverviewViewModel = new AdminOverviewViewModel();
+                adminOverviewViewModel.NumberOfActivities = db.Activities.Count();                
+                adminOverviewViewModel.NumberOfAdmins = db.Users.Where(u=>u.Role=="Admin").Count();
+                adminOverviewViewModel.NumberOfCourses = db.Courses.Count();
+                adminOverviewViewModel.NumberOfModules = db.Modules.Count();
+                adminOverviewViewModel.NumberOfStudents = db.Users.Where(u => u.Role == "Student").Count();
+                adminOverviewViewModel.NumberOfTeachers = db.Users.Where(u => u.Role == "Teacher").Count();
+                adminOverviewViewModel.NumberOfUsers = db.Users.Count();
+                return View("~/Views/AdminLanding/AdminOverview.cshtml", adminOverviewViewModel);
             }
-            else
+            else 
             {                
                 return RedirectToAction("Index", "Modules");
             }            
