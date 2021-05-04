@@ -45,6 +45,8 @@ namespace Lms.MVC.UI.Controllers
            
 
             var model = mapper.Map<IEnumerable<ListApplicationUsersViewModel>>(users);
+
+            // Add to get the search to work
             if (!String.IsNullOrWhiteSpace(search))
             {
                 model = model.Where(u => u.Name.ToLower().StartsWith(search.ToLower()) || u.Email.ToLower().Contains(search.ToLower()));
