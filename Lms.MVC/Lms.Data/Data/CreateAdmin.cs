@@ -37,6 +37,8 @@ namespace Lms.MVC.Data.Data
                 {
                     UserName = "admin@admin.se",
                     Email = adminEmail,
+                    Name = "Admin",
+                    Role = "Admin"
                    
                 };
                 var addAdminResult = await userManager.CreateAsync(admin, adminPW);

@@ -42,8 +42,13 @@ namespace Lms.MVC.UI.Controllers
             }
 
             var users = await uoW.UserRepository.GetAllUsersAsync();
+           
 
-            var model = mapper.Map<IEnumerable<ApplicationUsersListViewModel>>(users);
+            var model = mapper.Map<IEnumerable<ListApplicationUsersViewModel>>(users);
+            if (!String.IsNullOrWhiteSpace(search))
+            {
+                model = model.Where(u => u.Name.ToLower().StartsWith(search.ToLower()) || u.Email.ToLower().Contains(search.ToLower()));
+            }
 
             ViewData["CurrentFilter"] = search;
             ViewData["CurrentSort"] = sortOrder;
@@ -81,9 +86,22 @@ namespace Lms.MVC.UI.Controllers
         }
 
         // GET: ApplicationUsersController/Details/5
-        public ActionResult Details(int id)
+        
+        public async Task<IActionResult> Details(string id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var user = await uoW.UserRepository.FindAsync(id, true);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var model = mapper.Map<DetailsApplicationUserViewModel>(user);
+
+
+            return View(model);
         }
 
         // GET: ApplicationUsersController/Create
@@ -116,7 +134,7 @@ namespace Lms.MVC.UI.Controllers
             }
             var user = await uoW.UserRepository.FindAsync(id, true);
 
-            var model = mapper.Map<ApplicationUserEditViewModel>(user);
+            var model = mapper.Map<EditApplicationUserViewModel>(user);
 
             if (user == null)
             {
@@ -129,7 +147,7 @@ namespace Lms.MVC.UI.Controllers
         // POST: ApplicationUsersController/Edit/5
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPost(string id, ApplicationUserEditViewModel viewmodel)
+        public async Task<IActionResult> EditPost(string id, EditApplicationUserViewModel viewmodel)
         {
             if (id == null)
             {
@@ -162,7 +180,7 @@ namespace Lms.MVC.UI.Controllers
                 await uoW.UserRepository.ChangeRoleAsync(user);
             }
 
-            // ToDo: Connect the role proporty with the role manager.
+            
 
             if (ModelState.IsValid)
             {
@@ -193,24 +211,44 @@ namespace Lms.MVC.UI.Controllers
         }
 
         // GET: ApplicationUsersController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Remove(string id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var userToBeRemoved = await uoW.UserRepository.FindAsync(id, true);
+            if (userToBeRemoved == null)
+            {
+                return NotFound();
+            }
+            var model = mapper.Map<DeleteApplicationUserViewModel>(userToBeRemoved);
+
+
+            return View(model);
         }
 
         // POST: ApplicationUsersController/Delete/5
-        [HttpPost]
+        [HttpPost, ActionName("Remove")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> RemoveConfirmed(string id)
         {
-            try
+            if (id == null)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            catch
+
+            var userToBeRemoved = await uoW.UserRepository.FindAsync(id, true);
+            if (userToBeRemoved is null)
             {
-                return View();
+                return NotFound();
             }
+            uoW.UserRepository.Remove(userToBeRemoved);
+            await uoW.CompleteAsync();
+            return RedirectToAction(nameof(Index));
+
+
         }
     }
 }

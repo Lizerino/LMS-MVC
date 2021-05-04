@@ -1,8 +1,8 @@
-﻿@model PaginationResult<ApplicationUsersListViewModel>
+﻿@model PaginationResult<ListApplicationUsersViewModel>
 
 
 
-<form>
+<form id="user-search-form">
     <div class="input-group">
         <input type="submit" value="Search" />
         <input type="text" name="Search" class="form-control" placeholder="Search..." autofocus>
@@ -12,7 +12,10 @@
     </div>
 </form>
 
-
+<form id="user-clear-search-form">
+    <a href="#" id="user-clear-anchor">Clear Search</a>
+    <input type="hidden" name="Search" value="" />
+</form>
 
 
 
@@ -21,15 +24,12 @@
     <thead>
         <tr>
             <th>
-                @* @Html.DisplayNameFor(model => model.Email)*@
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["EmailSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]"> Email </a>
             </th>
             <th>
-                @* @Html.DisplayNameFor(model => model.Name)*@
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name</a>
             </th>
             <th>
-                @*   @Html.DisplayNameFor(model => model.Role)*@
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]"> Role</a>
             </th>
 
@@ -62,7 +62,7 @@
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="text-info">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id" class="text-info">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="text-info">Delete</a>
+                    <a asp-action="Remove" asp-route-id="@item.Id" class="text-info">Remove</a>
                 </td>
             </tr>
         }
