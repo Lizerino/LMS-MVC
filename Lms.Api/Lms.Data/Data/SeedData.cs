@@ -36,7 +36,9 @@ namespace Lms.API.Data.Data
 
                 var authors = GetAuthors();
                 var literature = GetLiterature(authors, levels, subjects);
-                
+                var authorship = ConnectAuthorsWithLit(authors, literature);
+
+                await db.AddRangeAsync(authorship);
                 await db.AddRangeAsync(authors);
                 await db.AddRangeAsync(literature);
                 await db.AddRangeAsync(subjects);
@@ -45,12 +47,12 @@ namespace Lms.API.Data.Data
             };
         }
 
-        private static List<Literature> GetLiterature(List<Author> authors, List<Level> levels, List<Subject> subjects)
+        private static List<AuthorLiterature> ConnectAuthorsWithLit(List<Author> authors, List<Literature> literature)
         {
+            List<AuthorLiterature> authorship = new List<AuthorLiterature>();
             var fake = new Faker("sv");
-            var literature = new List<Literature>();
 
-            for(int i = 0; i < 30; i++)
+            foreach (Literature lit in literature)
             {
                 var authorInsert = new List<Author>();
                 for (int j = 0; j < fake.Random.Int(1, 3); j++)
@@ -60,6 +62,30 @@ namespace Lms.API.Data.Data
                         authorInsert.Add(authors[r]);
                 }
 
+                foreach (Author author in authorInsert)
+                {
+                    var auth = new AuthorLiterature
+                    {
+                        Author = author,
+                        AuthorId = author.Id,
+                        Literature = lit,
+                        LiteratureId = lit.Id
+                    };
+                    author.Bibliography.Add(auth);
+                    lit.Authors.Add(auth);
+                    authorship.Add(auth);
+                }
+            }
+
+            return authorship;
+        }
+        private static List<Literature> GetLiterature(List<Author> authors, List<Level> levels, List<Subject> subjects)
+        {
+            var fake = new Faker("sv");
+            var literature = new List<Literature>();
+
+            for(int i = 0; i < 30; i++)
+            {
                 var lit = new Literature
                 {
                     Title = fake.Company.CompanyName(),
@@ -67,14 +93,8 @@ namespace Lms.API.Data.Data
                     ReleaseDate = fake.Date.Between(DateTime.Now.AddYears(-30), DateTime.Now.AddMonths(-3)),
                     Url = fake.Internet.Url(),
                     Subject = subjects[fake.Random.Int(0, subjects.Count - 1)],
-                    Authors = authors
+                    Authors = new List<AuthorLiterature>()
                 };
-
-                foreach(Author a in authorInsert)
-                {
-                    a.Bibliography.Add(lit);
-                }
-
                 literature.Add(lit);
             }
 
@@ -92,7 +112,7 @@ namespace Lms.API.Data.Data
                     FirstName = fake.Name.FirstName(),
                     LastName = fake.Name.LastName(),
                     BirthDate = fake.Date.Between(DateTime.Today.AddYears(-100), DateTime.Today.AddYears(-20)),
-                    Bibliography = new List<Literature>()
+                    Bibliography = new List<AuthorLiterature>()
                 };
                 authors.Add(author);
             }

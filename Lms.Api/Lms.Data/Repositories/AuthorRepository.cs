@@ -31,7 +31,8 @@ namespace Lms.API.Data.Repositories
 
         public async Task<Author> GetAuthorAsync(int? id)
         {
-            return await db.Authors.Include(a => a.Bibliography).FirstOrDefaultAsync(a => a.Id == id);
+            var author = await db.Authors.FirstOrDefaultAsync(a => a.Id == id);
+            return author;
         }
 
         public async Task<IEnumerable<Author>> GetAuthorByNameAsync(string name)

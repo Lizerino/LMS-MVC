@@ -10,6 +10,7 @@ namespace Lms.API.Core.Repositories
     {
         ILiteratureRepository LiteratureRepository { get; }
         IAuthorRepository AuthorRepository { get; }
+        IAuthorLiteratureReporitory AuthorshipRepository { get; }
         Task CompleteAsync();
     }
 }

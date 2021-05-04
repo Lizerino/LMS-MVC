@@ -12,7 +12,5 @@ namespace Lms.API.Core.Dto
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public TimeSpan Age { get; set; }
-
-        public IQueryable<Literature> Bibliography { get; set; }
     }
 }

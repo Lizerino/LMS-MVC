@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Lms.API.Core.Entities;
 using Lms.API.Data.Data;
+using Lms.API.Core.Repositories;
+using Lms.API.Core.Dto;
+using AutoMapper;
 
 namespace Lms.API.UI.Controllers
 {
@@ -14,32 +17,52 @@ namespace Lms.API.UI.Controllers
     [ApiController]
     public class AuthorsController : ControllerBase
     {
-        private readonly LmsAPIContext _context;
+        private readonly LmsAPIContext db;
+        private readonly IMapper mapper;
+        private readonly IUoW uow;
 
-        public AuthorsController(LmsAPIContext context)
+        public AuthorsController(LmsAPIContext db, IMapper mapper, IUoW uow)
         {
-            _context = context;
+            this.db = db;
+            this.mapper = mapper;
+            this.uow = uow;
         }
 
         // GET: api/Authors
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Author>>> GetAuthors()
         {
-            return await _context.Authors.ToListAsync();
+            var authors = await uow.AuthorRepository.GetAllAuthorsAsync();
+            var authorsDto = mapper.Map<AuthorDto[]>(authors);
+
+            return Ok(authorsDto);
         }
 
         // GET: api/Authors/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Author>> GetAuthor(int id)
         {
-            var author = await _context.Authors.FindAsync(id);
+            var authorDto = mapper.Map<AuthorDto>(await uow.AuthorRepository.GetAuthorAsync(id));
 
-            if (author == null)
+            if (authorDto == null)
             {
                 return NotFound();
             }
 
-            return author;
+            return Ok(authorDto);
+        }
+
+        [HttpGet("{name}")]
+        public async Task<ActionResult<IEnumerable<Author>>> GetAuthor(string name)
+        {
+            var authorsDto = mapper.Map<AuthorDto[]>(await uow.AuthorRepository.GetAuthorByNameAsync(name));
+
+            if (authorsDto == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(authorsDto);
         }
 
         // PUT: api/Authors/5
@@ -52,11 +75,11 @@ namespace Lms.API.UI.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(author).State = EntityState.Modified;
+            db.Entry(author).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -78,8 +101,8 @@ namespace Lms.API.UI.Controllers
         [HttpPost]
         public async Task<ActionResult<Author>> PostAuthor(Author author)
         {
-            _context.Authors.Add(author);
-            await _context.SaveChangesAsync();
+            db.Authors.Add(author);
+            await db.SaveChangesAsync();
 
             return CreatedAtAction("GetAuthor", new { id = author.Id }, author);
         }
@@ -88,21 +111,21 @@ namespace Lms.API.UI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAuthor(int id)
         {
-            var author = await _context.Authors.FindAsync(id);
+            var author = await db.Authors.FindAsync(id);
             if (author == null)
             {
                 return NotFound();
             }
 
-            _context.Authors.Remove(author);
-            await _context.SaveChangesAsync();
+            db.Authors.Remove(author);
+            await db.SaveChangesAsync();
 
             return NoContent();
         }
 
         private bool AuthorExists(int id)
         {
-            return _context.Authors.Any(e => e.Id == id);
+            return db.Authors.Any(e => e.Id == id);
         }
     }
 }
