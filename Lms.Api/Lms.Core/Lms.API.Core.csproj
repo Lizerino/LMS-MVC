@@ -11,13 +11,8 @@
 
   <ItemGroup>
     <Folder Include="Dto\" />
-    <Folder Include="Entities\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Lms.MVC\Lms.Core\Lms.MVC.Core.csproj" />
-    <ProjectReference Include="..\..\Lms.MVC\Lms.Data\Lms.MVC.Data.csproj" />
-  </ItemGroup>
+
 
 </Project>
