@@ -9,6 +9,6 @@ namespace Lms.MVC.Core.Repositories
 {
     public interface ICourseRepository
     {
-        
+        Task<IEnumerable<Course>> GetAllCoursesAsync(bool includeModules);
     }
 }
