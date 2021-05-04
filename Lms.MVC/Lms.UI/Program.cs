@@ -52,7 +52,7 @@ namespace Lms.MVC.UI
                     {
                         var logger = services.GetRequiredService<ILogger<Program>>();
                         logger.LogError(ex.Message, "Seed Fail");
-                    }
+                    }                    
 
                     host.Run();
                 }
