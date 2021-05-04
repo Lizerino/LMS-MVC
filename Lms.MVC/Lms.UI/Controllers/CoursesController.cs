@@ -7,7 +7,7 @@ using AutoMapper;
 
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Data.Data;
-using Lms.MVC.UI.Models.ViewModels;
+using Lms.MVC.UI.Models.ViewModels.CourseViewModels;
 using Lms.MVC.UI.Utilities.Pagination;
 
 using Microsoft.AspNetCore.Authorization;
@@ -57,7 +57,7 @@ namespace Lms.MVC.UI.Controllers
             .Where(c => String.IsNullOrEmpty(search) || (c.Title.Contains(search))).ToListAsync();
             }
 
-            var result = mapper.Map<IEnumerable<CourseListViewModel>>(courses);
+            var result = mapper.Map<IEnumerable<ListCourseViewModel>>(courses);
 
             ViewData["CurrentFilter"] = search;
             ViewData["CurrentSort"] = sortOrder;
@@ -148,7 +148,7 @@ namespace Lms.MVC.UI.Controllers
         [Authorize(Roles = "Teacher,Admin")]
         public IActionResult Create()
         {
-            var courseViewModel = new CourseViewModel();
+            var courseViewModel = new CreateCourseViewModel();
             courseViewModel.StartDate = DateTime.Now;            
             return View(courseViewModel);
         }
@@ -158,7 +158,7 @@ namespace Lms.MVC.UI.Controllers
         [HttpPost]
         [Authorize(Roles = "Teacher,Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CourseViewModel courseViewModel)
+        public async Task<IActionResult> Create(CreateCourseViewModel courseViewModel)
         {
             if (ModelState.IsValid)
             {

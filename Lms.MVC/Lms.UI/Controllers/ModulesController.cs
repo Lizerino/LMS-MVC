@@ -5,6 +5,7 @@ using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Models.DTO;
 using Lms.MVC.UI.Models.ViewModels;
+using Lms.MVC.UI.Models.ViewModels.ModelViewModels;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -50,7 +51,7 @@ namespace Lms.MVC.UI
 
                 var modules = await db.Modules.Where(m => m.CourseId == userCourse.Id).ToListAsync();
 
-                var moduleViewModel = new ModuleViewModel();
+                var moduleViewModel = new ListModuleViewModel();
                 moduleViewModel.ModuleList = modules;
 
                 moduleViewModel.CourseId = userCourse.Id;
@@ -63,7 +64,7 @@ namespace Lms.MVC.UI
                 if (Id != null)
                 {
                     var courseTitle = db.Courses.Where(c => c.Id == Id).FirstOrDefault().Title;
-                    var moduleViewModel = new ModuleViewModel();
+                    var moduleViewModel = new ListModuleViewModel();
                     moduleViewModel.ModuleList = await db.Modules.Where(m => m.CourseId == Id).ToListAsync();
 
                     moduleViewModel.CourseId = (int)Id;
@@ -128,7 +129,7 @@ namespace Lms.MVC.UI
         [Route("new")]
         public ActionResult Create(int Id)
         {
-            var moduleViewModel = new ModuleViewModel();
+            var moduleViewModel = new CreateModuleViewModel();
             moduleViewModel.CourseId = Id;
             moduleViewModel.StartDate = DateTime.Now;
             moduleViewModel.EndDate = moduleViewModel.StartDate.AddDays(1);
@@ -139,7 +140,7 @@ namespace Lms.MVC.UI
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ModelValid, Route("new")]
-        public async Task<IActionResult> Create(ModuleViewModel moduleViewModel)//TODO: Configure API
+        public async Task<IActionResult> Create(CreateModuleViewModel moduleViewModel)//TODO: Configure API
         {
             //Find Course
             var course = await db.Courses.Include(c => c.Modules).FirstOrDefaultAsync(c => c.Id == moduleViewModel.CourseId);
@@ -217,7 +218,7 @@ namespace Lms.MVC.UI
                 return NotFound();
 
 
-            var model = mapper.Map<ModuleViewModel>(module);
+            var model = mapper.Map<ListModuleViewModel>(module);
             if (model == null) return View();
 
             return View(model);
@@ -226,7 +227,7 @@ namespace Lms.MVC.UI
         [Route("delete")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, ModuleViewModel module)
+        public ActionResult Delete(int id, ListModuleViewModel module)
         {
             try
             {

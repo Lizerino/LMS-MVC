@@ -3,6 +3,8 @@ using Lms.MVC.Core.Entities;
 using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Models.ViewModels;
+using Lms.MVC.UI.Models.ViewModels.ActivityViewModels;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -32,7 +34,7 @@ namespace Lms.MVC.UI.Controllers
             if (Id != null)
             {
                 var moduleTitle = db.Modules.Where(m => m.Id == Id).FirstOrDefault().Title;
-                var activityViewModel = new ActivityViewModel();
+                var activityViewModel = new ListActivityViewModel();
                 activityViewModel.ActivityList = await db.Activities.Where(a => a.ModuleId == Id).ToListAsync();
 
                 activityViewModel.ModuleId = (int)Id;
@@ -54,7 +56,7 @@ namespace Lms.MVC.UI.Controllers
             var activity = await db.Activities
                 .Include(a => a.ActivityType)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            var activityViewModel = mapper.Map<ActivityViewModel>(activity);
+            var activityViewModel = mapper.Map<DetailActivityViewModel>(activity);
             return View(activityViewModel);
         }
 
@@ -62,7 +64,7 @@ namespace Lms.MVC.UI.Controllers
         // GET: Activities/Create
         public IActionResult Create(int Id)
         {
-            var activityViewModel = new ActivityViewModel();
+            var activityViewModel = new CreateActivityViewModel();
             activityViewModel.ModuleId = Id;
             activityViewModel.StartDate = DateTime.Now;
             activityViewModel.EndDate = activityViewModel.StartDate.AddDays(1);
@@ -78,7 +80,7 @@ namespace Lms.MVC.UI.Controllers
 
         [ValidateAntiForgeryToken]
         [ModelNotNull, ModelValid]
-        public async Task<IActionResult> Create([Bind("Title,Description,StartDate,EndDate,ModuleId,ModuleTitle,ActivityList,ActivityTypes,ActivityTypeId,ActivityType,Documents")] ActivityViewModel activityViewModel)
+        public async Task<IActionResult> Create([Bind("Title,Description,StartDate,EndDate,ModuleId,ModuleTitle,ActivityList,ActivityTypes,ActivityTypeId,ActivityType,Documents")] ListActivityViewModel activityViewModel)
         {
             //Find Module
             var module = await db.Modules.Include(c => c.Activities).FirstOrDefaultAsync(c => c.Id == activityViewModel.ModuleId);

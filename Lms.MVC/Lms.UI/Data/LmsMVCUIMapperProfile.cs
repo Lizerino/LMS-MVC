@@ -3,7 +3,10 @@
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.UI.Models.ViewModels;
+using Lms.MVC.UI.Models.ViewModels.ActivityViewModels;
 using Lms.MVC.UI.Models.ViewModels.ApplicationUserViewModels;
+using Lms.MVC.UI.Models.ViewModels.CourseViewModels;
+using Lms.MVC.UI.Models.ViewModels.ModelViewModels;
 
 namespace Lms.MVC.UI
 {
@@ -11,13 +14,13 @@ namespace Lms.MVC.UI
     {
         public LmsMVCUIMapperProfile()
         {
-            CreateMap<Course, CourseListViewModel>().ReverseMap();
-            CreateMap<Module, ModuleViewModel>().ReverseMap();
-            CreateMap<Activity, ActivityViewModel>();
-            CreateMap<ActivityViewModel, Activity>();
+            CreateMap<Course, ListCourseViewModel>().ReverseMap();
+            CreateMap<Module, ListModuleViewModel>().ReverseMap();
+            CreateMap<Activity, ListActivityViewModel>();
+            CreateMap<ListActivityViewModel, Activity>();
                                     //.ForMember(a => a;
 
-            CreateMap<Course, CourseViewModel>().ReverseMap();
+            CreateMap<Course, CreateCourseViewModel>().ReverseMap();
 
             CreateMap<ApplicationUser, ApplicationUsersListViewModel>()
               .ForMember(

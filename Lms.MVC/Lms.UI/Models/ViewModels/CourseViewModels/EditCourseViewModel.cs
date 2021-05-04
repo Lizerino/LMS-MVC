@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 
 using Lms.MVC.Core.Entities;
 
-namespace Lms.MVC.UI.Models.ViewModels
+namespace Lms.MVC.UI.Models.ViewModels.CourseViewModels
 {
-    public class CourseViewModel
+    public class EditCourseViewModel
     {
         [Key]
         public int Id { get; set; }
