@@ -119,7 +119,7 @@ namespace Lms.MVC.Data.Data
 
                 activity.Title = fake.Name.JobTitle()+" Activity";
                 activity.StartDate = fake.Date.Soon();
-              activity.EndDate = activity.StartDate.AddHours(fake.Random.Int(1, 8));
+                activity.EndDate = activity.StartDate.AddHours(fake.Random.Int(1, 8));
                 activity.Description = fake.Lorem.Sentence();
                 activity.ActivityType = GetActivityType(ran,db);
             

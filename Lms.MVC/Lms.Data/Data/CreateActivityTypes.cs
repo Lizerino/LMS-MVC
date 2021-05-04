@@ -11,6 +11,7 @@ namespace Lms.MVC.Data.Data
     {
         public static void Create(ApplicationDbContext db)
         {
+
             if (db.ActivityTypes.Select(a=>a.Id).Count() == 0)       
             {
                 var ActivityTypeList = new List<string>()

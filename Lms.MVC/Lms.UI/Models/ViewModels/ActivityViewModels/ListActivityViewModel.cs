@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Data;
 
-namespace Lms.MVC.UI.Models.ViewModels
+namespace Lms.MVC.UI.Models.ViewModels.ActivityViewModels
 {
-    public class ActivityViewModel
+    public class ListActivityViewModel
     {
         public int Id { get; set; }
         [Display(Name = "Title")]
