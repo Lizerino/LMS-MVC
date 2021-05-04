@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Lms.MVC.UI.Models.ViewModels.ApplicationUserViewModels
 {
-  public class ApplicationUsersListViewModel
+  public class ListApplicationUsersViewModel
     {
         public string Id { get; set; }
 

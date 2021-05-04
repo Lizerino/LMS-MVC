@@ -28,7 +28,11 @@ namespace Lms.MVC.UI
             CreateMap<Activity, DetailActivityViewModel>().ReverseMap();
 
 
-            CreateMap<ApplicationUser, ApplicationUsersListViewModel>()
+            CreateMap<ApplicationUser, DetailsApplicationUserViewModel>();
+            CreateMap<ApplicationUser, DeleteApplicationUserViewModel>().ReverseMap();
+
+
+            CreateMap<ApplicationUser, ListApplicationUsersViewModel>()
               .ForMember(
               dest => dest.Email,
               from => from.MapFrom(u => u.Email))
@@ -36,15 +40,15 @@ namespace Lms.MVC.UI
               dest => dest.Role,
               opt => opt.MapFrom<RoleResolver>());
 
-            CreateMap<ApplicationUser, ApplicationUserEditViewModel>();
+            CreateMap<ApplicationUser, EditApplicationUserViewModel>();
             //.ForMember(u => u.Courses, act => act.Ignore());
-            CreateMap<ApplicationUserEditViewModel, ApplicationUser>()
+            CreateMap<EditApplicationUserViewModel, ApplicationUser>()
                                                                 .ForMember(u => u.Courses, act => act.Ignore());
                                                                 
         }
     }
 
-    public class RoleResolver : IValueResolver<ApplicationUser, ApplicationUsersListViewModel, string>
+    public class RoleResolver : IValueResolver<ApplicationUser, ListApplicationUsersViewModel, string>
     {
 
         private readonly IUoW uow;
@@ -53,7 +57,7 @@ namespace Lms.MVC.UI
         {
             this.uow = uow;
         }
-        public string Resolve(ApplicationUser source, ApplicationUsersListViewModel destination, string destMember, ResolutionContext context)
+        public string Resolve(ApplicationUser source, ListApplicationUsersViewModel destination, string destMember, ResolutionContext context)
         {
 
             var role = uow.UserRepository.GetRole(source);

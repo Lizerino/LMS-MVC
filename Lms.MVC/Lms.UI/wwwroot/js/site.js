@@ -1,4 +1,7 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿let userForm = document.querySelector('#user-clear-search-form');
+let userClearAnchor = documen.querySelector('#user-clear-anchor');
 
-// Write your JavaScript code.
+userClearAnchor.addEventListener('click', function(e) {
+    let userSearchForm = document.querySelector('#user-search-form');
+    userSearchForm.reset();
+})

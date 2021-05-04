@@ -57,6 +57,11 @@ namespace Lms.MVC.Data.Repositories
             db.Update(user);
         }
 
+        public void Remove(ApplicationUser user)
+        {
+            db.Remove(user);
+        }
+
         public bool Any(string id)
         {
             return db.Users.Any(u => u.Id == id);
