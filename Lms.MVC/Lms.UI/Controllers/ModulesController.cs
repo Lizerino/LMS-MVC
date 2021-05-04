@@ -162,14 +162,14 @@ namespace Lms.MVC.UI
             }
         }
 
-        [Authorize(Roles = "Teacher, Admin")]
         [HttpGet]
-        [Route("edit/{title}")]
-        public ActionResult Edit(string title)
+        [Route("edit/{id}")]
+        [Authorize(Roles = "Teacher, Admin")]
+        public ActionResult Edit(int Id)
         {
             //find and create display details of Module
-            var module = db.Modules.FirstOrDefault(c => c.Title == title);
-            ModuleDto model = new ModuleDto()
+            var module = db.Modules.FirstOrDefault(m => m.Id == Id);
+            EditModuleViewModel model = new EditModuleViewModel()
             {
                 Id = module.Id,
                 Title = module.Title,
@@ -180,35 +180,36 @@ namespace Lms.MVC.UI
             return View(model);
         }
 
-        [Authorize(Roles = "Teacher, Admin")]
         [HttpPost]
+        [Route("edit/{id}")]
+        [Authorize(Roles = "Teacher, Admin")]
         [ValidateAntiForgeryToken]
-        [ModelValid, Route("edit/{title}")]
-        public async Task<ActionResult> Edit(int id, [Bind("Id, Title, Description, StartDate, EndDate")] ModuleDto moduleDto)
+        [ModelValid]
+        public async Task<ActionResult> Edit(int id, EditModuleViewModel moduleViewModel)
         {
-            //find module
-            var module = db.Modules.Find(id);
+                //find module
+                var module = db.Modules.Find(id);
 
-            try
-            {
-                //mapper.Map(moduleDto, module);
-                module.Title = moduleDto.Title;
-                module.Description = moduleDto.Description;
-                module.StartDate = moduleDto.StartDate;
-                module.EndDate = moduleDto.EndDate;
+                try
+                {                    
+                    //mapper.Map(moduleDto, module);
+                    module.Title = moduleViewModel.Title;
+                    module.Description = moduleViewModel.Description;
+                    module.StartDate = moduleViewModel.StartDate;
+                    module.EndDate = moduleViewModel.EndDate;
+                    
+                    db.Update(module);
+                    await db.SaveChangesAsync();
 
-                db.Update(module);
-                await db.SaveChangesAsync();
-
-                return RedirectToAction("Index", "Home");
-            }
-            catch
-            {
-                return View();
-            }
+                    return RedirectToAction("Index", "Home");
+                }
+                catch
+                {
+                    return View();
+                }            
         }
 
-        // GET: ModulerController/Delete/5
+        
         [HttpGet]
         [Route("delete")]
         public ActionResult Delete(int id)
