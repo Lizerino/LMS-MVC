@@ -32,6 +32,7 @@ namespace Lms.MVC.UI.Controllers
             this.uoW = uoW;
             this.mapper = mapper;
         }
+               
 
         // GET: ApplicationUsersController
         public async Task<IActionResult> Index(string search, string sortOrder, int page)
@@ -49,7 +50,7 @@ namespace Lms.MVC.UI.Controllers
             // Add to get the search to work
             if (!String.IsNullOrWhiteSpace(search))
             {
-                model = model.Where(u => u.Name.ToLower().StartsWith(search.ToLower()) || u.Email.ToLower().Contains(search.ToLower()));
+                model = model.Where(u => u.Name.ToLower().StartsWith(search.ToLower()) || u.Email.ToLower().Contains(search.ToLower()) || u.Role.ToLower().Trim()==search.ToLower());
             }
 
             ViewData["CurrentFilter"] = search;

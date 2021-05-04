@@ -35,8 +35,7 @@ namespace Lms.MVC.Data.Repositories
 
         public async Task<IEnumerable<ApplicationUser>> GetAllUsersAsync()
         {
-            return
-                        await db.Users.ToListAsync();
+            return await db.Users.ToListAsync();
         }
 
         public string GetRole(ApplicationUser user)
