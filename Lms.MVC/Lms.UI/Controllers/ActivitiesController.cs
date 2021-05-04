@@ -103,7 +103,7 @@ namespace Lms.MVC.UI.Controllers
 
         }
 
-        // GET: Activities/Edit/5
+        [HttpGet]
         [ModelNotNull, ModelValid]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -113,24 +113,25 @@ namespace Lms.MVC.UI.Controllers
             //create viewModel
             
             var model = mapper.Map<EditActivityViewModel>(activity);
+            model.ActivityTypes = new SelectList(db.ActivityTypes, nameof(ActivityType.Id), nameof(ActivityType.Name));
 
             ViewData["ActivityTypeId"] = new SelectList(db.ActivityTypes, "Id", "Id", activity.ActivityTypeId);
             return View(model);
         }
 
-        // POST: Activities/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ModelValid]
         public async Task<IActionResult> Edit(int id, EditActivityViewModel activityModel)// TODO Finish This
         {
-                var activity = mapper.Map<Activity>(activityModel);
+            var activity = await db.Activities.FindAsync(id);
+            //activityModel.ModuleId = activity.ModuleId;
+                mapper.Map(activityModel, activity);            
             
             try
             {
-                db.Update(activity);
+                db.Activities.Update(activity);
                 await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -138,10 +139,10 @@ namespace Lms.MVC.UI.Controllers
                 if (!ActivityExists(activity.Id))  return NotFound();
                 else  throw;
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Activities");
         }
 
-        // GET: Activities/Delete/5
+        [HttpGet]
         [ModelNotNull, ModelValid]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -152,7 +153,7 @@ namespace Lms.MVC.UI.Controllers
             return View(activity);
         }
 
-        // POST: Activities/Delete/5
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

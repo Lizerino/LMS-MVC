@@ -7,6 +7,7 @@ using AutoMapper;
 
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Data.Data;
+using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Models.ViewModels.CourseViewModels;
 using Lms.MVC.UI.Utilities.Pagination;
 
@@ -177,40 +178,37 @@ namespace Lms.MVC.UI.Controllers
             return RedirectToAction("Index");
         }
 
-        // GET: Courses/Edit/5
-        [Authorize(Roles = "Teacher,Admin")]
+        [HttpGet]
+        [Authorize(Roles = "Teacher,Admin")][ModelNotNull]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
+            // find course in database
             var course = await db.Courses.FindAsync(id);
             if (course == null)
             {
                 return NotFound();
             }
-            return View(course);
+
+            // Create ViewModel
+            var model = new EditCourseViewModel();
+            mapper.Map(course, model);
+
+            return View(model);
         }
 
-        // POST: Courses/Edit/5 To protect from overposting attacks, enable the specific properties
-        // you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [Authorize(Roles = "Teacher,Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,StartDate")] Course course)
+        [ModelValid, ModelNotNull]
+        public async Task<IActionResult> Edit(int id, EditCourseViewModel courseModel)
         {
-            if (id != course.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
+           
+                var course = await db.Courses.FindAsync(id);
+                mapper.Map(courseModel, course);
                 try
                 {
-                    db.Update(course);
+                db.Courses.Update(course);
                     await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -225,8 +223,7 @@ namespace Lms.MVC.UI.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
-            return View(course);
+            
         }
 
         //[Authorize(Roles = "Teacher,Admin")]

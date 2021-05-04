@@ -8,6 +8,8 @@
     {
         <p>
             <a asp-action="Create" asp-route-id=@Model.CourseId>Create New Module</a>
+            <br />
+            <a asp-controller="Courses" asp-action="Edit" asp-route-id="@Model.CourseId">Edit Course</a>
         </p>
     }
 

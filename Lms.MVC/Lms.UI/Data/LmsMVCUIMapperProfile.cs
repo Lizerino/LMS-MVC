@@ -17,15 +17,20 @@ namespace Lms.MVC.UI
             // Courses
             CreateMap<Course, CreateCourseViewModel>().ReverseMap();
             CreateMap<Course, ListCourseViewModel>().ReverseMap();
+            CreateMap<Course, EditCourseViewModel>().ReverseMap();
 
             // Modules
             CreateMap<Module, CreateModuleViewModel>().ReverseMap();            
             CreateMap<Module, ListModuleViewModel>().ReverseMap();
+            CreateMap<Module, EditModuleViewModel>().ReverseMap();
 
             // Activities
             CreateMap<Activity, CreateActivityViewModel>().ReverseMap();
             CreateMap<Activity, ListActivityViewModel>().ReverseMap();
             CreateMap<Activity, DetailActivityViewModel>().ReverseMap();
+            CreateMap<Activity, EditActivityViewModel>().ReverseMap()
+                .ForMember(a => a.ModuleId,
+                opt => opt.Ignore());
 
 
             CreateMap<ApplicationUser, ApplicationUsersListViewModel>()

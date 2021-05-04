@@ -209,7 +209,7 @@ namespace Lms.MVC.UI
                 }            
         }
 
-        // GET: ModulerController/Delete/5
+        
         [HttpGet]
         [Route("delete")]
         public ActionResult Delete(int id)
