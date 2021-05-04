@@ -27,6 +27,7 @@ namespace Lms.MVC.UI
 
                     // TODO: REMOVE IN PRODUCTION
                     //db.Database.EnsureDeleted();
+
                     db.Database.EnsureCreated();
 
                     var adminPW = config["AdminPW"];
@@ -51,7 +52,7 @@ namespace Lms.MVC.UI
                     {
                         var logger = services.GetRequiredService<ILogger<Program>>();
                         logger.LogError(ex.Message, "Seed Fail");
-                    }
+                    }                    
 
                     host.Run();
                 }

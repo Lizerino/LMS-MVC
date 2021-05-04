@@ -1,5 +1,4 @@
-﻿using Lms.MVC.Core.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -10,9 +9,9 @@ using Lms.MVC.Data;
 
 namespace Lms.MVC.UI.Models.ViewModels.ActivityViewModels
 {
-    public class EditActivityViewModel
+    public class CreateActivityViewModel
     {
-        public int Id { get; set; }
+       
         [Display(Name = "Title")]
         public string Title { get; set; }
         [Display(Name = "Description")]
@@ -24,7 +23,7 @@ namespace Lms.MVC.UI.Models.ViewModels.ActivityViewModels
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd, HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime EndDate { get; set; }
         [Display(Name = "For Module")]
-        public int ModuleId { get; set; }
+        public int ModuleId { get; set ; }
         [Display(Name = "Module Title")]
         public string ModuleTitle { get; set; }
 

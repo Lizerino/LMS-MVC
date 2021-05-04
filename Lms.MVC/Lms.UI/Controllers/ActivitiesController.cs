@@ -4,6 +4,7 @@ using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Models.ViewModels;
 using Lms.MVC.UI.Models.ViewModels.ActivityViewModels;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Lms.MVC.UI.Controllers
 {
-    
+
     public class ActivitiesController : Controller
     {
         private readonly ApplicationDbContext db;
@@ -30,16 +31,16 @@ namespace Lms.MVC.UI.Controllers
         // GET: Activities
         public async Task<IActionResult> Index(int? Id)
         {
-            if(Id != null)
+            if (Id != null)
             {
-            var moduleTitle = db.Modules.Where(m => m.Id == Id).FirstOrDefault().Title;
-            var activityViewModel = new ActivityViewModel();
-            activityViewModel.ActivityList = await db.Activities.Where(a => a.ModuleId == Id).ToListAsync();
+                var moduleTitle = db.Modules.Where(m => m.Id == Id).FirstOrDefault().Title;
+                var activityViewModel = new ListActivityViewModel();
+                activityViewModel.ActivityList = await db.Activities.Where(a => a.ModuleId == Id).ToListAsync();
 
-            activityViewModel.ModuleId = (int)Id;
-            activityViewModel.ModuleTitle = moduleTitle;
+                activityViewModel.ModuleId = (int)Id;
+                activityViewModel.ModuleTitle = moduleTitle;
 
-            return View(activityViewModel);            
+                return View(activityViewModel);
             }
             else
             {
@@ -55,23 +56,20 @@ namespace Lms.MVC.UI.Controllers
             var activity = await db.Activities
                 .Include(a => a.ActivityType)
                 .FirstOrDefaultAsync(m => m.Id == id);
-
-            var model = mapper.Map<DetailsActivityViewModel>(activity);
-            return View(model);
+            var activityViewModel = mapper.Map<DetailActivityViewModel>(activity);
+            return View(activityViewModel);
         }
 
         [Authorize(Roles = "Teacher,Admin")]
         // GET: Activities/Create
         public IActionResult Create(int Id)
         {
-            var activityViewModel = new ActivityViewModel();
+            var activityViewModel = new CreateActivityViewModel();
             activityViewModel.ModuleId = Id;
             activityViewModel.StartDate = DateTime.Now;
             activityViewModel.EndDate = activityViewModel.StartDate.AddDays(1);
-            activityViewModel.ActivityTypes = new SelectList(db.ActivityTypes, nameof(ActivityType.Id), nameof(ActivityType.Name));            
-            return View(activityViewModel);            
-
-          
+            activityViewModel.ActivityTypes = new SelectList(db.ActivityTypes, nameof(ActivityType.Id), nameof(ActivityType.Name));
+            return View(activityViewModel);
         }
 
         [Authorize(Roles = "Teacher,Admin")]
@@ -80,34 +78,29 @@ namespace Lms.MVC.UI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
 
-        [ValidateAntiForgeryToken]  
+        [ValidateAntiForgeryToken]
         [ModelNotNull, ModelValid]
-        public async Task<IActionResult> Create(ActivityViewModel activityViewModel)
+        public async Task<IActionResult> Create(CreateActivityViewModel activityViewModel)
         {
-            if (ModelState.IsValid)
+            //Find Module
+            var module = await db.Modules.Include(c => c.Activities).FirstOrDefaultAsync(c => c.Id == activityViewModel.ModuleId);
+
+            // Map view model to model
+            var activity = mapper.Map<Activity>(activityViewModel);
+
+            //Add activity to module                
+            module.Activities.Add(activity);
+
+            if (await db.SaveChangesAsync() == 1)
             {
-                
-
-                //Find Module
-                var module = await db.Modules.Include(c => c.Activities).FirstOrDefaultAsync(c => c.Id == activityViewModel.ModuleId);
-
-                // Map view model to model
-                var activity = mapper.Map<Activity>(activityViewModel);
-
-                //Add activity to module                
-                module.Activities.Add(activity);
-
-                if (await db.SaveChangesAsync() == 1)
-                {
-                    // Send user back to list of modules for that course
-                    return RedirectToAction("Index", new { id = activityViewModel.ModuleId });
-                }
-                else
-                {
-                    return RedirectToAction("Index");
-                }
+                // Send user back to list of modules for that course
+                return RedirectToAction("Index", new { id = activityViewModel.ModuleId });
             }
-            return RedirectToAction("Index");
+            else
+            {
+                return RedirectToAction("Index");
+            }
+
         }
 
         // GET: Activities/Edit/5
@@ -142,14 +135,8 @@ namespace Lms.MVC.UI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ActivityExists(activity.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                if (!ActivityExists(activity.Id))  return NotFound();
+                else  throw;
             }
             return RedirectToAction(nameof(Index));
         }

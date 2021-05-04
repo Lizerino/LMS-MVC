@@ -5,6 +5,7 @@ using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Models.DTO;
 using Lms.MVC.UI.Models.ViewModels;
+using Lms.MVC.UI.Models.ViewModels.ModelViewModels;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -18,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace Lms.MVC.UI
 {
-    
+
     public class ModulesController : Controller
     {
         private ApplicationDbContext db;
@@ -42,38 +43,38 @@ namespace Lms.MVC.UI
 
             //Student View of Modules for Course
             if (User.IsInRole("Student"))
-            {                
+            {
                 var user = await userManager.GetUserAsync(User);
 
 
                 var userCourse = db.Courses.Where(c => c.Users.Any(u => u.Id == user.Id)).FirstOrDefault(); ;
-                
+
                 var modules = await db.Modules.Where(m => m.CourseId == userCourse.Id).ToListAsync();
 
-                var moduleViewModel = new ModuleViewModel();
+                var moduleViewModel = new ListModuleViewModel();
                 moduleViewModel.ModuleList = modules;
 
                 moduleViewModel.CourseId = userCourse.Id;
                 moduleViewModel.CourseTitle = userCourse.Title;
-                
+
                 return View(moduleViewModel);
             }
             else
             {
                 if (Id != null)
                 {
-                var courseTitle = db.Courses.Where(c => c.Id == Id).FirstOrDefault().Title;            
-                var moduleViewModel = new ModuleViewModel();
-                moduleViewModel.ModuleList = await db.Modules.Where(m => m.CourseId == Id).ToListAsync();
+                    var courseTitle = db.Courses.Where(c => c.Id == Id).FirstOrDefault().Title;
+                    var moduleViewModel = new ListModuleViewModel();
+                    moduleViewModel.ModuleList = await db.Modules.Where(m => m.CourseId == Id).ToListAsync();
 
-                moduleViewModel.CourseId = (int)Id;
-                moduleViewModel.CourseTitle = courseTitle;
+                    moduleViewModel.CourseId = (int)Id;
+                    moduleViewModel.CourseTitle = courseTitle;
 
-                return View(moduleViewModel);
+                    return View(moduleViewModel);
                 }
                 return RedirectToAction("Index", "Courses");
             }
-            
+
 
             // TODO: Everyone execept students go to modules and activities via course list no??
 
@@ -118,50 +119,47 @@ namespace Lms.MVC.UI
             //Add Activities
             module.Activities = GetActivities(module.Id);
             //mapper.Map<ModuleDto>(module);
-           
-            return View(module);            
+
+            return View(module);
         }
 
 
         [Authorize(Roles = "Teacher, Admin")]
         [HttpGet]
         [Route("new")]
-        public ActionResult Create(int Id)        
+        public ActionResult Create(int Id)
         {
-            var moduleViewModel = new ModuleViewModel();
+            var moduleViewModel = new CreateModuleViewModel();
             moduleViewModel.CourseId = Id;
             moduleViewModel.StartDate = DateTime.Now;
-            moduleViewModel.EndDate = moduleViewModel.StartDate.AddDays(1);            
+            moduleViewModel.EndDate = moduleViewModel.StartDate.AddDays(1);
             return View(moduleViewModel);
         }
 
         [Authorize(Roles = "Teacher, Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("new")]
-        [ModelValid]
-        public async Task<IActionResult> Create(ModuleViewModel moduleViewModel)
-        {          
-                //Find Course
-                var course = await db.Courses.Include(c=>c.Modules).FirstOrDefaultAsync(c => c.Id == moduleViewModel.CourseId);
+        [ModelValid, Route("new")]
+        public async Task<IActionResult> Create(CreateModuleViewModel moduleViewModel)//TODO: Configure API
+        {
+            //Find Course
+            var course = await db.Courses.Include(c => c.Modules).FirstOrDefaultAsync(c => c.Id == moduleViewModel.CourseId);
 
-                // Map view model to model
-                var module = mapper.Map<Module>(moduleViewModel);
+            // Map view model to model
+            var module = mapper.Map<Module>(moduleViewModel);
 
-                //Add Module to Course                
-                course.Modules.Add(module);
-                
-                if (await db.SaveChangesAsync() == 1)
-                {
-                    // Send user back to list of modules for that course
-                    return RedirectToAction("Index", new { id=moduleViewModel.CourseId});
-                }
-                else
-                {
-                    return View();
-                }               
-            
-            
+            //Add Module to Course                
+            course.Modules.Add(module);
+
+            if (await db.SaveChangesAsync() == 1)
+            {
+                // Send user back to list of modules for that course
+                return RedirectToAction("Index", new { id = moduleViewModel.CourseId });
+            }
+            else
+            {
+                return View();
+            }
         }
 
         [HttpGet]
@@ -221,7 +219,7 @@ namespace Lms.MVC.UI
                 return NotFound();
 
 
-            var model = mapper.Map<ModuleViewModel>(module);
+            var model = mapper.Map<ListModuleViewModel>(module);
             if (model == null) return View();
 
             return View(model);
@@ -230,7 +228,7 @@ namespace Lms.MVC.UI
         [Route("delete")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, ModuleViewModel module)
+        public ActionResult Delete(int id, ListModuleViewModel module)
         {
             try
             {
@@ -253,9 +251,9 @@ namespace Lms.MVC.UI
         {
             var modules = new List<Module>();
 
-            foreach(var module in db.Modules)
+            foreach (var module in db.Modules)
             {
-                if(module.CourseId == id)
+                if (module.CourseId == id)
                 {
                     modules.Add(module);
                 }
@@ -266,14 +264,14 @@ namespace Lms.MVC.UI
         {
             var activities = new List<Activity>();
 
-            foreach(var activity in db.Activities)
+            foreach (var activity in db.Activities)
             {
-                if(activity.ModuleId == id)
+                if (activity.ModuleId == id)
                 {
                     activities.Add(activity);
                 }
             }
-                
+
             return activities;
         }
     }

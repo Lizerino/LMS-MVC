@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Lms.MVC.UI.Models.ViewModels
+namespace Lms.MVC.UI.Models.ViewModels.ModelViewModels
 {
-    public class ModuleViewModel
+    public class DeleteModuleViewModel
     {
         
         public int Id { get; set; }

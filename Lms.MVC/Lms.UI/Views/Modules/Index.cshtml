@@ -1,4 +1,4 @@
-﻿@model ModuleViewModel
+﻿@model ListModuleViewModel
 
 @if (Model.ModuleList.Count() != 0)
 {
@@ -11,25 +11,28 @@
         </p>
     }
 
-        <div class="card-deck">
-            @foreach (var module in Model.ModuleList)
-            {
-                <div class="card">
-                    <a asp-controller="Activities" asp-action="Index" asp-route-id="@module.Id">
-                        <h5 class="card-title">@module.Title</h5>
-                        <p class="card-body">@module.Description</p>
-                        <div class="card-footer">End Date: @module.EndDate</div>
-                    </a>
-                        
-                </div>
-            }
-        </div>
-    }
-    else
-    {
-        <p>
-            <a asp-action="Create" asp-route-id=@Model.CourseId>Create New</a>
-        </p>
-        <p>No modules in this course</p>
-    }
+    <div class="card-deck">
+        @foreach (var module in Model.ModuleList)
+        {
+            <div class="card">
+                <a asp-controller="Activities" asp-action="Index" asp-route-id="@module.Id">
+                    <h5 class="card-title">@module.Title</h5>
+                    <p class="card-body">@module.Description</p>
+                    <div class="card-footer">End Date: @module.EndDate</div>
+                </a>
+            </div>
+        }
+    </div>
+ }
+ else
+ {
+     @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
+     {
+         <p>
+             <a asp-action="Create" asp-route-id=@Model.CourseId>Create New Module</a>
+         </p>
+         <p>No modules in this course</p>
+     }
+ 
+ }
 
