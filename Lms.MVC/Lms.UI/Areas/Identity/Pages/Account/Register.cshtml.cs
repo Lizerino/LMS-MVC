@@ -1,6 +1,7 @@
 ﻿using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Repositories;
+using Lms.MVC.Data.Repositories.Helpers;
 using Lms.MVC.UI.Validations;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -97,6 +98,11 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(List<int> courses, string returnUrl = null)
         {
+
+            if (Input.Role == RoleHelper.Student && (courses.Count != 1 || courses[0] == 0))
+            {
+                ModelState.AddModelError("Role", "A student must be assigned to one course");
+            }
        
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();

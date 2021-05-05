@@ -14,26 +14,29 @@
 <div class="container container-media">
     <div class="d-flex justify-content-center h-100">
         <br />
-        <div asp-validation-summary="All" class="text-danger"></div>
         <div class="card">
             <div class="card-header">
                 <h3>Register</h3>
+        <div asp-validation-summary="All" class="text-danger"></div>
             </div>
             <div class="card-body">
                 <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
                     <div>
                         <div class="input-group form-group">
                             <input asp-for="Input.FirstName" class="form-control" placeholder="First Name" />
+                            <br />
                             <span asp-validation-for="Input.FirstName" class="text-danger"></span>
                         </div>
 
                         <div class="input-group form-group">
                             <input asp-for="Input.LastName" class="form-control" placeholder="Last Name" />
+                            <br />
                             <span asp-validation-for="Input.LastName" class="text-danger"></span>
                         </div>
 
                         <div class="input-group form-group">
                             <input asp-for="Input.Email" class="form-control" placeholder="Email" />
+                            <br />
                             <span asp-validation-for="Input.Email" class="text-danger"></span>
                         </div>
                         @if (User.IsInRole("Admin") && Model.CourseId == 0)
@@ -62,26 +65,27 @@
                         @if (User.IsInRole("Teacher") && Model.CourseId == 0)
                         {
 
-                            <div class="dropdown">
-                                <label asp-for="Courses"></label>
-                                <button class="btn btn-default dropdown-toggle" type="button"
-                                        id="register-dropdown" data-toggle="dropdown"
-                                        aria-haspopup="true" aria-expanded="true">
-                                    Select Courses
+                    <div class="dropdown">
+                        <label asp-for="Courses"></label>
+                        <button class="btn btn-default dropdown-toggle" type="button"
+                                id="register-dropdown" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="true">
+                            Select Courses
 
-                                </button>
-                                <ul id="register-dropdown" class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenu1">
-                                    @foreach (var item in await service.GetTypeAsync())
-                                    {
-                                        <li>
-                                            <label>
-                                                <input type="radio" name="courses" value="@item.Value"> @item.Text
-                                            </label>
-                                        </li>
-                                    }
+                        </button>
+                        <ul id="register-dropdown" class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenu1">
+                            @foreach (var item in await service.GetTypeAsync())
+                            {
+                                <li>
+                                    <label>
+                                        <input type="radio" name="courses" value="@item.Value"> @item.Text
+                                    </label>
+                                </li>
+                            }
 
-                                </ul>
-                            </div> }
+                        </ul>
+                        <span asp-validation-for="Input.Role" class="text-danger"></span>
+                    </div> }
                         else
                         {
 
