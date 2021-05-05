@@ -52,11 +52,33 @@
                                     {
                                         <li>
                                             <label>
-                                                @*<input  asp-for="Input.IsChecked" type="checkbox"> @item.Text*@
                                                 <input type="checkbox" name="courses" value="@item.Value"> @item.Text
                                             </label>
                                         </li>
-}
+                                    }
+
+                                </ul>
+                            </div>}
+                        @if (User.IsInRole("Teacher") && Model.CourseId == 0)
+                        {
+
+                            <div class="dropdown">
+                                <label asp-for="Input.Courses"></label>
+                                <button class="btn btn-default dropdown-toggle" type="button"
+                                        id="register-dropdown" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="true">
+                                    Select Courses
+
+                                </button>
+                                <ul id="register-dropdown" class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenu1">
+                                    @foreach (var item in await service.GetTypeAsync())
+                                    {
+                                        <li>
+                                            <label>
+                                                <input type="radio" name="courses" value="@item.Value"> @item.Text
+                                            </label>
+                                        </li>
+                                    }
 
                                 </ul>
                             </div> }
