@@ -78,9 +78,16 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
             [Display(Name = "Role :")]
             public string Role { get; set; }
-           
-           
-            
+
+            public ICollection<Course> Courses { get; set; }
+
+            public int[] SelectedCourseIds { get; set; }
+            public bool IsChecked { get; set; }
+
+
+
+
+
         }
        
         public async Task OnGetAsync(string returnUrl = null)
@@ -95,6 +102,7 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+               // Input.Courses = AssignCourses(Input.Courses, Input.SelectedCourseIds);
                 var password = "password";
 
                 Input.Password = password;
@@ -182,7 +190,7 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
 
             if (role == "Teacher" || role == "Admin")
             {
-                var appUser = new ApplicationUser { UserName = $"{Input.FirstName}.{Input.LastName}", Email = Input.Email, Name = Input.Name, Role = role };
+                var appUser = new ApplicationUser { UserName = $"{Input.FirstName}.{Input.LastName}", Email = Input.Email, Name = Input.Name, Role = role , Courses = Input.Courses };
                 return appUser;
             }
             else 
@@ -192,6 +200,32 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             }
 
           
+        }
+        private ICollection<Course> AssignCourses(ICollection<Course> courses, int[] selectedCoursesIds)
+        {
+            var list = new List<Course>();
+            foreach (var listCourse in list)
+            {
+                if (Input.IsChecked)
+                {
+
+                foreach (var course in courses)
+                {
+                    foreach (var id in selectedCoursesIds)
+                    {
+                        course.Id = id;
+
+                    }
+
+                    list.Add(course);
+                }
+                }
+                else
+                {
+                    continue;
+                }
+            }
+                return list;
         }
     }
 }
