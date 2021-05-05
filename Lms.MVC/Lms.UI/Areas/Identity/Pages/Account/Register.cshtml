@@ -53,17 +53,19 @@
                     @if (User.IsInRole("Admin"))
                     {
 
+                    <div>
                         <div>
-                            <div>
-                                <label asp-for="Input.Role"></label>
-                            </div>
-                            <br />
-                            <input type="radio" value="Student" asp-for="Input.Role" />
-                            <label for="Student">Student</label>
-                            <input type="radio" value="Teacher" asp-for="Input.Role" />
-                            <label for="Teacher">Teacher</label>
-                            <span asp-validation-for="Input.Role" class="text-danger"></span>
+                            <label asp-for="Input.Role"></label>
                         </div>
+                        <br />
+                        <input type="radio" value="Student" asp-for="Input.Role" />
+                        <label for="Student">Student</label>
+                        <input type="radio" value="Teacher" asp-for="Input.Role" />
+                        <label for="Teacher">Teacher</label>
+                        <input type="radio" value="Admin" asp-for="Input.Role" />
+                        <label for="Admin">Admin</label>
+                        <span asp-validation-for="Input.Role" class="text-danger"></span>
+                    </div>
                     }
                     </div>
                     <div class="form-group">
