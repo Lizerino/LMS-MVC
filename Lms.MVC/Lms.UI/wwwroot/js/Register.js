@@ -2,15 +2,20 @@
     $(this).closest("li").toggleClass("active", this.checked);
 });
 
-$(document).on('click', '.allow-focus .dropdown-menu', function (e) {
-    e.stopPropagation();
-});
 
-$('#register-dropdown').on('hide.bs.dropdown', function (e) {
-    var target = $(e.target);
-    if (target.hasClass("keepopen") || target.parents(".keepopen").length) {
-        return false; // returning false should stop the dropdown from hiding.
-    } else {
-        return true;
-    }
+$(function () {
+    $('.dropdown').on({
+        "click": function (event) {
+            if ($(event.target).closest('.dropdown-toggle').length) {
+                $(this).data('closable', true);
+            } else {
+                $(this).data('closable', false);
+            }
+        },
+        "hide.bs.dropdown": function (event) {
+            hide = $(this).data('closable');
+            $(this).data('closable', true);
+            return hide;
+        }
+    });
 });
