@@ -52,8 +52,8 @@ namespace Lms.API.UI.Controllers
             return Ok(authorDto);
         }
 
-        [HttpGet("{name}")]
-        public async Task<ActionResult<IEnumerable<Author>>> GetAuthor(string name)
+        [HttpGet("name/{name}")]
+        public async Task<ActionResult<IEnumerable<Author>>> GetAuthorsByName(string name)
         {
             var authorsDto = mapper.Map<AuthorDto[]>(await uow.AuthorRepository.GetAuthorByNameAsync(name));
 
@@ -101,8 +101,8 @@ namespace Lms.API.UI.Controllers
         [HttpPost]
         public async Task<ActionResult<Author>> PostAuthor(Author author)
         {
-            db.Authors.Add(author);
-            await db.SaveChangesAsync();
+            await uow.AuthorRepository.AddAsync(author);
+            await uow.AuthorRepository.SaveAsync();
 
             return CreatedAtAction("GetAuthor", new { id = author.Id }, author);
         }
@@ -117,8 +117,8 @@ namespace Lms.API.UI.Controllers
                 return NotFound();
             }
 
-            db.Authors.Remove(author);
-            await db.SaveChangesAsync();
+            uow.AuthorRepository.Remove(author);
+            await uow.AuthorRepository.SaveAsync();
 
             return NoContent();
         }

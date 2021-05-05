@@ -31,13 +31,19 @@ namespace Lms.API.Data.Repositories
 
         public async Task<Author> GetAuthorAsync(int? id)
         {
-            var author = await db.Authors.FirstOrDefaultAsync(a => a.Id == id);
-            return author;
+            return await db.Authors.FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<IEnumerable<Author>> GetAuthorByNameAsync(string name)
         {
-            return await db.Authors.Where(a => $"{a.FirstName} {a.LastName}".Contains(name)).ToListAsync();
+            var names = name.Split(" ");
+            var authors = await db.Authors.ToListAsync();
+            foreach(string n in names)
+            {
+                authors = authors.Where(a => a.FirstName.Contains(n, StringComparison.OrdinalIgnoreCase) || a.LastName.Contains(n, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            return authors;
         }
 
         public void Remove(Author removed)

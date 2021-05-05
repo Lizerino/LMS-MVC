@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Lms.API.Core.Entities;
 using Lms.API.Data.Data;
+using AutoMapper;
+using Lms.API.Core.Repositories;
 
 namespace Lms.API.UI.Controllers
 {
@@ -14,32 +16,42 @@ namespace Lms.API.UI.Controllers
     [ApiController]
     public class LiteraturesController : ControllerBase
     {
-        private readonly LmsAPIContext _context;
+        private readonly LmsAPIContext db;
+        private readonly IMapper mapper;
+        private readonly IUoW uow;
 
-        public LiteraturesController(LmsAPIContext context)
+        public LiteraturesController(LmsAPIContext db, IMapper mapper, IUoW uow)
         {
-            _context = context;
+            this.db = db;
+            this.mapper = mapper;
+            this.uow = uow;
         }
 
         // GET: api/Literatures
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Literature>>> GetLiterature()
         {
-            return await _context.Literature.ToListAsync();
+            return Ok(await uow.LiteratureRepository.GetAllLiteratureAsync());
         }
 
         // GET: api/Literatures/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Literature>> GetLiterature(int id)
         {
-            var literature = await _context.Literature.FindAsync(id);
+            var literature = await uow.LiteratureRepository.GetLiteratureAsync(id);
 
             if (literature == null)
             {
                 return NotFound();
             }
 
-            return literature;
+            return Ok(literature);
+        }
+
+        [HttpGet("title/{title}")]
+        public async Task<ActionResult<IEnumerable<Literature>>> GetLiteratureByTitle(string title)
+        {
+            return Ok(await uow.LiteratureRepository.GetLiteratureByTitleAsync(title));
         }
 
         // PUT: api/Literatures/5
@@ -52,11 +64,11 @@ namespace Lms.API.UI.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(literature).State = EntityState.Modified;
+            db.Entry(literature).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -78,8 +90,8 @@ namespace Lms.API.UI.Controllers
         [HttpPost]
         public async Task<ActionResult<Literature>> PostLiterature(Literature literature)
         {
-            _context.Literature.Add(literature);
-            await _context.SaveChangesAsync();
+            await uow.LiteratureRepository.AddAsync(literature);
+            await uow.LiteratureRepository.SaveAsync();
 
             return CreatedAtAction("GetLiterature", new { id = literature.Id }, literature);
         }
@@ -88,21 +100,21 @@ namespace Lms.API.UI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLiterature(int id)
         {
-            var literature = await _context.Literature.FindAsync(id);
+            var literature = await uow.LiteratureRepository.GetLiteratureAsync(id);
             if (literature == null)
             {
                 return NotFound();
             }
 
-            _context.Literature.Remove(literature);
-            await _context.SaveChangesAsync();
+            uow.LiteratureRepository.Remove(literature);
+            await uow.LiteratureRepository.SaveAsync();
 
             return NoContent();
         }
 
         private bool LiteratureExists(int id)
         {
-            return _context.Literature.Any(e => e.Id == id);
+            return db.Literature.Any(e => e.Id == id);
         }
     }
 }

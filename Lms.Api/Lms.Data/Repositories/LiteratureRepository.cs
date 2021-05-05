@@ -26,17 +26,17 @@ namespace Lms.API.Data.Repositories
 
         public async Task<IEnumerable<Literature>> GetAllLiteratureAsync()
         {
-            return await db.Literature.Include(l => l.Authors).Include(l => l.Subject).Include(l => l.Level).ToListAsync();
+            return await db.Literature.Include(l => l.Subject).Include(l => l.Level).ToListAsync();
         }
 
         public async Task<Literature> GetLiteratureAsync(int? id)
         {
-            return await db.Literature.Include(l => l.Authors).Include(l => l.Subject).Include(l => l.Level).FirstOrDefaultAsync(l => l.Id == id);
+            return await db.Literature.Include(l => l.Subject).Include(l => l.Level).FirstOrDefaultAsync(l => l.Id == id);
         }
 
         public async Task<IEnumerable<Literature>> GetLiteratureByTitleAsync(string title)
         {
-            return await db.Literature.Include(l => l.Authors).Include(l => l.Subject).Include(l => l.Level).Where(l => l.Title.Contains(title)).ToListAsync();
+            return await db.Literature.Include(l => l.Subject).Include(l => l.Level).Where(l => l.Title.Contains(title)).ToListAsync();
         }
 
         public void Remove(Literature removed)
