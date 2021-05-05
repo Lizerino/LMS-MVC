@@ -23,7 +23,7 @@ namespace Lms.Tests.Controllers
         [TestInitialize]
         public void SetUp()
         {
-            UserManager<ApplicationUser> x = new
+            //UserManager<ApplicationUser> x = new
             //var mockContext
    //         AcourseC = new CoursesController();
         }
