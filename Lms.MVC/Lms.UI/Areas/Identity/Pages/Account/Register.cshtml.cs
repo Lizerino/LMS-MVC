@@ -1,4 +1,7 @@
 ﻿using Lms.MVC.Core.Entities;
+using Lms.MVC.Core.Repositories;
+using Lms.MVC.Data.Repositories;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -23,13 +26,16 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IUoW uoW;        
 
-        public RegisterModel(
+       public RegisterModel(
+           IUoW uoW,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
+            this.uoW = uoW;
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
@@ -41,6 +47,8 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
 
         public string ReturnUrl { get; set; }
 
+        public int CourseId { get; set; }
+        public List<int> courses { get; set; }
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public class InputModel
@@ -74,35 +82,60 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
             [Display(Name = "Role :")]
             public string Role { get; set; }
-           
-           
-            
+
+            public ICollection<Course> Courses { get; set; }
+
+            public int[] SelectedCourseIds { get; set; }
+            public bool IsChecked { get; set; }
+
+
+            public int CourseId { get; set; }
         }
        
-        public async Task OnGetAsync(string returnUrl = null)
+        public async Task OnGetAsync(int CourseId, string returnUrl = null)
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            this.CourseId = CourseId;
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(List<int> courses, string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                if (CourseId != 0)
+                {
+                    courses.Add((int)CourseId);
+                }
+                // Input.Courses = AssignCourses(Input.Courses, Input.SelectedCourseIds);
                 var password = "password";
-
+                
                 Input.Password = password;
                 Input.ConfirmPassword = password;
-                if (User.IsInRole("Teacher"))
+                if (!User.IsInRole("Admin"))
                 {
                     Input.Role = "Student";
                 }
-                var user = GetUserByRole(Input.Role); 
+                if (Input.Role is null)
+                {
+                    ModelState.AddModelError("Role", "Please Choose a role");
+                }
+
+
+                var user = GetUserByRole(Input.Role);
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
+                    user.Courses = new List<Course>();
+                       
+                    foreach (var item in courses)
+                    {
+                        user.Courses.Add(uoW.CourseRepository.GetCourseAsync(item).Result);
+                    }
+                  await  uoW.UserRepository.ChangeRoleAsync(user);
+                    var role = await _userManager.AddToRoleAsync(user, Input.Role);
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -112,7 +145,6 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
                         pageHandler: null,
                         values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
-                    var role = await _userManager.AddToRoleAsync(user, Input.Role);
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
@@ -169,18 +201,44 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
         {
 
 
-            if (role == "Teacher")
+            if (role == "Teacher" || role == "Admin")
             {
-                var appUser = new ApplicationUser { UserName = $"{Input.FirstName}.{Input.LastName}", Email = Input.Email, Name = Input.Name };
+                var appUser = new ApplicationUser { UserName = $"{Input.FirstName}.{Input.LastName}", Email = Input.Email, Name = Input.Name, Role = role , Courses = Input.Courses };
                 return appUser;
             }
             else 
             {
-                var appUser = new ApplicationUser { UserName = $"{Input.FirstName}.{Input.LastName}", Email = Input.Email, Name = Input.Name };
+                var appUser = new ApplicationUser { UserName = $"{Input.FirstName}.{Input.LastName}", Email = Input.Email, Name = Input.Name, Role = "Student"};
                 return appUser;
             }
 
           
+        }
+        private ICollection<Course> AssignCourses(ICollection<Course> courses, int[] selectedCoursesIds)
+        {
+            var list = new List<Course>();
+            foreach (var listCourse in list)
+            {
+                if (Input.IsChecked)
+                {
+
+                foreach (var course in courses)
+                {
+                    foreach (var id in selectedCoursesIds)
+                    {
+                        course.Id = id;
+
+                    }
+
+                    list.Add(course);
+                }
+                }
+                else
+                {
+                    continue;
+                }
+            }
+                return list;
         }
     }
 }
