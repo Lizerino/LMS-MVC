@@ -19,54 +19,53 @@
         <div class="card">
             <div class="card-header">
                 <h3>Register</h3>
-
             </div>
             <div class="card-body">
                 <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
                     <div>
-
-                    <div class="input-group form-group">
-
-                        <input asp-for="Input.FirstName" class="form-control" placeholder="First Name" />
-                        <span asp-validation-for="Input.FirstName" class="text-danger"></span>
-                    </div>
-
-                    <div class="input-group form-group">
-                        <input asp-for="Input.LastName" class="form-control" placeholder="Last Name" />
-                        <span asp-validation-for="Input.LastName" class="text-danger"></span>
-                    </div>
-
-                    <div class="input-group form-group">
-                        <input asp-for="Input.Email" class="form-control" placeholder="Email" />
-                        <span asp-validation-for="Input.Email" class="text-danger"></span>
-                    </div>
-
-                    @*<div class="input-group form-group">
-                        <input asp-for="Input.Password" class="form-control" placeholder="Password" />
-                        <span asp-validation-for="Input.Password" class="text-danger"></span>
-                    </div>
-                    <div class="input-group form-group">
-                        <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Confirm Password" />
-                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-                    </div>*@
-
-                    @if (User.IsInRole("Admin"))
-                    {
-
-                    <div>
-                        <div>
-                            <label asp-for="Input.Role"></label>
+                        <div class="input-group form-group">
+                            <input asp-for="Input.FirstName" class="form-control" placeholder="First Name" />
+                            <span asp-validation-for="Input.FirstName" class="text-danger"></span>
                         </div>
-                        <br />
-                        <input type="radio" value="Student" asp-for="Input.Role" />
-                        <label for="Student">Student</label>
-                        <input type="radio" value="Teacher" asp-for="Input.Role" />
-                        <label for="Teacher">Teacher</label>
-                        <input type="radio" value="Admin" asp-for="Input.Role" />
-                        <label for="Admin">Admin</label>
-                        <span asp-validation-for="Input.Role" class="text-danger"></span>
-                    </div>
-                    }
+
+                        <div class="input-group form-group">
+                            <input asp-for="Input.LastName" class="form-control" placeholder="Last Name" />
+                            <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                        </div>
+
+                        <div class="input-group form-group">
+                            <input asp-for="Input.Email" class="form-control" placeholder="Email" />
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+                        <div class="input-group form-group">
+                            <input asp-for="Input.CourseId" value="@Model.CourseId" type="hidden" />                        
+                        </div>
+                        @*<div class="input-group form-group">
+            <input asp-for="Input.Password" class="form-control" placeholder="Password" />
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+        </div>
+        <div class="input-group form-group">
+            <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Confirm Password" />
+            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+        </div>*@
+
+                        @if (User.IsInRole("Admin"))
+                        {
+
+                            <div>
+                                <div>
+                                    <label asp-for="Input.Role"></label>
+                                </div>
+                                <br />
+                                <input type="radio" value="Student" asp-for="Input.Role" />
+                                <label for="Student">Student</label>
+                                <input type="radio" value="Teacher" asp-for="Input.Role" />
+                                <label for="Teacher">Teacher</label>
+                                <input type="radio" value="Admin" asp-for="Input.Role" />
+                                <label for="Admin">Admin</label>
+                                <span asp-validation-for="Input.Role" class="text-danger"></span>
+                            </div>
+                        }
                     </div>
                     <div class="form-group">
                         <button type="submit" class="btn float-right login_btn">Register</button>
