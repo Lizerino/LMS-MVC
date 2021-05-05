@@ -137,6 +137,7 @@ namespace Lms.MVC.Data.Data
             teacher.Email = fake.Internet.Email();
             teacher.UserName = teacher.Email;
             teacher.Role = "Teacher";
+            teacher.EmailConfirmed = true;
 
             userManager.CreateAsync(teacher, "password").Wait();
             userManager.AddToRoleAsync(teacher, "Teacher").Wait();
@@ -154,6 +155,7 @@ namespace Lms.MVC.Data.Data
             student.Email = fake.Internet.Email();
             student.UserName = student.Email;
             student.Role = "Student";
+            student.EmailConfirmed = true;
 
             userManager.CreateAsync(student, "password").Wait();
             userManager.AddToRoleAsync(student, "Student").Wait();
