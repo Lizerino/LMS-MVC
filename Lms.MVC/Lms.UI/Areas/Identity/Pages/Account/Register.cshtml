@@ -1,9 +1,7 @@
 ﻿@page
 @model RegisterModel
 @inject ICourseSelectService service
-@{
-    ViewData["Title"] = "Register";
-}
+@{ ViewData["Title"] = "Register"; }
 
 
 <div class="card-holder d-flex justify-content-center">
@@ -20,14 +18,11 @@
         <div class="card">
             <div class="card-header">
                 <h3>Register</h3>
-
             </div>
             <div class="card-body">
                 <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
                     <div>
-
                         <div class="input-group form-group">
-
                             <input asp-for="Input.FirstName" class="form-control" placeholder="First Name" />
                             <span asp-validation-for="Input.FirstName" class="text-danger"></span>
                         </div>
@@ -41,175 +36,62 @@
                             <input asp-for="Input.Email" class="form-control" placeholder="Email" />
                             <span asp-validation-for="Input.Email" class="text-danger"></span>
                         </div>
+                        @if (User.IsInRole("Admin") && Model.CourseId == 0)
+                        {
 
-                                    @{ 
-                                            var i = 0;
-                                    }
-                    <div>
-                        @Html.ListBoxFor(m => m.Input.SelectedCourseIds, await service.GetTypeAsync(), new { @class = "form-control" })
-                    </div>
+                            <div class="dropdown">
+                                <label asp-for="Input.Courses"></label>
+                                <button class="btn btn-default dropdown-toggle" type="button"
+                                        id="dropdownMenu1" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="true">
+                                    Select Courses
 
+                                </button>
+                                <ul id="register-dropdown" class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenu1">
+                                    @foreach (var item in await service.GetTypeAsync())
+                                    {
+                    <li>
+                        <label>
+                            @*<input  asp-for="Input.IsChecked" type="checkbox"> @item.Text*@
+                            <input type="checkbox" name="courses" value="@item.Value"> @item.Text
+                        </label>
+                    </li>}
 
+                                </ul>
+                            </div> }
+                                        else
+                                        {
 
-                        @*<div  class="dropdown">
-                            <label asp-for="Input.Courses"></label>
-                            <button class="btn btn-default dropdown-toggle" type="button"
-                                    id="dropdownMenu1" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="true">
-                                <i class="glyphicon glyphicon-cog"></i>
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenu1">
-                                @foreach (var item in await service.GetTypeAsync())
-	{
-                                <li>
-                                    <label>
-                                        <input  asp-for="Input.IsChecked" type="checkbox"> @item.Text />
-                                        <input type="hidden" asp-for="Input.SelectedCourseIds[i]" value="@item.Value" />
-                                    </label>
-                                </li>
-                                    i++;
-
-                                }
-
-                            </ul>
-                        </div>*@
-
-
-                        <div>
-                        @Html.ListBoxFor(m => m.Input.SelectedCourseIds, await service.GetTypeAsync(), new { @class = "listbox" })
-                        @*<select asp-for="Input.Courses" asp-items="@await service.GetTypeAsync()" class="form-control">
-            <option selected="selected" value="">Please select a course</option>
-        </select>*@
-                    </div>
-
-
+                            <input type="hidden" name="courses" value="@Model.CourseId" />}
 
                         @if (User.IsInRole("Admin"))
                         {
 
-                            <div>
-                                <div>
-                                    <label asp-for="Input.Role"></label>
-                                </div>
-                                <br />
-                                <input type="radio" value="Student" asp-for="Input.Role" />
-                                <label for="Student">Student</label>
-                                <input type="radio" value="Teacher" asp-for="Input.Role" />
-                                <label for="Teacher">Teacher</label>
-                                <input type="radio" value="Admin" asp-for="Input.Role" />
-                                <label for="Admin">Admin</label>
-                                <span asp-validation-for="Input.Role" class="text-danger"></span>
-                            </div>
-                        }
+            <div>
+                <div>
+                    <label asp-for="Input.Role"></label>
+                </div>
+                <br />
+                <input type="radio" value="Student" asp-for="Input.Role" />
+                <label for="Student">Student</label>
+                <input type="radio" value="Teacher" asp-for="Input.Role" />
+                <label for="Teacher">Teacher</label>
+                <input type="radio" value="Admin" asp-for="Input.Role" />
+                <label for="Admin">Admin</label>
+                <span asp-validation-for="Input.Role" class="text-danger"></span>
+            </div>}
                     </div>
-                            <div class="form-group">
-                                <button type="submit" class="btn float-right login_btn">Register</button>
-                            </div>
-</form>
+                    <div class="form-group">
+                        <button type="submit" class="btn float-right login_btn">Register</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
 
 
-@*<div class="row d-flex justify-content-center mt-100">
-    <div class="col-md-6">
-        <select asp-for="Input.SelectedCourseIds" asp-items="await service.GetTypeAsync()" id="choices-multiple-remove-button" placeholder="Select upto 5 tags" multiple>
-            
-        </select>
-    </div>
-</div>*@
-
-
-
-
-
-
-
-@*<div class="row">
-        <div class="col-md-4">
-            <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                <h4>Create a new account.</h4>
-                <hr />
-                <div asp-validation-summary="All" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="Input.FirstName"></label>
-                    <input asp-for="Input.FirstName" class="form-control" />
-                    <span asp-validation-for="Input.FirstName" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Input.LastName"></label>
-                    <input asp-for="Input.LastName" class="form-control" />
-                    <span asp-validation-for="Input.LastName" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Input.Email"></label>
-                    <input asp-for="Input.Email" class="form-control" />
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Input.Password"></label>
-                    <input asp-for="Input.Password" class="form-control" />
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Input.ConfirmPassword"></label>
-                    <input asp-for="Input.ConfirmPassword" class="form-control" />
-                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-                </div>
-
-                @if (User.IsInRole("Admin"))
-                {
-
-                    <div class="form-group">
-                        <label asp-for="Input.Role"> Role :</label>
-                        <br />
-                        <input type="radio" value="Student" asp-for="Input.Role" />
-                        <label for="Student">Student</label>
-                        <input type="radio" value="Teacher" asp-for="Input.Role" />
-                        <label for="Teacher">Teacher</label>
-                        <span asp-validation-for="Input.Role" class="text-danger"></span>
-                    </div>
-                }
-
-
-
-
-                <button type="submit" class="btn btn-primary">Register</button>
-            </form>
-        </div>
-        <div class="col-md-6 col-md-offset-2">
-            <section>
-                <h4>Use another service to register.</h4>
-                <hr />
-                @{
-                    if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                    {
-                        <div>
-                            <p>
-                                There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
-                                for details on setting up this ASP.NET application to support logging in via external services.
-                            </p>
-                        </div>
-                    }
-                    else
-                    {
-                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                            <div>
-                                <p>
-                                    @foreach (var provider in Model.ExternalLogins)
-                                    {
-                                        <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                    }
-                                </p>
-                            </div>
-                        </form>
-                    }
-                }
-            </section>
-        </div>
-    </div>*@
+<script src="~/js/Register.js"></script>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

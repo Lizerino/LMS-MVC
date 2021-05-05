@@ -1,5 +1,7 @@
 ﻿using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
+using Lms.MVC.Data.Repositories;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -24,7 +26,7 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-        private readonly IUoW uoW;
+        private readonly IUoW uoW;        
 
        public RegisterModel(
            IUoW uoW,
@@ -45,6 +47,8 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
 
         public string ReturnUrl { get; set; }
 
+        public int CourseId { get; set; }
+        public List<int> courses { get; set; }
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public class InputModel
@@ -85,26 +89,29 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             public bool IsChecked { get; set; }
 
 
-
-
-
+            public int CourseId { get; set; }
         }
        
-        public async Task OnGetAsync(string returnUrl = null)
+        public async Task OnGetAsync(int CourseId, string returnUrl = null)
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            this.CourseId = CourseId;
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(List<int> courses, string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-               // Input.Courses = AssignCourses(Input.Courses, Input.SelectedCourseIds);
+                if (CourseId != 0)
+                {
+                    courses.Add((int)CourseId);
+                }
+                // Input.Courses = AssignCourses(Input.Courses, Input.SelectedCourseIds);
                 var password = "password";
-
+                
                 Input.Password = password;
                 Input.ConfirmPassword = password;
                 if (!User.IsInRole("Admin"))
@@ -117,10 +124,16 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
                 }
 
 
-                var user = GetUserByRole(Input.Role); 
+                var user = GetUserByRole(Input.Role);
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
+                    user.Courses = new List<Course>();
+                       
+                    foreach (var item in courses)
+                    {
+                        user.Courses.Add(uoW.CourseRepository.GetCourseAsync(item).Result);
+                    }
                   await  uoW.UserRepository.ChangeRoleAsync(user);
                     var role = await _userManager.AddToRoleAsync(user, Input.Role);
                     _logger.LogInformation("User created a new account with password.");

@@ -17,5 +17,5 @@ namespace Lms.MVC.UI.Validations
             return base.IsValid(value, validationContext);
         }
     }
-    }
+    
 }
