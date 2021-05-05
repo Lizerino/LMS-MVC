@@ -84,9 +84,6 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             [Display(Name = "Role :")]
             
             public string Role { get; set; }
-
-            public ICollection<Course> Courses { get; set; }
-            
             public int CourseId { get; set; }
         }
        
