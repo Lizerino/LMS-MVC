@@ -1,22 +1,13 @@
 using System.Security.Claims;
-using System.Security.Principal;
 
 using AutoFixture;
-using AutoFixture.AutoMoq;
 
-using AutoMapper;
-
-using Lms.MVC.Core.Repositories;
-using Lms.MVC.Data.Data;
-using Lms.MVC.UI;
 using Lms.MVC.UI.Controllers;
 using Lms.MVC.UI.Models.ViewModels.ApplicationUserViewModels;
-using Lms.MVC.UI.Utilities.Pagination;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
-
-using Moq;
 
 using Xunit;
 
@@ -27,22 +18,98 @@ namespace LMS.MVC.Test
         [Fact]
         public void IndexRedirectsAdminsToApplicationUsersIndex()
         {
-            //Arrange 
-            var fixture = new Fixture();
-            var mc = fixture.Create<ModulesController>();
-            fixture.Customize(new AutoMoqCustomization { ConfigureMembers = true });
+            //Arrange
+            var controller = new HomeController();
 
+            controller.ControllerContext = new ControllerContext();
 
+            var context = new DefaultHttpContext()
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                {
+                     new Claim(ClaimTypes.Name, "TestUser"),
+                     new Claim(ClaimTypes.Role, "Admin")
+                }))
+            };
 
+            controller.ControllerContext.HttpContext = context;
+
+            var model = new ApplicationUsersListViewModel();
 
 
             //Act
-            var viewResult = mc.Create(fixture.Create<int>());
+            var viewResult = controller.Index();
 
             //Assert
             Assert.NotNull(viewResult);
-            //Assert.NotNull(viewResult.Model);
-            //Assert.Equal(model, viewResult.Model);
+            var redirectToActionResult = Assert.IsType<RedirectToActionResult>(viewResult);
+            Assert.Equal("ApplicationUsers", redirectToActionResult.ControllerName);
+            Assert.Equal("Index", redirectToActionResult.ActionName);
+        }
+
+        [Fact]
+        public void IndexRedirectsTeachersToCourseIndex()
+        {
+            //Arrange
+            var controller = new HomeController();
+
+            controller.ControllerContext = new ControllerContext();
+
+            var context = new DefaultHttpContext()
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                {
+                     new Claim(ClaimTypes.Name, "TestUser"),
+                     new Claim(ClaimTypes.Role, "Teacher")
+                }))
+            };
+
+            controller.ControllerContext.HttpContext = context;
+
+            var model = new ApplicationUsersListViewModel();
+
+
+            //Act
+            var viewResult = controller.Index();
+
+            //Assert
+            Assert.NotNull(viewResult);
+            var redirectToActionResult = Assert.IsType<RedirectToActionResult>(viewResult);
+            Assert.Equal("Courses", redirectToActionResult.ControllerName);
+            Assert.Equal("Index", redirectToActionResult.ActionName);
+        }
+
+
+        [Fact]
+        public void IndexRedirectsStudentsToModulesIndex()
+        {
+            //Arrange
+            var controller = new HomeController();
+
+            controller.ControllerContext = new ControllerContext();
+
+            var context = new DefaultHttpContext()
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                {
+                     new Claim(ClaimTypes.Name, "TestUser"),
+                     new Claim(ClaimTypes.Role, "Student")
+                }))
+            };
+
+            controller.ControllerContext.HttpContext = context;
+
+            var model = new ApplicationUsersListViewModel();
+
+
+            //Act
+            var viewResult = controller.Index();
+
+            //Assert
+            Assert.NotNull(viewResult);
+            var redirectToActionResult = Assert.IsType<RedirectToActionResult>(viewResult);
+            Assert.Equal("Modules", redirectToActionResult.ControllerName);
+            Assert.Equal("Index", redirectToActionResult.ActionName);
         }
     }
 }
