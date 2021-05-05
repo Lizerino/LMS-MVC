@@ -1,7 +1,7 @@
 ﻿using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Repositories;
-
+using Lms.MVC.UI.Validations;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -43,12 +43,14 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
         }
 
         [BindProperty]
+        
         public InputModel Input { get; set; }
 
         public string ReturnUrl { get; set; }
 
         public int CourseId { get; set; }
-        public List<int> courses { get; set; }
+       
+        public List<int> Courses { get; set; }
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public class InputModel
@@ -67,7 +69,6 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             [Display(Name = "Last Name")]
             [StringLength(50, MinimumLength = 3)]
             public string LastName { get; set; }
-
             public string Name => $"{FirstName} {LastName}";
 
             //[Required]
@@ -81,26 +82,25 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
             [Display(Name = "Role :")]
+            
             public string Role { get; set; }
 
             public ICollection<Course> Courses { get; set; }
-
-            public int[] SelectedCourseIds { get; set; }
-            public bool IsChecked { get; set; }
-
-
+            
             public int CourseId { get; set; }
         }
        
-        public async Task OnGetAsync(int CourseId, string returnUrl = null)
+        public async Task OnGetAsync(int CourseId,  string returnUrl = null)
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             this.CourseId = CourseId;
+
         }
 
         public async Task<IActionResult> OnPostAsync(List<int> courses, string returnUrl = null)
         {
+       
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
@@ -191,19 +191,14 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             return Page();
         }
 
-        public async Task GetUsersAsync()
-        {
-            var users = User.Identities.ToList();
-            var teachers = await _userManager.GetUsersInRoleAsync("Teacher");
-            var students = await _userManager.GetUsersInRoleAsync("Student");
-        }
+      
         private ApplicationUser GetUserByRole(string role)
         {
 
 
             if (role == "Teacher" || role == "Admin")
             {
-                var appUser = new ApplicationUser { UserName = $"{Input.FirstName}.{Input.LastName}", Email = Input.Email, Name = Input.Name, Role = role , Courses = Input.Courses };
+                var appUser = new ApplicationUser { UserName = $"{Input.FirstName}.{Input.LastName}", Email = Input.Email, Name = Input.Name, Role = role};
                 return appUser;
             }
             else 
@@ -214,31 +209,6 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
 
           
         }
-        private ICollection<Course> AssignCourses(ICollection<Course> courses, int[] selectedCoursesIds)
-        {
-            var list = new List<Course>();
-            foreach (var listCourse in list)
-            {
-                if (Input.IsChecked)
-                {
-
-                foreach (var course in courses)
-                {
-                    foreach (var id in selectedCoursesIds)
-                    {
-                        course.Id = id;
-
-                    }
-
-                    list.Add(course);
-                }
-                }
-                else
-                {
-                    continue;
-                }
-            }
-                return list;
-        }
+        
     }
 }
