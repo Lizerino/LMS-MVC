@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -84,7 +85,7 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
             [Display(Name = "Role :")]
             
-            [Required]
+          
             public string Role { get; set; }
             public int CourseId { get; set; }
         }
@@ -123,10 +124,12 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
                 {
                     Input.Role = "Student";
                 }
-                if (Input.Role is null)
-                {
-                    ModelState.AddModelError("Role", "Please Choose a role");
-                }
+
+            if (String.IsNullOrWhiteSpace(Input.Role))
+            {
+                ModelState.AddModelError("Role", "Please chosose a role");
+            }
+               
 
 
                 var user = GetUserByRole(Input.Role);
