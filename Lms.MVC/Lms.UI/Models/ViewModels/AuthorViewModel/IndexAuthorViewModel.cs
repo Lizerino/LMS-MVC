@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Lms.API.Core.Entities;
 
-namespace Lms.API.Core.Dto
+namespace Lms.MVC.UI.Models.ViewModels.AuthorViewModel
 {
-    public class AuthorDto
+    public class IndexAuthorViewModel
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
