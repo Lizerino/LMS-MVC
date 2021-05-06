@@ -9,6 +9,11 @@ using Lms.API.Core.Entities;
 using Lms.MVC.UI.Models.ViewModels.ActivityViewModels;
 using Microsoft.AspNetCore.Identity;
 using Lms.MVC.Core.Entities;
+using AutoFixture;
+using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Moq;
+//using NUnit.Framework;
 
 namespace Lms.Tests.Controllers
 {
@@ -19,25 +24,37 @@ namespace Lms.Tests.Controllers
         //private CoursesController Controller;
         private readonly object DetailActivityViewModel;
         private ActivitiesController Controller;
+        private Fixture fix;
+        private readonly IMapper mapper;
+        private Mock mock;
 
+        //[SetUp]
         [TestInitialize]
         public void SetUp()
         {
             //UserManager<ApplicationUser> x = new
-            //var mockContext
-   //         AcourseC = new CoursesController();
+            fix = new Fixture();
+            //mock = new Mock<>();
         }
 
         [TestMethod]
-        public void TestDetailsView(int Id)
+        public void TestDetailsView()
         {
-  //          Controller = new ActivitiesController();
-
-  //          var result = Controller.Details(Id) as DetailActivityViewModel;
-  //          Assert.AreEqual(DetailActivityViewModel, result.Id);
 
 
-
+            //Arrange
+  //          var id = 1;
+  //          Controller = fix.Create<ActivitiesController>();
+  // //         var task = Controller.Index(Id);
+  //          //var id = task.Id;
+  //              
+  //
+  //          //var result = Controller.Index(Id) as DetailActivityViewModel;
+  //          Assert.AreEqual(DetailActivityViewModel, Id);
+  //          //Assert.Equal(DetailActivityViewModel., Id);
+  //
+  //
         }
+        
     }
 }
