@@ -253,5 +253,29 @@ namespace Lms.MVC.UI.Controllers
 
 
         }
+
+        [AcceptVerbs("GET", "POST")]
+        public async Task<IActionResult> EmailExists(string email, string id)
+        {
+            var users = await uoW.UserRepository.GetAllUsersAsync();
+            if (users.Any(u => email == u.Email && id != u.Id))
+            {
+                return Json($"Email already exits");
+            }
+            return Json(true);
+        }
+
+        
+            //[HttpPost]
+            //[ValidateAntiForgeryToken]
+            //public JsonResult CheckEmail(string Email)
+            //{
+
+            //var users = uoW.UserRepository.GetAllUsersAsync().Result.ToList().Select(u => u.Email).ToList(); ;
+            
+            //    var valid = !users.Contains(Email);
+            //    return new JsonResult(valid);
+            //}
+        
     }
 }

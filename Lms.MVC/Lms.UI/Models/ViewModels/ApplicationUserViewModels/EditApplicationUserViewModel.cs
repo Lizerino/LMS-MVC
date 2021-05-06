@@ -1,4 +1,5 @@
 ﻿using Lms.MVC.Core.Entities;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,6 +13,7 @@ namespace Lms.MVC.UI.Models.ViewModels.ApplicationUserViewModels
         public string Id { get; set; }
         public string Name { get; set; }
         [EmailAddress]
+        [Remote("EmailExists", "ApplicationUsers",  AdditionalFields =("Id"))]
         public string Email { get; set; }
         [Phone]
         [Display(Name = "Phone Number")]

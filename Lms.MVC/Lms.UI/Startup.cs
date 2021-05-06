@@ -62,6 +62,7 @@ namespace Lms.MVC.UI
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequiredUniqueChars = 0;
                 options.SignIn.RequireConfirmedAccount = false;
+                options.User.RequireUniqueEmail = true;
             })
             .AddRoles<IdentityRole>()
 

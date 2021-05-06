@@ -17,7 +17,7 @@
         <div class="card">
             <div class="card-header">
                 <h3>Register</h3>
-        <div asp-validation-summary="All" class="text-danger"></div>
+                <div asp-validation-summary="All" class="text-danger"></div>
             </div>
             <div class="card-body">
                 <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
@@ -65,27 +65,27 @@
                         @if (User.IsInRole("Teacher") && Model.CourseId == 0)
                         {
 
-                    <div class="dropdown">
-                        <label asp-for="Courses"></label>
-                        <button class="btn btn-default dropdown-toggle" type="button"
-                                id="register-dropdown" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="true">
-                            Select Courses
+                            <div class="dropdown">
+                                <label asp-for="Courses"></label>
+                                <button class="btn btn-default dropdown-toggle" type="button"
+                                        id="register-dropdown" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="true">
+                                    Select Courses
 
-                        </button>
-                        <ul id="register-dropdown" class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenu1">
-                            @foreach (var item in await service.GetTypeAsync())
-                            {
-                                <li>
-                                    <label>
-                                        <input type="radio" name="courses" value="@item.Value"> @item.Text
-                                    </label>
-                                </li>
-                            }
+                                </button>
+                                <ul id="register-dropdown" class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenu1">
+                                    @foreach (var item in await service.GetTypeAsync())
+                                    {
+                                        <li>
+                                            <label>
+                                                <input type="radio" name="courses" value="@item.Value"> @item.Text
+                                            </label>
+                                        </li>
+                                    }
 
-                        </ul>
-                        @* ToDo : add a validation span  *@
-                    </div> }
+                                </ul>
+                                @* ToDo : add a validation span  *@
+                            </div> }
                         else
                         {
 
@@ -99,7 +99,7 @@
                                     <label asp-for="Input.Role"></label>
                                 </div>
                                 <br />
-                                <input type="radio" value="Student" asp-for="Input.Role"  checked/>
+                                <input type="radio" value="Student" asp-for="Input.Role" checked />
                                 <label for="Student">Student</label>
                                 <input type="radio" value="Teacher" asp-for="Input.Role" />
                                 <label for="Teacher">Teacher</label>
@@ -107,7 +107,7 @@
                                 <label for="Admin">Admin</label>
                             </div>}
                         <br />
-                                <span asp-validation-for="Input.Role" class="text-danger"></span>
+                        <span asp-validation-for="Input.Role" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <button type="submit" class="btn float-right login_btn">Register</button>
@@ -125,3 +125,8 @@
     <partial name="_ValidationScriptsPartial" />
     <script src="~/js/Register.js"></script>
 }
+@*@section scripts{
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/lib/jquery-ajax-unobtrusive/dist/jquery.unobtrusive-ajax.min.js"></script>
+}*@

@@ -60,6 +60,14 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
+
+//            [Remote(
+//"CheckEmail",
+//"ApplicationUsers",
+//ErrorMessage = "Email Address already exists",
+//AdditionalFields = "__RequestVerificationToken",
+//HttpMethod = "post"
+//)]
             public string Email { get; set; }
 
             [Required]
@@ -101,6 +109,10 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(List<int> courses, string returnUrl = null)
         {
 
+
+
+
+            courses = courses.SkipLast(1).ToList();
             if (Input.Role == RoleHelper.Student && (courses.Count != 1 || courses[0] == 0))
             {
                 ModelState.AddModelError("Role", "A student must be assigned to one course");
@@ -133,6 +145,9 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
 
 
                 var user = GetUserByRole(Input.Role);
+
+             
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
@@ -143,6 +158,7 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
                         user.Courses.Add(uoW.CourseRepository.GetCourseAsync(item).Result);
                     }
                   await  uoW.UserRepository.ChangeRoleAsync(user);
+
                     var role = await _userManager.AddToRoleAsync(user, Input.Role);
                     _logger.LogInformation("User created a new account with password.");
 
@@ -206,6 +222,7 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
 
             if (role == "Teacher" || role == "Admin")
             {
+
                 var appUser = new ApplicationUser { UserName = $"{Input.FirstName}.{Input.LastName}", Email = Input.Email, Name = Input.Name, Role = role};
                 return appUser;
             }
@@ -217,6 +234,15 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
 
           
         }
-        
+        public JsonResult OnPostCheckEmail()
+        {
+
+            var users = uoW.UserRepository.GetAllUsersAsync().Result.ToList().Select(u => u.Email).ToList(); ;
+            var valid = !users.Contains(Input.Email);
+           
+            return new JsonResult(valid);
+        }
+
+
     }
 }
