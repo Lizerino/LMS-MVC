@@ -29,7 +29,7 @@ namespace Lms.MVC.UI
                     // TODO: REMOVE IN PRODUCTION
                     //db.Database.EnsureDeleted();
 
-                    db.Database.Migrate();
+                    //db.Database.Migrate();
 
                     var adminPW = config["AdminPW"];
 
