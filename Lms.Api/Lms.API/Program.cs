@@ -20,9 +20,11 @@ namespace Lms.API.UI
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var context = services.GetRequiredService<LmsAPIContext>();
-               
-                context.Database.Migrate();
+                var db = services.GetRequiredService<LmsAPIContext>();
+
+                // TODO: REMOVE IN PRODUCTION
+                //db.Database.EnsureDeleted();
+                db.Database.Migrate();
 
                 try
                 {

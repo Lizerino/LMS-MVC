@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Lms.API.Core.Dto;
+using Lms.MVC.Core.Dto;
 using Lms.MVC.Core.Entities;
 using System;
 using System.Collections.Generic;

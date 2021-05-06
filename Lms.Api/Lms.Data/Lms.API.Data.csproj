@@ -11,9 +11,23 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="Migrations\20210506093514_init.cs" />
+    <Compile Include="Migrations\20210506093514_init.Designer.cs" />
+    <Compile Include="Migrations\20210506110711_0506.cs" />
+    <Compile Include="Migrations\20210506110711_0506.Designer.cs" />
+    <Compile Include="Migrations\20210506144327_0506b.cs" />
+    <Compile Include="Migrations\20210506144327_0506b.Designer.cs" />
+    <Compile Include="Migrations\LmsAPIContextModelSnapshot.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="Bogus" Version="33.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="5.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.4" />

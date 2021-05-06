@@ -43,10 +43,11 @@ namespace Lms.API.UI
                     new ProducesResponseTypeAttribute(StatusCodes.Status406NotAcceptable));
                 opt.Filters.Add(
                     new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
-            opt.OutputFormatters.Add(new XmlSerializerOutputFormatter()); // Review! : Adding xml Serilizer to the controllers
-                
+                opt.OutputFormatters.Add(new XmlSerializerOutputFormatter()); // Review! : Adding xml Serilizer to the controllers
+
             }
-            );
+            )
+                .AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true)
                 .AddNewtonsoftJson()

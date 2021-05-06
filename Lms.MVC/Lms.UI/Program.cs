@@ -2,6 +2,7 @@ using Lms.MVC.Core.Entities;
 using Lms.MVC.Data.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -28,7 +29,7 @@ namespace Lms.MVC.UI
                     // TODO: REMOVE IN PRODUCTION
                     //db.Database.EnsureDeleted();
 
-                    db.Database.EnsureCreated();
+                    //db.Database.Migrate();
 
                     var adminPW = config["AdminPW"];
 

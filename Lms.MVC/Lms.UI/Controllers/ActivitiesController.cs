@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Lms.API.Core.Dto;
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Filters;
@@ -12,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Lms.MVC.UI.Controllers
@@ -61,7 +63,6 @@ namespace Lms.MVC.UI.Controllers
         }
 
         [Authorize(Roles = "Teacher,Admin")]
-        // GET: Activities/Create
         public IActionResult Create(int Id)
         {
             var activityViewModel = new CreateActivityViewModel();
@@ -72,12 +73,9 @@ namespace Lms.MVC.UI.Controllers
             return View(activityViewModel);
         }
 
-        [Authorize(Roles = "Teacher,Admin")]
-        // POST: Activities/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
 
+        [Authorize(Roles = "Teacher,Admin")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         [ModelNotNull, ModelValid]
         public async Task<IActionResult> Create(CreateActivityViewModel activityViewModel)
@@ -103,6 +101,7 @@ namespace Lms.MVC.UI.Controllers
 
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         [HttpGet]
         [ModelNotNull, ModelValid]
         public async Task<IActionResult> Edit(int? id)
@@ -119,7 +118,7 @@ namespace Lms.MVC.UI.Controllers
             return View(model);
         }
 
-        
+        [Authorize(Roles = "Teacher,Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ModelValid]
@@ -142,6 +141,7 @@ namespace Lms.MVC.UI.Controllers
             return RedirectToAction("Index", "Activities");
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         [HttpGet]
         [ModelNotNull, ModelValid]
         public async Task<IActionResult> Delete(int? id)
@@ -153,7 +153,7 @@ namespace Lms.MVC.UI.Controllers
             return View(activity);
         }
 
-
+        [Authorize(Roles = "Teacher,Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -168,5 +168,8 @@ namespace Lms.MVC.UI.Controllers
         {
             return db.Activities.Any(e => e.Id == id);
         }
+
+
+        
     }
 }

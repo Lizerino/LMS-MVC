@@ -1,0 +1,66 @@
+﻿@model List<Publication>
+@using Lms.API.Core.Entities
+@using Microsoft.AspNetCore.Identity
+@using Lms.MVC.UI.Utilities.Pagination
+@using Lms.MVC.UI.Views.Shared.Components.Pagination
+@inject UserManager<ApplicationUser> userManager
+@Context.Request.Cookies.TryGetValue("ShowOnlyMyCourses", out string showOnlyMyCourses);
+
+@{
+    ViewData["Title"] = "Course List";
+}
+
+<form class="search-form">
+    <div class="input-group">
+        <input type="submit" value="search" />
+        <input type="text" name="search" class="form-control" placeholder="Search..." autofocus>
+        <button type="reset" class="btn bg-transparent" tabindex="-1" style="margin-left: -40px; z-index: 100;">
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
+</form>
+
+<form class="clear-search-form">
+    <a href="#" class="clear-anchor">Clear Search</a>
+    <input type="hidden" name="Search" value="" />
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Title
+            </th>
+            <th>
+                Subject
+            </th>
+            <th>
+                Authors
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Subject.Title)
+                </td>
+                <td>
+                    @foreach (var author in item.Authors)
+                    {
+                        @Html.DisplayFor(modelItem => author.LastName)
+                        @if (author != item.Authors.Last())
+                        {
+                    <a>, </a>
+                            }
+
+                        }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

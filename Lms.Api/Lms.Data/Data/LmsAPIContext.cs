@@ -12,11 +12,12 @@ namespace Lms.API.Data.Data
         public LmsAPIContext (DbContextOptions<LmsAPIContext> options)
             : base(options)
         {
-        }
+        }        
 
-        public DbSet<Course> Courses { get; set; }
+        public DbSet<Author> Authors { get; set; }
+        public DbSet<Publication> Publications { get; set; }
+        public DbSet<Level> Levels { get; set; }
+        public DbSet<Subject> Subjects { get; set; }       
 
-
-        public DbSet<Module> Modules { get; set; }
     }
 }
