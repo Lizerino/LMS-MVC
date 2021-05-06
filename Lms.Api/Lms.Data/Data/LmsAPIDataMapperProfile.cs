@@ -16,7 +16,7 @@ namespace Lms.API.Data.Data
         public LmsAPIDataMapperProfile()
         {
             CreateMap<Author, AuthorDto>()
-                .ForMember(dest => dest.Age, opt => opt.MapFrom(src => DateTime.Now - src.BirthDate))
+                .ForMember(dest => dest.Age, opt => opt.MapFrom((src => DateTime.Now.Year - src.BirthDate.Year)))
                 .ReverseMap();
         }
     }

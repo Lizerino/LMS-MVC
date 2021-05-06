@@ -1,5 +1,6 @@
 ﻿using Lms.MVC.UI.Models.DTO;
-using Lms.MVC.UI.Models.ViewModels.AuthorViewModel;
+using Lms.MVC.UI.Models.ViewModels.AuthorViewModels;
+using Lms.MVC.UI.Utilities.Pagination;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
@@ -22,28 +23,70 @@ namespace Lms.MVC.UI.Controllers
             httpClient.DefaultRequestHeaders.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search, string sort, int page)
         {
-
+            // Builds request to API
             var request = new HttpRequestMessage(HttpMethod.Get, "api/authors");
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
+            // Sends request and ensures response
             var response = await httpClient.SendAsync(request);
-
+            
             response.EnsureSuccessStatusCode();
 
+            // Converts Json response to ViewModel
             var content = await response.Content.ReadAsStringAsync();
             content = content.TrimStart('\"');
             content = content.TrimEnd('\"');
             content = content.Replace("\\", "");
-            var authors = JsonConvert.DeserializeObject<List<IndexAuthorViewModel>>(content);
+            var model = JsonConvert.DeserializeObject<IEnumerable<IndexAuthorViewModel>>(content);
 
-            return View(authors);
 
-            //var client = new HttpClient();
-            //var response = await client.GetAsync("https://localhost:44302/api/Authors");
-            //var authors = await response.Content.ReadAsAsync<IEnumerable<AuthorDto>>();//TODO What is sent and what is recieved
-            //return View(authors);
+            // Checks Search
+            if (search != null) page = 1;
+
+            // Search
+            if (!String.IsNullOrWhiteSpace(search))
+            {
+                model = model.Where(a => a.FirstName.ToLower().StartsWith(search.ToLower())
+                        || a.LastName.ToLower().Contains(search.ToLower())
+                        || a.Age.ToString().Contains(search));
+            }
+
+            // Build ViewData
+            ViewData["CurrentFilter"] = search;
+            ViewData["CurrentSort"] = sort;
+            ViewData["FNameSortParam"] = String.IsNullOrEmpty(sort) ? "Name_desc" : "";
+            ViewData["LNameSortParam"] = sort == "LName" ? "LName_desc" : "LName";
+            ViewData["AgeSortParam"] = sort == "Age" ? "Age_desc" : "Age";
+
+            // Sort by order
+            switch (sort)
+            {
+                case "Name_desc":
+                    model = model.OrderByDescending(a => a.FirstName);
+                    break;
+                case "LName":
+                    model = model.OrderBy(a => a.LastName);
+                    break;
+                case "LName_desc":
+                    model = model.OrderByDescending(a => a.LastName);
+                    break;
+                case "Age":
+                    model = model.OrderBy(a => a.Age);
+                    break;
+                case "Age_desc":
+                    model = model.OrderByDescending(a => a.Age);
+                    break;
+                default:
+                    model = model.OrderBy(a => a.FirstName);
+                    break;
+            }
+            
+            // Paginated Results
+            var paginatedResult = model.AsQueryable().GetPagination(page, 10);
+
+            return View(paginatedResult);
         }
     }
 }

@@ -1,16 +1,36 @@
-﻿@model IEnumerable<Lms.MVC.UI.Models.ViewModels.AuthorViewModel.IndexAuthorViewModel>
+﻿@model PaginationResult<Lms.MVC.UI.Models.ViewModels.AuthorViewModels.IndexAuthorViewModel>
+
+
+
+<form class="search-form">
+    <div class="input-group">
+        <input type="submit" value="Search" />
+        <input type="text" name="Search" class="form-control" placeholder="Search..." autofocus>
+        <button type="reset" class="btn bg-transparent" tabindex="-1" style="margin-left: -40px; z-index: 100;">
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
+</form>
+
+<form class="clear-search-form">
+    <a href="#" class="clear-anchor">Clear Search</a>
+    <input type="hidden" name="Search" value="" />
+</form>
+
+
+
 
 <table class="table table-dark table-striped text-info">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.FirstName)
+                <a asp-action="Index" asp-route-sort="@ViewData["FNameSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]"> First Name </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LastName)
+                <a asp-action="Index" asp-route-sort="@ViewData["LNameSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Last Name</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Age)
+                <a asp-action="Index" asp-route-sort="@ViewData["AgeSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]"> Age</a>
             </th>
 
 
@@ -21,7 +41,7 @@
 
     <tbody>
 
-        @foreach (var item in Model)
+        @foreach (var item in Model.Results)
         {
             <tr>
 
@@ -39,8 +59,9 @@
                 </td>
 
 
-
+                
             </tr>
         }
     </tbody>
 </table>
+@(await Component.InvokeAsync<PaginationViewComponent>(Model))
