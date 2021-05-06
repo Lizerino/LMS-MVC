@@ -18,6 +18,9 @@ namespace Lms.MVC.Data.Repositories
 
         public IModuleRepository ModuleRepository { get; }
         public IUserRepository UserRepository { get; }
+        public IActivityRepository ActivityRepository { get; }
+
+        public IGenericRepo GenericRepo { get; }
 
         public UoW(ApplicationDbContext db, UserManager<ApplicationUser> userManager)
         {
@@ -26,6 +29,8 @@ namespace Lms.MVC.Data.Repositories
             CourseRepository = new CourseRepository(db);
             ModuleRepository = new ModuleRepository(db);
             UserRepository = new UserRepository(db, userManager);
+            ActivityRepository = new ActivityRepository(db);
+            GenericRepo = new GenericRepo(db);
         }
 
         public async Task CompleteAsync()
