@@ -39,6 +39,26 @@ namespace Lms.API.Data.Repositories
             return await db.Publications.Include(l => l.Subject).Include(l => l.Level).Where(l => l.Title.Contains(title)).ToListAsync();
         }
 
+        public async Task<IEnumerable<Publication>> GetPublicationBySearchAsync(string search)
+        {
+            string[] searchSplit = (search.First() == '"' && search.Last() == '"') ?
+                new string[] { search[1..^1] } :
+                search.Split(' ');
+            var result = await db.Publications
+                .Include(l => l.Subject).Include(l => l.Level).Include(l => l.Authors).ToListAsync();
+
+            foreach (string word in searchSplit)
+            {
+                result = result.Where(l => l.Title.Contains(word, StringComparison.OrdinalIgnoreCase) ||
+                    l.Subject.Title.Contains(word, StringComparison.OrdinalIgnoreCase) ||
+                    l.Authors.Where(a => a.FirstName.Contains(word, StringComparison.OrdinalIgnoreCase) || 
+                    a.LastName.Contains(word, StringComparison.OrdinalIgnoreCase)).Count() > 0).ToList();
+            }
+            
+
+            return result;
+        }
+
         public void Remove(Publication removed)
         {
             db.Remove(removed);

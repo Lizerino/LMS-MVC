@@ -48,10 +48,17 @@ namespace Lms.API.UI.Controllers
             return Ok(publicaton);
         }
 
-        [HttpGet("title/{title}")]
-        public async Task<ActionResult<IEnumerable<Publication>>> GetPublicationByTitle(string title)
+        [HttpGet("search/{search}")]
+        public async Task<ActionResult<IEnumerable<Publication>>> GetPublicationBySearch(string search)
         {
-            return Ok(await uow.PublicationRepository.GetPublicationByTitleAsync(title));
+            var result = await uow.PublicationRepository.GetPublicationBySearchAsync(search);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
         }
 
         // PUT: api/Publicatons/5
