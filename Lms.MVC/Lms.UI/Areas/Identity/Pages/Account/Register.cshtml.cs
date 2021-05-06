@@ -84,6 +84,7 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
             [Display(Name = "Role :")]
             
+            [Required]
             public string Role { get; set; }
             public int CourseId { get; set; }
         }
@@ -103,6 +104,7 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             {
                 ModelState.AddModelError("Role", "A student must be assigned to one course");
             }
+            
        
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
