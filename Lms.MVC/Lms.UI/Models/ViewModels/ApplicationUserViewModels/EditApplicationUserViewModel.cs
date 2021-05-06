@@ -13,7 +13,7 @@ namespace Lms.MVC.UI.Models.ViewModels.ApplicationUserViewModels
         public string Id { get; set; }
         public string Name { get; set; }
         [EmailAddress]
-        [Remote("EmailExists", "ApplicationUsers",  AdditionalFields =("Id"))]
+        [Remote("EmailExistsEdit", "ApplicationUsers",  AdditionalFields =("Id"))]
         public string Email { get; set; }
         [Phone]
         [Display(Name = "Phone Number")]

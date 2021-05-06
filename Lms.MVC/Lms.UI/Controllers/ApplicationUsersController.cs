@@ -255,7 +255,7 @@ namespace Lms.MVC.UI.Controllers
         }
 
         [AcceptVerbs("GET", "POST")]
-        public async Task<IActionResult> EmailExists(string email, string id)
+        public async Task<IActionResult> EmailExistsEdit(string email, string id)
         {
             var users = await uoW.UserRepository.GetAllUsersAsync();
             if (users.Any(u => email == u.Email && id != u.Id))
@@ -265,17 +265,15 @@ namespace Lms.MVC.UI.Controllers
             return Json(true);
         }
 
-        
-            //[HttpPost]
-            //[ValidateAntiForgeryToken]
-            //public JsonResult CheckEmail(string Email)
-            //{
 
-            //var users = uoW.UserRepository.GetAllUsersAsync().Result.ToList().Select(u => u.Email).ToList(); ;
-            
-            //    var valid = !users.Contains(Email);
-            //    return new JsonResult(valid);
-            //}
-        
+        public async Task<IActionResult> EmailExistsCreate([Bind(Prefix = "Input.Email")] string email)
+        {
+            var users = await uoW.UserRepository.GetAllUsersAsync();
+            if (users.Any(u => email == u.Email))
+            {
+                return Json($"Email already exits");
+            }
+            return Json(true);
+        }
     }
 }

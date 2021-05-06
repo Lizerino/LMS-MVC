@@ -61,13 +61,8 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             [EmailAddress]
             [Display(Name = "Email")]
 
-//            [Remote(
-//"CheckEmail",
-//"ApplicationUsers",
-//ErrorMessage = "Email Address already exists",
-//AdditionalFields = "__RequestVerificationToken",
-//HttpMethod = "post"
-//)]
+         
+            [Remote(action: "EmailExistsCreate", controller:"ApplicationUsers")]
             public string Email { get; set; }
 
             [Required]
