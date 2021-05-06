@@ -1,0 +1,44 @@
+﻿@model List<Literature>
+@using Lms.API.Core.Entities
+@using Microsoft.AspNetCore.Identity
+@using Lms.MVC.UI.Utilities.Pagination
+@using Lms.MVC.UI.Views.Shared.Components.Pagination
+@inject UserManager<ApplicationUser> userManager
+@Context.Request.Cookies.TryGetValue("ShowOnlyMyCourses", out string showOnlyMyCourses);
+
+@{
+    ViewData["Title"] = "Course List";
+}
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Title
+            </th>
+            <th>
+               Subject
+            </th>
+            <th>
+                Authors
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Subject.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Authors)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
