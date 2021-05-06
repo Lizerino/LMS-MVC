@@ -170,14 +170,6 @@ namespace Lms.MVC.UI.Controllers
         }
 
 
-        [HttpGet]
         
-        public async Task<IActionResult> SeeAuthors()
-        {
-            var client = new HttpClient();
-            var response = await client.GetAsync("https://localhost:44302/api/Authors");
-            var authors = await response.Content.ReadAsAsync<IEnumerable<AuthorDto>>();//TODO What is sent and what is recieved
-            return View(authors);
-        }
     }
 }
