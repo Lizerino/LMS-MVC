@@ -8,9 +8,8 @@ namespace Lms.API.Core.Repositories
 {
     public interface IUoW
     {
-        ILiteratureRepository LiteratureRepository { get; }
+        IPublicationRepository PublicationRepository { get; }
         IAuthorRepository AuthorRepository { get; }
-        IAuthorLiteratureReporitory AuthorshipRepository { get; }
         Task CompleteAsync();
     }
 }

@@ -13,13 +13,13 @@ using Newtonsoft.Json;
 
 namespace Lms.MVC.UI.Controllers
 {
-    public class Literatures : Controller
+    public class Publications : Controller
     {
         string Baseurl = "https://localhost:44302/";
 
         public async Task<IActionResult> Index()
         {
-            List<Literature> literature = new List<Literature>();
+            List<Publication> publications = new List<Publication>();
 
             using (var client = new HttpClient())
             {
@@ -31,17 +31,17 @@ namespace Lms.MVC.UI.Controllers
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                 //Sending request to find web api REST service resource GetAllEmployees using HttpClient  
-                HttpResponseMessage Res = await client.GetAsync("api/Literatures");
+                HttpResponseMessage Res = await client.GetAsync("api/Publications");
 
                 //Checking the response is successful or not which is sent using HttpClient  
                 if (Res.IsSuccessStatusCode)
                 {
                     //Storing the response details recieved from web api   
-                    var LiteratureResponse = Res.Content.ReadAsStringAsync().Result;
+                    var PublicationResponse = Res.Content.ReadAsStringAsync().Result;
 
                     //Deserializing the response recieved from web api and storing into the Employee list  
-                    literature = JsonConvert.DeserializeObject<List<Literature>>(LiteratureResponse);
-                    return View(literature);
+                    publications = JsonConvert.DeserializeObject<List<Publication>>(PublicationResponse);
+                    return View(publications);
                 }
                 else
                 {
