@@ -14,7 +14,7 @@ namespace Lms.MVC.Core.Repositories
         void Remove<T>(T removed);
         Task<bool> SaveAsync();
         Task<bool> CourseExists(int id);
-        void Update(Course course)
+        void Update(Course course);
 
     }
 }

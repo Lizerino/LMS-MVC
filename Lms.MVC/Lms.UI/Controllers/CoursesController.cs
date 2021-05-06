@@ -32,12 +32,7 @@ namespace Lms.MVC.UI.Controllers
             this.uoW = uoW;
             this.mapper = mapper;
             this.userManager = userManager;
-        }
-
-        //from TEST
-        public CoursesController()
-        {
-        }
+        }        
 
         // GET: Courses
         public async Task<IActionResult> Index(string search, string sortOrder, int page)

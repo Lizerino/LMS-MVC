@@ -18,7 +18,7 @@ namespace LMS.MVC.Test
     public class CouresControllerTest
     {
         [Fact]
-        public void IndexRedirectsAdminsToApplicationUsersIndex()
+        public void CoursesIndexShowsListCourses()
         {
             //Arrange
             var controller = new CoursesController();
@@ -30,17 +30,15 @@ namespace LMS.MVC.Test
                 User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
                 {
                      new Claim(ClaimTypes.Name, "TestUser"),
-                     new Claim(ClaimTypes.Role, "Admin")
+                     new Claim(ClaimTypes.Role, "Admin")                     
+
                 }))
             };
 
             controller.ControllerContext.HttpContext = context;
 
-            var model = new ApplicationUsersListViewModel();
-
-
             //Act
-            var viewResult = controller.Index("","",0);
+            var viewResult = (ViewResult)controller.Index("","",0).Result;
 
             //Assert
             Assert.NotNull(viewResult);
