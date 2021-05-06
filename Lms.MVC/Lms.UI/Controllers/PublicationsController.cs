@@ -13,11 +13,11 @@ using Newtonsoft.Json;
 
 namespace Lms.MVC.UI.Controllers
 {
-    public class Publications : Controller
+    public class PublicationsController : Controller
     {
         string Baseurl = "https://localhost:44302/";
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search)
         {
             List<Publication> publications = new List<Publication>();
 
@@ -30,8 +30,10 @@ namespace Lms.MVC.UI.Controllers
                 //Define request data format  
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                //Sending request to find web api REST service resource GetAllEmployees using HttpClient  
-                HttpResponseMessage Res = await client.GetAsync("api/Publications");
+                //Sending request to find web api REST service resource GetAllEmployees using HttpClient
+                HttpResponseMessage Res = string.IsNullOrEmpty(search) ?
+                    await client.GetAsync("api/Publications") :
+                    await client.GetAsync("api/Publications/search/" + search);
 
                 //Checking the response is successful or not which is sent using HttpClient  
                 if (Res.IsSuccessStatusCode)
