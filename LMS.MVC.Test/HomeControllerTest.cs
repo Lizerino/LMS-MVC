@@ -36,7 +36,6 @@ namespace LMS.MVC.Test
 
             var model = new ApplicationUsersListViewModel();
 
-
             //Act
             var viewResult = controller.Index();
 
@@ -94,6 +93,37 @@ namespace LMS.MVC.Test
                 {
                      new Claim(ClaimTypes.Name, "TestUser"),
                      new Claim(ClaimTypes.Role, "Student")
+                }))
+            };
+
+            controller.ControllerContext.HttpContext = context;
+
+            var model = new ApplicationUsersListViewModel();
+
+
+            //Act
+            var viewResult = controller.Index();
+
+            //Assert
+            Assert.NotNull(viewResult);
+            var redirectToActionResult = Assert.IsType<RedirectToActionResult>(viewResult);
+            Assert.Equal("Modules", redirectToActionResult.ControllerName);
+            Assert.Equal("Index", redirectToActionResult.ActionName);
+        }
+
+        [Fact]
+        public void IndexRedirectsOtherRolesToModulesIndex()
+        {
+            //Arrange
+            var controller = new HomeController();
+
+            controller.ControllerContext = new ControllerContext();
+
+            var context = new DefaultHttpContext()
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                {
+                     new Claim(ClaimTypes.Name, "TestUser"),                     
                 }))
             };
 

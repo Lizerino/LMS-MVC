@@ -215,12 +215,12 @@ namespace Lms.MVC.UI.Controllers
             {
                 try
                 {
-                    db.Update(course);
+                    uoW.CourseRepository.Update(course);
                     await uoW.CompleteAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CourseExists(course.Id))
+                    if (!CourseExists(course.Id).Result)
                     {
                         return NotFound();
                     }
@@ -321,9 +321,9 @@ namespace Lms.MVC.UI.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CourseExists(int id)
+        private async Task<bool> CourseExists(int id)
         {
-            return uoW.CourseRepository.courese
+            return await uoW.CourseRepository.CourseExists(id);
         }
     }
 }

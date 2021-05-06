@@ -61,5 +61,10 @@ namespace Lms.MVC.Data.Repositories
         {
             return await CourseExists(id);
         }
+
+        public void Update(Course course)
+        {
+            db.Update(course);
+        }
     }
 }
