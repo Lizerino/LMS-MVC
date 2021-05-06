@@ -11,18 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Migrations\20210430125059_init.cs" />
-    <Compile Include="Migrations\20210430125059_init.Designer.cs" />
-    <Compile Include="Migrations\20210503140513_0503.cs" />
-    <Compile Include="Migrations\20210503140513_0503.Designer.cs" />
-    <Compile Include="Migrations\20210504072618_0504.cs" />
-    <Compile Include="Migrations\20210504072618_0504.Designer.cs" />
-    <Compile Include="Migrations\20210504072850_0504b.cs" />
-    <Compile Include="Migrations\20210504072850_0504b.Designer.cs" />
-    <Compile Include="Migrations\20210504100203_0504c.cs" />
-    <Compile Include="Migrations\20210504100203_0504c.Designer.cs" />
-    <Compile Include="Migrations\20210504114014_0504d.cs" />
-    <Compile Include="Migrations\20210504114014_0504d.Designer.cs" />
+    <Compile Include="Migrations\20210506093514_init.cs" />
+    <Compile Include="Migrations\20210506093514_init.Designer.cs" />
     <Compile Include="Migrations\LmsAPIContextModelSnapshot.cs" />
   </ItemGroup>
 

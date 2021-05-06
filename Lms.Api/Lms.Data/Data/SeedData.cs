@@ -1,12 +1,14 @@
-﻿using Bogus;
-using Lms.API.Core.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+
+using Bogus;
+
+using Lms.API.Core.Entities;
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Lms.API.Data.Data
 {
@@ -35,24 +37,23 @@ namespace Lms.API.Data.Data
                 var subjects = GetSubjects();
 
                 var authors = GetAuthors();
-                var literature = GetLiterature(authors, levels, subjects);
-                var authorship = ConnectAuthorsWithLit(authors, literature);
+                var publications = GetPublications(authors, levels, subjects);
+                ConnectAuthorsWithPublications(authors,publications);
 
-                await db.AddRangeAsync(authorship);
+                
                 await db.AddRangeAsync(authors);
-                await db.AddRangeAsync(literature);
+                await db.AddRangeAsync(publications);
                 await db.AddRangeAsync(subjects);
 
                 await db.SaveChangesAsync();
             };
         }
 
-        private static List<AuthorLiterature> ConnectAuthorsWithLit(List<Author> authors, List<Literature> literature)
+        private static void ConnectAuthorsWithPublications(List<Author> authors, List<Publication> publications)
         {
-            List<AuthorLiterature> authorship = new List<AuthorLiterature>();
             var fake = new Faker("sv");
 
-            foreach (Literature lit in literature)
+            foreach (Publication lit in publications)
             {
                 var authorInsert = new List<Author>();
                 for (int j = 0; j < fake.Random.Int(1, 3); j++)
@@ -60,45 +61,31 @@ namespace Lms.API.Data.Data
                     int r = fake.Random.Int(0, authors.Count - 1);
                     if (!authorInsert.Contains(authors[r]))
                         authorInsert.Add(authors[r]);
-                }
-
-                foreach (Author author in authorInsert)
-                {
-                    var auth = new AuthorLiterature
-                    {
-                        Author = author,
-                        AuthorId = author.Id,
-                        Literature = lit,
-                        LiteratureId = lit.Id
-                    };
-                    author.Bibliography.Add(auth);
-                    lit.Authors.Add(auth);
-                    authorship.Add(auth);
-                }
+                }              
+                    lit.Authors = authorInsert;                
             }
-
-            return authorship;
         }
-        private static List<Literature> GetLiterature(List<Author> authors, List<Level> levels, List<Subject> subjects)
+
+        private static List<Publication> GetPublications(List<Author> authors, List<Level> levels, List<Subject> subjects)
         {
             var fake = new Faker("sv");
-            var literature = new List<Literature>();
+            var publication = new List<Publication>();
 
-            for(int i = 0; i < 30; i++)
+            for (int i = 0; i < 30; i++)
             {
-                var lit = new Literature
+                var lit = new Publication
                 {
                     Title = fake.Company.CompanyName(),
                     Description = fake.Lorem.Paragraph(),
                     ReleaseDate = fake.Date.Between(DateTime.Now.AddYears(-30), DateTime.Now.AddMonths(-3)),
                     Url = fake.Internet.Url(),
                     Subject = subjects[fake.Random.Int(0, subjects.Count - 1)],
-                    Authors = new List<AuthorLiterature>()
+                    Authors = new List<Author>()
                 };
-                literature.Add(lit);
+                publication.Add(lit);
             }
 
-            return literature;
+            return publication;
         }
 
         private static List<Author> GetAuthors()
@@ -111,8 +98,7 @@ namespace Lms.API.Data.Data
                 {
                     FirstName = fake.Name.FirstName(),
                     LastName = fake.Name.LastName(),
-                    BirthDate = fake.Date.Between(DateTime.Today.AddYears(-100), DateTime.Today.AddYears(-20)),
-                    Bibliography = new List<AuthorLiterature>()
+                    BirthDate = fake.Date.Between(DateTime.Today.AddYears(-100), DateTime.Today.AddYears(-20))
                 };
                 authors.Add(author);
             }
@@ -128,7 +114,7 @@ namespace Lms.API.Data.Data
                 subjects.Add(new Subject
                 {
                     Title = fake.Commerce.Product()
-                }); 
+                });
             }
             return subjects;
         }
@@ -144,6 +130,5 @@ namespace Lms.API.Data.Data
 
             return levels;
         }
-
     }
 }

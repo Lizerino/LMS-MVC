@@ -7,60 +7,72 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Lms.API.Core.Entities;
 using Lms.API.Data.Data;
+using AutoMapper;
+using Lms.API.Core.Repositories;
 
 namespace Lms.API.UI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LiteraturesController : ControllerBase
+    public class PublicationsController : ControllerBase
     {
-        private readonly LmsAPIContext _context;
+        private readonly LmsAPIContext db;
+        private readonly IMapper mapper;
+        private readonly IUoW uow;
 
-        public LiteraturesController(LmsAPIContext context)
+        public PublicationsController(LmsAPIContext db, IMapper mapper, IUoW uow)
         {
-            _context = context;
+            this.db = db;
+            this.mapper = mapper;
+            this.uow = uow;
         }
 
-        // GET: api/Literatures
+        // GET: api/Publications
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Literature>>> GetLiterature()
+        public async Task<ActionResult<IEnumerable<Publication>>> GetPublication()
         {
-            return await _context.Literature.ToListAsync();
+            return Ok(await uow.PublicationRepository.GetAllPublicationsAsync());
         }
 
-        // GET: api/Literatures/5
+        // GET: api/Publications/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Literature>> GetLiterature(int id)
+        public async Task<ActionResult<Publication>> GetPublication(int id)
         {
-            var literature = await _context.Literature.FindAsync(id);
+            var publicaton = await uow.PublicationRepository.GetPublicationAsync(id);
 
-            if (literature == null)
+            if (publicaton == null)
             {
                 return NotFound();
             }
 
-            return literature;
+            return Ok(publicaton);
         }
 
-        // PUT: api/Literatures/5
+        [HttpGet("title/{title}")]
+        public async Task<ActionResult<IEnumerable<Publication>>> GetPublicationByTitle(string title)
+        {
+            return Ok(await uow.PublicationRepository.GetPublicationByTitleAsync(title));
+        }
+
+        // PUT: api/Publicatons/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutLiterature(int id, Literature literature)
+        public async Task<IActionResult> PutPublication(int id, Publication publication)
         {
-            if (id != literature.Id)
+            if (id != publication.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(literature).State = EntityState.Modified;
+            db.Entry(publication).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!LiteratureExists(id))
+                if (!PublicationExists(id))
                 {
                     return NotFound();
                 }
@@ -73,36 +85,36 @@ namespace Lms.API.UI.Controllers
             return NoContent();
         }
 
-        // POST: api/Literatures
+        // POST: api/Publications
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Literature>> PostLiterature(Literature literature)
+        public async Task<ActionResult<Publication>> PostPublication(Publication publication)
         {
-            _context.Literature.Add(literature);
-            await _context.SaveChangesAsync();
+            await uow.PublicationRepository.AddAsync(publication);
+            await uow.PublicationRepository.SaveAsync();
 
-            return CreatedAtAction("GetLiterature", new { id = literature.Id }, literature);
+            return CreatedAtAction(nameof(GetPublication), new { id = publication.Id }, publication);
         }
 
-        // DELETE: api/Literatures/5
+        // DELETE: api/Publications/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteLiterature(int id)
+        public async Task<IActionResult> DeletePublication(int id)
         {
-            var literature = await _context.Literature.FindAsync(id);
-            if (literature == null)
+            var publication = await uow.PublicationRepository.GetPublicationAsync(id);
+            if (publication == null)
             {
                 return NotFound();
             }
 
-            _context.Literature.Remove(literature);
-            await _context.SaveChangesAsync();
+            uow.PublicationRepository.Remove(publication);
+            await uow.PublicationRepository.SaveAsync();
 
             return NoContent();
         }
 
-        private bool LiteratureExists(int id)
+        private bool PublicationExists(int id)
         {
-            return _context.Literature.Any(e => e.Id == id);
+            return db.Publications.Any(e => e.Id == id);
         }
     }
 }

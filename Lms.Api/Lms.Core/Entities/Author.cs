@@ -20,7 +20,5 @@ namespace Lms.API.Core.Entities
         [Required]
         [DataType(DataType.DateTime)]
         public DateTime BirthDate { get; set; }
-
-        public ICollection<AuthorLiterature> Bibliography { get; set; }
     }
 }

@@ -70,18 +70,18 @@ namespace Lms.API.UI.Controllers
             return Ok(authorDto);
         }
 
-        //[HttpGet("{name}")] // ADD BACK IF NECESSARY
-        //public async Task<ActionResult<IEnumerable<Author>>> GetAuthorName(string name)
-        //{
-        //    var authorsDto = mapper.Map<AuthorDto[]>(await uow.AuthorRepository.GetAuthorByNameAsync(name));
+        [HttpGet("name/{name}")]
+        public async Task<ActionResult<IEnumerable<Author>>> GetAuthorsByName(string name)
+        {
+            var authorsDto = mapper.Map<AuthorDto[]>(await uow.AuthorRepository.GetAuthorByNameAsync(name));
 
-        //    if (authorsDto == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (authorsDto == null)
+            {
+                return NotFound();
+            }
 
-        //    return Ok(authorsDto);
-        //}
+            return Ok(authorsDto);
+        }
 
         // PUT: api/Authors/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -119,8 +119,8 @@ namespace Lms.API.UI.Controllers
         [HttpPost]
         public async Task<ActionResult<Author>> PostAuthor(Author author)
         {
-            db.Authors.Add(author);
-            await db.SaveChangesAsync();
+            await uow.AuthorRepository.AddAsync(author);
+            await uow.AuthorRepository.SaveAsync();
 
             return CreatedAtAction("GetAuthor", new { id = author.Id }, author);
         }
@@ -135,8 +135,8 @@ namespace Lms.API.UI.Controllers
                 return NotFound();
             }
 
-            db.Authors.Remove(author);
-            await db.SaveChangesAsync();
+            uow.AuthorRepository.Remove(author);
+            await uow.AuthorRepository.SaveAsync();
 
             return NoContent();
         }
