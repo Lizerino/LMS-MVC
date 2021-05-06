@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Lms.MVC.Core.Entities;
+using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Filters;
-using Lms.MVC.UI.Models.ViewModels;
 using Lms.MVC.UI.Models.ViewModels.ActivityViewModels;
 
 using Microsoft.AspNetCore.Authorization;
@@ -20,20 +20,25 @@ namespace Lms.MVC.UI.Controllers
     public class ActivitiesController : Controller
     {
         private readonly ApplicationDbContext db;
+        private readonly IUoW uow;
         private readonly IMapper mapper;
 
-        public ActivitiesController(ApplicationDbContext db, IMapper mapper)
+        public ActivitiesController(ApplicationDbContext db, IMapper mapper, IUoW uow)
         {
             this.db = db;
             this.mapper = mapper;
+            this.uow = uow;
         }
 
         // GET: Activities
+        [Route("Index")]
         public async Task<IActionResult> Index(int? Id)
         {
             if (Id != null)
             {
-                var moduleTitle = db.Modules.Where(m => m.Id == Id).FirstOrDefault().Title;
+                var moduleTitle = uow.ModuleRepository.GetModuleAsync((int)Id).Result.Title;
+                
+                //var moduleTitle = db.Modules.Where(m => m.Id == Id).FirstOrDefault().Title;
                 var activityViewModel = new ListActivityViewModel();
                 activityViewModel.ActivityList = await db.Activities.Where(a => a.ModuleId == Id).ToListAsync();
 

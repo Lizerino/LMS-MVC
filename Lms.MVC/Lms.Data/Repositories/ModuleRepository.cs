@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Lms.MVC.Data.Repositories
 {
-    internal class ModuleRepository : IModuleRepository
+    public class ModuleRepository : IModuleRepository
     {
         private readonly ApplicationDbContext db;
 
@@ -35,6 +35,11 @@ namespace Lms.MVC.Data.Repositories
         {
             var query = db.Modules.AsQueryable();
             return await query.FirstOrDefaultAsync(m => m.Id == moduleId && m.CourseId == id);
+        }
+        public async Task<Module> GetModuleAsync(int moduleId)
+        {
+            var query = db.Modules.AsQueryable();
+            return await query.FirstOrDefaultAsync(m => m.Id == moduleId);
         }
 
         public async Task<Module> GetModuleByTitleAsync(int id, string title)
