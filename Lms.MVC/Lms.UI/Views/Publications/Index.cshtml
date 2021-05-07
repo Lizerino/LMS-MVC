@@ -1,13 +1,12 @@
-﻿@model List<Publication>
+﻿@model PaginationResult<Publication>
 @using Lms.API.Core.Entities
 @using Microsoft.AspNetCore.Identity
 @using Lms.MVC.UI.Utilities.Pagination
 @using Lms.MVC.UI.Views.Shared.Components.Pagination
 @inject UserManager<ApplicationUser> userManager
-@Context.Request.Cookies.TryGetValue("ShowOnlyMyCourses", out string showOnlyMyCourses);
 
 @{
-    ViewData["Title"] = "Course List";
+    ViewData["Title"] = "Literature";
 }
 
 <form class="search-form">
@@ -29,18 +28,18 @@
     <thead>
         <tr>
             <th>
-                Title
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["TitleSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Title</a>
             </th>
             <th>
-                Subject
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["SubjectSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Subject</a>
             </th>
             <th>
-                Authors
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["AuthorSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Author</a>
             </th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Results)
         {
             <tr>
                 <td>
@@ -55,12 +54,16 @@
                         @Html.DisplayFor(modelItem => author.LastName)
                         @if (author != item.Authors.Last())
                         {
-                    <a>, </a>
-                            }
-
+                            <a>, </a>
                         }
+
+                    }
+                </td>
+                <td>
+                    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+@(await Component.InvokeAsync<PaginationViewComponent>(Model))
