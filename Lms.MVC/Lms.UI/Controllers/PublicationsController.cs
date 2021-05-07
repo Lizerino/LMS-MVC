@@ -6,7 +6,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 using Lms.API.Core.Entities;
-
+using Lms.MVC.UI.Utilities.Pagination;
 using Microsoft.AspNetCore.Mvc;
 
 using Newtonsoft.Json;
@@ -17,8 +17,19 @@ namespace Lms.MVC.UI.Controllers
     {
         string Baseurl = "https://localhost:44302/";
 
-        public async Task<IActionResult> Index(string search)
+        public async Task<IActionResult> Index(string search, string sortOrder, int page)
         {
+            if (search != null)
+            {
+                page = 1;
+            }
+
+            ViewData["CurrentFilter"] = search;
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["TitleSortParm"] = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
+            ViewData["SubjectSortParm"] = sortOrder == "subject" ? "subject_desc" : "subject";
+            ViewData["AuthorSortParm"] = sortOrder == "author" ? "author_desc" : "author";
+
             List<Publication> publications = new List<Publication>();
 
             using (var client = new HttpClient())
@@ -43,7 +54,36 @@ namespace Lms.MVC.UI.Controllers
 
                     //Deserializing the response recieved from web api and storing into the Employee list  
                     publications = JsonConvert.DeserializeObject<List<Publication>>(PublicationResponse);
-                    return View(publications);
+
+                    switch (sortOrder)
+                    {
+                        case "title_desc":
+                            publications = publications.OrderByDescending(p => p.Title).ToList();
+                            break;
+                        case "subject":
+                            publications = publications.OrderBy(p => p.Subject.Title).ToList();
+                            break;
+                        case "subject_desc":
+                            publications = publications.OrderByDescending(p => p.Subject.Title).ToList();
+                            break;
+                        case "author":
+                            publications = publications
+                                .OrderBy(p => p.Authors.FirstOrDefault() != null ?
+                                p.Authors.FirstOrDefault().LastName : "").ToList();
+                            break;
+                        case "author_desc":
+                            publications = publications
+                                .OrderByDescending(p => p.Authors.FirstOrDefault() != null ?
+                                p.Authors.FirstOrDefault().LastName : "").ToList();
+                            break;
+                        default:
+                            publications = publications.OrderBy(p => p.Title).ToList();
+                            break;
+                    }
+
+                    var paginatedResult = publications.AsQueryable().GetPagination(page, 10);
+
+                    return View(paginatedResult);
                 }
                 else
                 {
