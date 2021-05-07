@@ -8,7 +8,7 @@ namespace Lms.MVC.Core.Repositories
     public interface IActivityRepository
     {
         Task AddAsync<T>(T added);
-        Task<IEnumerable<Course>> GetAllActivitiesAsync(bool includeModules);
+        Task<IEnumerable<Course>> GetAllActivitiesAsync();
         Task<Course> GetActivityAsync(int? id);
         void Remove(Course removed);
         void Remove<T>(T removed);

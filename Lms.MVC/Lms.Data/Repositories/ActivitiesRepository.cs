@@ -10,11 +10,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Lms.MVC.Data.Repositories
 {
-    internal class CourseRepository : ICourseRepository
+    internal class ActivityRepository : IActivityRepository
     {
         private readonly ApplicationDbContext db;
 
-        public CourseRepository(ApplicationDbContext db)
+        public ActivityRepository(ApplicationDbContext db)
         {
             this.db = db;
         }
@@ -31,16 +31,12 @@ namespace Lms.MVC.Data.Repositories
             db.Remove(removed);
         }
 
-        public async Task<IEnumerable<Course>> GetAllCoursesAsync(bool includeModules)
+        public async Task<IEnumerable<Course>> GetAllActivitiesAsync()
         {
-            return includeModules ? await db.Courses
-                        .Include(l => l.Modules)
-                        .ToListAsync() :
-                        await db.Courses
-                        .ToListAsync();
+            return await db.Courses.ToListAsync();
         }
 
-        public async Task<Course> GetCourseAsync(int? id)
+        public async Task<Course> GetActivityAsync(int? id)
         {
             var query = db.Courses.AsQueryable();
             return await query.Include(c => c.Modules).FirstOrDefaultAsync(c => c.Id == id);
@@ -57,9 +53,9 @@ namespace Lms.MVC.Data.Repositories
             return (await db.SaveChangesAsync()) >= 0;
         }
 
-        public async Task<bool> CourseExists(int id)
+        public async Task<bool> ActivityExists(int id)
         {
-            return await db.Courses.AnyAsync(c=>c.Id==id);
+            return await db.Activities.AnyAsync(c => c.Id == id);
         }
 
         public void Update(Course course)
