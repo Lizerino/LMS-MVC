@@ -15,7 +15,6 @@ namespace Lms.MVC.Data.Repositories
         private readonly ApplicationDbContext db;
         private readonly UserManager<ApplicationUser> userManager;
         public ICourseRepository CourseRepository { get; }
-
         public IModuleRepository ModuleRepository { get; }
         public IUserRepository UserRepository { get; }
 

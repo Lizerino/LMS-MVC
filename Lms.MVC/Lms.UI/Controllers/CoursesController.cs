@@ -7,7 +7,6 @@ using AutoMapper;
 
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
-using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Models.ViewModels.CourseViewModels;
 using Lms.MVC.UI.Utilities.Pagination;
@@ -33,30 +32,30 @@ namespace Lms.MVC.UI.Controllers
             this.uoW = uoW;
             this.mapper = mapper;
             this.userManager = userManager;
-        }        
+        }
 
         // GET: Courses
         public async Task<IActionResult> Index(string search, string sortOrder, int page)
-        {            
+        {
             if (search != null)
             {
                 page = 1;
-            }            
+            }
 
             string showOnlyMyCourses = Request.Cookies["ShowOnlyMyCourses"];
             IEnumerable<Course> courses;
 
-            var currentUser = await userManager.GetUserAsync(User);            
+            var currentUser = await userManager.GetUserAsync(User);
 
-            if (showOnlyMyCourses=="true")
+            if (showOnlyMyCourses == "true")
             {
                 courses = uoW.CourseRepository.GetAllCoursesAsync(false).Result
             .Where(c => (String.IsNullOrEmpty(search) || (c.Title.Contains(search))) && (c.Users.Contains(currentUser)));
             }
             else
             {
-            courses = uoW.CourseRepository.GetAllCoursesAsync(false).Result
-            .Where(c => String.IsNullOrEmpty(search) || (c.Title.Contains(search)));
+                courses =  uoW.CourseRepository.GetAllCoursesAsync(false).Result
+                .Where(c => String.IsNullOrEmpty(search) || (c.Title.Contains(search)));
             }
 
             var result = mapper.Map<IEnumerable<ListCourseViewModel>>(courses);
@@ -65,18 +64,21 @@ namespace Lms.MVC.UI.Controllers
             ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Title_desc" : "";
             ViewData["DateSortParm"] = sortOrder == "StartDate" ? "StartDate_desc" : "StartDate";
-            
+
             switch (sortOrder)
             {
                 case "Title_desc":
                     result = result.OrderByDescending(s => s.Title);
                     break;
+
                 case "StartDate":
                     result = result.OrderBy(s => s.StartDate);
                     break;
+
                 case "StartDate_desc":
                     result = result.OrderByDescending(s => s.StartDate);
                     break;
+
                 default:
                     result = result.OrderBy(s => s.Title);
                     break;
@@ -84,7 +86,7 @@ namespace Lms.MVC.UI.Controllers
 
             var paginatedResult = result.AsQueryable().GetPagination(page, 10);
 
-            return View(paginatedResult);            
+            return View(paginatedResult);
         }
 
         public IActionResult ToggleMyCourses()
@@ -150,7 +152,7 @@ namespace Lms.MVC.UI.Controllers
         public IActionResult Create()
         {
             var courseViewModel = new CreateCourseViewModel();
-            courseViewModel.StartDate = DateTime.Now;            
+            courseViewModel.StartDate = DateTime.Now;
             return View(courseViewModel);
         }
 
@@ -179,7 +181,8 @@ namespace Lms.MVC.UI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Teacher,Admin")][ModelNotNull]
+        [Authorize(Roles = "Teacher,Admin")]
+        [ModelNotNull]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -200,34 +203,31 @@ namespace Lms.MVC.UI.Controllers
             return View(model);
         }
 
-
         [HttpPost]
         [Authorize(Roles = "Teacher,Admin")]
         [ValidateAntiForgeryToken]
         [ModelValid, ModelNotNull]
         public async Task<IActionResult> Edit(int id, EditCourseViewModel courseModel)
         {
-
             var course = await uoW.CourseRepository.GetCourseAsync(id);
-                mapper.Map(courseModel, course);
-                try
+            mapper.Map(courseModel, course);
+            try
+            {
+                uoW.CourseRepository.Update(course);
+                await uoW.CompleteAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CourseExists(course.Id).Result)
                 {
-                    uoW.CourseRepository.Update(course);
-                    await uoW.CompleteAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!CourseExists(course.Id).Result)
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
-                return RedirectToAction(nameof(Index));
-            
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         //[Authorize(Roles = "Teacher,Admin")]
