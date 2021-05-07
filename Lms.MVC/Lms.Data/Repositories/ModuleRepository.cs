@@ -40,6 +40,11 @@ namespace Lms.MVC.Data.Repositories
             return await query.ToArrayAsync();
         }
 
+        public async Task<Module> GetModuleAsync(int id)
+        {
+            return await db.Modules.FindAsync(id);
+        }
+
         public async Task<Module> GetModuleAsync(int id, int moduleId)
         {
             var query = db.Modules.AsQueryable();
@@ -60,6 +65,10 @@ namespace Lms.MVC.Data.Repositories
         public async Task<bool> SaveAsync()
         {
             return (await db.SaveChangesAsync()) >= 0;
+        }
+        public void Update(Module module)
+        {
+            db.Update(module);
         }
     }
 }
