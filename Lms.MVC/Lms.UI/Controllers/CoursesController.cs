@@ -207,8 +207,8 @@ namespace Lms.MVC.UI.Controllers
         [ModelValid, ModelNotNull]
         public async Task<IActionResult> Edit(int id, EditCourseViewModel courseModel)
         {
-           
-                var course = await db.Courses.FindAsync(id);
+
+            var course = await uoW.CourseRepository.GetCourseAsync(id);
                 mapper.Map(courseModel, course);
                 try
                 {
