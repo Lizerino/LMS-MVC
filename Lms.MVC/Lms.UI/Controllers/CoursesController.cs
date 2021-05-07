@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Lms.MVC.Core.Entities;
+using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Models.ViewModels.CourseViewModels;
@@ -21,18 +22,18 @@ namespace Lms.MVC.UI.Controllers
 {
     public class CoursesController : Controller
     {
-        private readonly ApplicationDbContext db;
-
         private readonly UserManager<ApplicationUser> userManager;
 
         private readonly IMapper mapper;
 
-        public CoursesController(ApplicationDbContext context, IMapper mapper, UserManager<ApplicationUser> userManager)
+        private readonly IUoW uoW;
+
+        public CoursesController(IUoW uoW, IMapper mapper, UserManager<ApplicationUser> userManager)
         {
-            db = context;
+            this.uoW = uoW;
             this.mapper = mapper;
             this.userManager = userManager;
-        }
+        }        
 
         // GET: Courses
         public async Task<IActionResult> Index(string search, string sortOrder, int page)
@@ -43,19 +44,19 @@ namespace Lms.MVC.UI.Controllers
             }            
 
             string showOnlyMyCourses = Request.Cookies["ShowOnlyMyCourses"];
-            List<Course> courses;
+            IEnumerable<Course> courses;
 
             var currentUser = await userManager.GetUserAsync(User);            
 
             if (showOnlyMyCourses=="true")
             {
-            courses = await db.Courses.Include(c => c.Users)
-            .Where(c => (String.IsNullOrEmpty(search) || (c.Title.Contains(search))) && (c.Users.Contains(currentUser))).ToListAsync();
+                courses = uoW.CourseRepository.GetAllCoursesAsync(false).Result
+            .Where(c => (String.IsNullOrEmpty(search) || (c.Title.Contains(search))) && (c.Users.Contains(currentUser)));
             }
             else
             {
-            courses = await db.Courses.Include(c=>c.Users)
-            .Where(c => String.IsNullOrEmpty(search) || (c.Title.Contains(search))).ToListAsync();
+            courses = uoW.CourseRepository.GetAllCoursesAsync(false).Result
+            .Where(c => String.IsNullOrEmpty(search) || (c.Title.Contains(search)));
             }
 
             var result = mapper.Map<IEnumerable<ListCourseViewModel>>(courses);
@@ -108,7 +109,7 @@ namespace Lms.MVC.UI.Controllers
         public async Task<IActionResult> RegisterForCourseToggle(int? id)
         {
             if (id == null) return NotFound();
-            var course = await db.Courses.Include(m => m.Users).Where(i => i.Id == id).FirstOrDefaultAsync();
+            var course = await uoW.CourseRepository.GetCourseAsync(id);
             var currentUser = await userManager.GetUserAsync(User);
             var teacher = userManager.Users.Include(x => x.Courses).Single(u => u == currentUser);
 
@@ -123,7 +124,7 @@ namespace Lms.MVC.UI.Controllers
                 currentUser.Courses.Add(course);
             }
 
-            await db.SaveChangesAsync();
+            await uoW.CompleteAsync();
             return RedirectToAction("Index", "Courses");
         }
 
@@ -135,8 +136,7 @@ namespace Lms.MVC.UI.Controllers
                 return NotFound();
             }
 
-            var course = await db.Courses.Include(c => c.Users)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var course = await uoW.CourseRepository.GetCourseAsync(id);
             if (course == null)
             {
                 return NotFound();
@@ -170,8 +170,8 @@ namespace Lms.MVC.UI.Controllers
                 }
 
                 var course = mapper.Map<Course>(courseViewModel);
-                db.Add(course);
-                await db.SaveChangesAsync();
+                await uoW.CourseRepository.AddAsync(course);
+                await uoW.CompleteAsync();
                 return RedirectToAction(nameof(Index));
             }
 
@@ -182,8 +182,12 @@ namespace Lms.MVC.UI.Controllers
         [Authorize(Roles = "Teacher,Admin")][ModelNotNull]
         public async Task<IActionResult> Edit(int? id)
         {
-            // find course in database
-            var course = await db.Courses.FindAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var course = await uoW.CourseRepository.GetCourseAsync(id);
             if (course == null)
             {
                 return NotFound();
@@ -208,12 +212,12 @@ namespace Lms.MVC.UI.Controllers
                 mapper.Map(courseModel, course);
                 try
                 {
-                db.Courses.Update(course);
-                    await db.SaveChangesAsync();
+                    uoW.CourseRepository.Update(course);
+                    await uoW.CompleteAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CourseExists(course.Id))
+                    if (!CourseExists(course.Id).Result)
                     {
                         return NotFound();
                     }
@@ -293,8 +297,7 @@ namespace Lms.MVC.UI.Controllers
                 return NotFound();
             }
 
-            var course = await db.Courses
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var course = await uoW.CourseRepository.GetCourseAsync(id);
             if (course == null)
             {
                 return NotFound();
@@ -308,15 +311,15 @@ namespace Lms.MVC.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var course = await db.Courses.FindAsync(id);
-            db.Courses.Remove(course);
-            await db.SaveChangesAsync();
+            var course = await uoW.CourseRepository.GetCourseAsync(id);
+            uoW.CourseRepository.Remove(course);
+            await uoW.CompleteAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CourseExists(int id)
+        private async Task<bool> CourseExists(int id)
         {
-            return db.Courses.Any(e => e.Id == id);
+            return await uoW.CourseRepository.CourseExists(id);
         }
     }
 }

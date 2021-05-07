@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Lms.API.Core.Dto;
 using Lms.MVC.Core.Entities;
+using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Models.ViewModels;
@@ -23,11 +24,13 @@ namespace Lms.MVC.UI.Controllers
     {
         private readonly ApplicationDbContext db;
         private readonly IMapper mapper;
+        private readonly IUoW uow;
 
-        public ActivitiesController(ApplicationDbContext db, IMapper mapper)
+        public ActivitiesController(ApplicationDbContext db, IUoW uow, IMapper mapper)
         {
             this.db = db;
             this.mapper = mapper;
+            this.uow = uow;
         }
 
         // GET: Activities

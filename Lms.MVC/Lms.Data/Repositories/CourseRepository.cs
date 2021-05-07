@@ -1,33 +1,34 @@
-﻿using Lms.MVC.Core.Entities;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;
 
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lms.MVC.Data.Repositories
 {
-    class CourseRepository : ICourseRepository
+    internal class CourseRepository : ICourseRepository
     {
-        private readonly ApplicationDbContext db;      
-
+        private readonly ApplicationDbContext db;
 
         public CourseRepository(ApplicationDbContext db)
         {
             this.db = db;
         }
+
         public async Task AddAsync<T>(T added)
         {
             await db.AddAsync(added);
         }
+
         public void Remove<T>(T removed) => db.Remove(removed);
+
         public void Remove(Course removed)
         {
-             db.Remove(removed);
+            db.Remove(removed);
         }
 
         public async Task<IEnumerable<Course>> GetAllCoursesAsync(bool includeModules)
@@ -36,14 +37,14 @@ namespace Lms.MVC.Data.Repositories
                         .Include(l => l.Modules)
                         .ToListAsync() :
                         await db.Courses
-                        .ToListAsync();            
+                        .ToListAsync();
         }
 
         public async Task<Course> GetCourseAsync(int? id)
         {
-            var query =  db.Courses.AsQueryable();
+            var query = db.Courses.AsQueryable();
             return await query.Include(c => c.Modules).FirstOrDefaultAsync(c => c.Id == id);
-        } 
+        }
 
         //public async Task<Course> GetCourseByTitleAsync(string title)
         //{
@@ -53,11 +54,17 @@ namespace Lms.MVC.Data.Repositories
 
         public async Task<bool> SaveAsync()
         {
-
-           
             return (await db.SaveChangesAsync()) >= 0;
         }
 
-       
+        public async Task<bool> CourseExists(int id)
+        {
+            return await CourseExists(id);
+        }
+
+        public void Update(Course course)
+        {
+            db.Update(course);
+        }
     }
 }
