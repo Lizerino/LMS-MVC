@@ -8,7 +8,7 @@ namespace Lms.MVC.Core.Repositories
     public interface IModuleRepository
     {
         Task AddAsync<T>(T added);
-        Task<IEnumerable<Module>> GetAllModulesAsync();
+        Task<IEnumerable<Module>> GetAllModulesAsync(bool includeActivities);
         Task<IEnumerable<Module>> GetAllModulesAsync(int id);
         Task<Module> GetModuleAsync(int id, int moduleId);
         Task<Module> GetModuleByTitleAsync(int id, string title);

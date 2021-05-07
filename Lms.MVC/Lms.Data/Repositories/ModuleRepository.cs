@@ -24,11 +24,13 @@ namespace Lms.MVC.Data.Repositories
             await db.AddAsync(added);
         }
 
-        public async Task<IEnumerable<Module>> GetAllModulesAsync()
+        public async Task<IEnumerable<Module>> GetAllModulesAsync(bool includeActivities)
         {
-            var query = db.Modules.AsQueryable();
-
-            return await query.ToArrayAsync();
+            return includeActivities ? await db.Modules
+                        .Include(l => l.Activities)
+                        .ToListAsync() :
+                        await db.Modules
+                        .ToListAsync();
         }
 
         public async Task<IEnumerable<Module>> GetAllModulesAsync(int id)
