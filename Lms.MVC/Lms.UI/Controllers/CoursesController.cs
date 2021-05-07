@@ -50,7 +50,7 @@ namespace Lms.MVC.UI.Controllers
             if (showOnlyMyCourses == "true")
             {
                 courses = uoW.CourseRepository.GetAllCoursesAsync(false).Result
-            .Where(c => (String.IsNullOrEmpty(search) || (c.Title.Contains(search))) && (c.Users.Contains(currentUser)));
+            .Where(c => (String.IsNullOrEmpty(search) || (c.Title.Contains(search))) && (c.Users != null && (c.Users.Contains(currentUser))));
             }
             else
             {
