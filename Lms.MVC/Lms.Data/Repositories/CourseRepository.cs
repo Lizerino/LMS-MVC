@@ -58,6 +58,39 @@ namespace Lms.MVC.Data.Repositories
             return (await db.SaveChangesAsync()) >= 0;
         }
 
-       
+       public async Task<DateTime> CalculateEndDate(int id)
+        {
+            
+            var course = await GetCourseAsync(id);
+            var modulesEndDates = course.Modules.Select(m => m.EndDate).ToList();
+            var endDate = modulesEndDates.Last();
+            foreach (var date in modulesEndDates)
+            {
+                if (date > endDate )
+                {
+                    endDate = date;
+                }
+
+            }
+
+            return endDate;
+        }
+
+     
+        public async void SetAllCoursesEndDate()
+        {
+            var courses = await GetAllCoursesAsync(true);
+            foreach (var course in courses)
+            {
+                if (course.Modules.Any())
+                {
+                course.EndDate = await CalculateEndDate(course.Id);
+                }
+                else
+                {
+                    course.EndDate = course.StartDate;
+                }
+            }
+        }
     }
 }
