@@ -9,8 +9,8 @@ namespace Lms.MVC.Core.Repositories
 {
     public interface IActivityRepository
     {
-        Task<IEnumerable<Activity>> GetAllActivities();
-        //Task<Activity> GetActivity(Id);
+        Task<IEnumerable<Activity>> GetAllActivities(int id);
+        Task<Activity> GetActivity(int? Id);
         Task<T> GetT<T>();
         Task<IEnumerable<T>> GetTs<T>();
         Task AddAsync<T>(T added);

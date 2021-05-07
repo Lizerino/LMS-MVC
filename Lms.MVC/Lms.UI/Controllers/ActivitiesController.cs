@@ -37,7 +37,8 @@ namespace Lms.MVC.UI.Controllers
             if (Id != null)
             {
                 var moduleTitle = uow.ModuleRepository.GetModuleAsync((int)Id).Result.Title;
-                
+                //var moduleTitle = uow.ModuleRepository.GetModuleAsync((int)Id).Result.Title;
+
                 //var moduleTitle = db.Modules.Where(m => m.Id == Id).FirstOrDefault().Title;
                 var activityViewModel = new ListActivityViewModel();
                 activityViewModel.ActivityList = await db.Activities.Where(a => a.ModuleId == Id).ToListAsync();
