@@ -117,10 +117,6 @@ namespace Lms.MVC.UI.Controllers
 
             var model = mapper.Map<EditApplicationUserViewModel>(user);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
 
             return View(model);
         }
