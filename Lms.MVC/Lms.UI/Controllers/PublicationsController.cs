@@ -6,7 +6,9 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 using Lms.API.Core.Entities;
+using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Utilities.Pagination;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Newtonsoft.Json;
@@ -17,6 +19,7 @@ namespace Lms.MVC.UI.Controllers
     {
         string Baseurl = "https://localhost:44302/";
 
+        [Authorize]
         public async Task<IActionResult> Index(string search, string sortOrder, int page)
         {
             if (search != null)
@@ -89,6 +92,66 @@ namespace Lms.MVC.UI.Controllers
                 {
                     return View();
                 }
+            }
+        }
+
+        [HttpGet]
+        [Authorize][ModelNotNull]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            using (var client = new HttpClient())
+            {
+                var publication = new Publication();
+                client.BaseAddress = new Uri(Baseurl);
+
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpResponseMessage Res = 
+                    await client.GetAsync("api/Publications/" + id);
+
+                if (Res.IsSuccessStatusCode)
+                {
+                    //Storing the response details recieved from web api   
+                    var PublicationResponse = Res.Content.ReadAsStringAsync().Result;
+
+                    //Deserializing the response recieved from web api and storing into the Employee list  
+                    publication = JsonConvert.DeserializeObject<Publication>(PublicationResponse);
+
+                    return View(publication);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+        }
+
+
+        [HttpPut]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Publication publication)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Baseurl);
+
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpResponseMessage Res =
+                    await client.PutAsJsonAsync<Publication>("api/Publications" + id, publication);
+
+                if (Res.IsSuccessStatusCode)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    return View();
+                }
+                
             }
         }
     }
