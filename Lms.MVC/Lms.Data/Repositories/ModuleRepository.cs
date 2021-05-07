@@ -23,6 +23,7 @@ namespace Lms.MVC.Data.Repositories
         {
             await db.AddAsync(added);
         }
+        public void Remove<T>(T removed) => db.Remove(removed);
 
         public async Task<IEnumerable<Module>> GetAllModulesAsync(int id)
         {
@@ -36,11 +37,14 @@ namespace Lms.MVC.Data.Repositories
             var query = db.Modules.AsQueryable();
             return await query.FirstOrDefaultAsync(m => m.Id == moduleId && m.CourseId == id);
         }
+
+
         public async Task<Module> GetModuleAsync(int moduleId)
         {
-            var query = db.Modules.AsQueryable();
+            var query = db.Modules.AsQueryable().Include(a => a.Activities);
             return await query.FirstOrDefaultAsync(m => m.Id == moduleId);
         }
+
 
         public async Task<Module> GetModuleByTitleAsync(int id, string title)
         {
@@ -52,7 +56,6 @@ namespace Lms.MVC.Data.Repositories
         {
             db.Remove(removed);
         }
-        public void Remove<T>(T removed) => db.Remove(removed);
         public async Task<bool> SaveAsync()
         {
             return (await db.SaveChangesAsync()) >= 0;

@@ -106,21 +106,33 @@ namespace Lms.MVC.UI
 
         // This is an unneccecary method.. the link should redirecto to activities
         [HttpGet]
-        [Route("details/{title}")]//Todo Fix Navigation
+        //[Route("details/{title}")]//Todo Fix Navigation
         public ActionResult Details(int id, string title)
-        {
-            //Find course
-            var course = db.Courses.Find(id);
-            course.Modules = GetModules(course.Id);
+        {            
+            var mod = uow.ModuleRepository.GetModuleAsync(id).Result;
+            var acts = new DetailModuleViewModel
+            {
+                Id = mod.Id,
+                Activities = mod.Activities,
+                Title = mod.Title,
+                Description = mod.Description,
+                EndDate = mod.EndDate
+            };
 
-            //Find module in course
-            var module = course.Modules.FirstOrDefault(m => m.Title == title);
+            return View(acts);
 
-            //Add Activities
-            module.Activities = GetActivities(module.Id);
-            //mapper.Map<ModuleDto>(module);
-
-            return View(module);
+         //  //Find course
+         //  var course = db.Courses.Find(id);
+         //  course.Modules = GetModules(course.Id);
+         //
+         //  //Find module in course
+         //  var module = course.Modules.FirstOrDefault(m => m.Title == title);
+         //
+         //  //Add Activities
+         //  module.Activities = GetActivities(module.Id);
+         //  //mapper.Map<ModuleDto>(module);
+         //
+         //  return View(module);
         }
 
 
