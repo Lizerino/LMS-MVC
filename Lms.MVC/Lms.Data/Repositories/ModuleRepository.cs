@@ -24,6 +24,13 @@ namespace Lms.MVC.Data.Repositories
             await db.AddAsync(added);
         }
 
+        public async Task<IEnumerable<Module>> GetAllModulesAsync()
+        {
+            var query = db.Modules.AsQueryable();
+
+            return await query.ToArrayAsync();
+        }
+
         public async Task<IEnumerable<Module>> GetAllModulesAsync(int id)
         {
             var query = db.Modules.AsQueryable().Where(m => m.CourseId == id);             

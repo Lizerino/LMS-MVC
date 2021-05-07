@@ -5,9 +5,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Repositories\ContentDialog1.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="5.0.4" />
     <PackageReference Include="TimePeriodLibrary.NET" Version="2.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="Repositories\ContentDialog1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
 </Project>
