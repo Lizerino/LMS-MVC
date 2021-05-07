@@ -5,15 +5,15 @@ using Lms.MVC.Core.Entities;
 
 namespace Lms.MVC.Core.Repositories
 {
-    public interface ICourseRepository
+    public interface IActivityRepository
     {
         Task AddAsync<T>(T added);
-        Task<IEnumerable<Course>> GetAllCoursesAsync(bool includeModules);
-        Task<Course> GetCourseAsync(int? id);
+        Task<IEnumerable<Course>> GetAllActivitiesAsync();
+        Task<Course> GetActivityAsync(int? id);
         void Remove(Course removed);
         void Remove<T>(T removed);
         Task<bool> SaveAsync();
-        Task<bool> CourseExists(int id);
+        Task<bool> ActivityExists(int id);
         void Update(Course course);
 
     }
