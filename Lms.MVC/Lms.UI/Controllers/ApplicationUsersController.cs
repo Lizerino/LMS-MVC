@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Lms.MVC.Core.Repositories;
+using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Models.ViewModels.ApplicationUserViewModels;
 using Lms.MVC.UI.Utilities.Pagination;
 using Microsoft.AspNetCore.Authorization;
@@ -92,6 +93,7 @@ namespace Lms.MVC.UI.Controllers
 
         // GET: ApplicationUsersController/Details/5
 
+        [ModelNotNull]
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -99,15 +101,12 @@ namespace Lms.MVC.UI.Controllers
                 return NotFound();
             }
             var user = await uoW.UserRepository.FindAsync(id, true);
-            if (user == null)
-            {
-                return NotFound();
-            }
+           
             var model = mapper.Map<DetailsApplicationUserViewModel>(user);
 
             return View(model);
         }
-
+        [ModelNotNull]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -184,11 +183,12 @@ namespace Lms.MVC.UI.Controllers
             return View(viewmodel);
         }
 
+        
         private bool UserExists(string id)
         {
             return uoW.UserRepository.Any(id);
         }
-
+        [ModelNotNull]
         public async Task<IActionResult> Remove(string id)
         {
             if (id == null)
@@ -197,10 +197,7 @@ namespace Lms.MVC.UI.Controllers
             }
 
             var userToBeRemoved = await uoW.UserRepository.FindAsync(id, true);
-            if (userToBeRemoved == null)
-            {
-                return NotFound();
-            }
+            
             var model = mapper.Map<DeleteApplicationUserViewModel>(userToBeRemoved);
 
             return View(model);
@@ -208,6 +205,7 @@ namespace Lms.MVC.UI.Controllers
 
         [HttpPost, ActionName("Remove")]
         [ValidateAntiForgeryToken]
+        [ModelNotNull]
         public async Task<IActionResult> RemoveConfirmed(string id)
         {
             if (id == null)
@@ -216,10 +214,7 @@ namespace Lms.MVC.UI.Controllers
             }
 
             var userToBeRemoved = await uoW.UserRepository.FindAsync(id, true);
-            if (userToBeRemoved is null)
-            {
-                return NotFound();
-            }
+            
             uoW.UserRepository.Remove(userToBeRemoved);
             await uoW.CompleteAsync();
             return RedirectToAction(nameof(Index));
