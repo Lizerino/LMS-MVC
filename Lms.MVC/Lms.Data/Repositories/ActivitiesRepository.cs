@@ -31,9 +31,9 @@ namespace Lms.MVC.Data.Repositories
             db.Remove(removed);
         }
 
-        public async Task<IEnumerable<Course>> GetAllActivitiesAsync()
+        public async Task<IEnumerable<Activity>> GetAllActivitiesAsync()
         {
-            return await db.Courses.ToListAsync();
+            return await db.Activities.ToListAsync();
         }
 
         public async Task<Course> GetActivityAsync(int? id)

@@ -64,6 +64,7 @@ namespace Lms.MVC.UI.Controllers
             ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Title_desc" : "";
             ViewData["DateSortParm"] = sortOrder == "StartDate" ? "StartDate_desc" : "StartDate";
+            ViewData["EndDateSortParm"] = sortOrder == "EndDate" ? "EndDate_desc" : "EndDate";
 
             switch (sortOrder)
             {
@@ -77,6 +78,13 @@ namespace Lms.MVC.UI.Controllers
 
                 case "StartDate_desc":
                     result = result.OrderByDescending(s => s.StartDate);
+                    break; 
+                case "EndDate_desc":
+                    result = result.OrderByDescending(s => s.EndDate);
+                    break;
+
+                     case "EndDate":
+                    result = result.OrderByDescending(s => s.EndDate);
                     break;
 
                 default:
@@ -85,7 +93,7 @@ namespace Lms.MVC.UI.Controllers
             }
 
             var paginatedResult = result.AsQueryable().GetPagination(page, 10);
-
+             uoW.CourseRepository.SetAllCoursesEndDate();
             return View(paginatedResult);
         }
 
@@ -137,14 +145,15 @@ namespace Lms.MVC.UI.Controllers
             {
                 return NotFound();
             }
-
             var course = await uoW.CourseRepository.GetCourseAsync(id);
             if (course == null)
             {
                 return NotFound();
             }
+            course = await uoW.CourseRepository.SetCourseEndDateAsync((int)id);
+            var model = mapper.Map<DetailCourseViewModel>(course);
 
-            return View(course);
+            return View(model);
         }
 
         // GET: Courses/Create
@@ -172,6 +181,9 @@ namespace Lms.MVC.UI.Controllers
                 }
 
                 var course = mapper.Map<Course>(courseViewModel);
+
+                course.EndDate = await uoW.CourseRepository.CalculateEndDateAsync(course.Id);
+
                 await uoW.CourseRepository.AddAsync(course);
                 await uoW.CompleteAsync();
                 return RedirectToAction(nameof(Index));
@@ -210,6 +222,7 @@ namespace Lms.MVC.UI.Controllers
         public async Task<IActionResult> Edit(int id, EditCourseViewModel courseModel)
         {
             var course = await uoW.CourseRepository.GetCourseAsync(id);
+            await uoW.CourseRepository.CalculateEndDateAsync(course.Id);
             mapper.Map(courseModel, course);
             try
             {

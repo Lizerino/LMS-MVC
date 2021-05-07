@@ -42,6 +42,8 @@ namespace Lms.MVC.UI
             // Todo: Should we make this a part of the entity?
 
             //Student View of Modules for Course
+
+      
             if (User.IsInRole("Student"))
             {
                 var user = await userManager.GetUserAsync(User);
@@ -150,7 +152,10 @@ namespace Lms.MVC.UI
             //Add Module to Course                
             course.Modules.Add(module);
 
-            if (await db.SaveChangesAsync() == 1)
+            // Update course end date
+            course = await uow.CourseRepository.SetCourseEndDateAsync(course.Id);
+
+            if (await db.SaveChangesAsync() != 0)
             {
                 // Send user back to list of modules for that course
                 return RedirectToAction("Index", new { id = moduleViewModel.CourseId });

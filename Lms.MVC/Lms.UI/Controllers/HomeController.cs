@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Linq;
-
+using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;
 using Lms.MVC.Data.Repositories;
 using Lms.MVC.UI.Models;
@@ -13,8 +13,8 @@ namespace Lms.MVC.UI.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly UoW uoW;
-        public HomeController(UoW uoW)
+        private readonly IUoW uoW;
+        public HomeController(IUoW uoW)
         {
             this.uoW = uoW;
         }
@@ -31,8 +31,8 @@ namespace Lms.MVC.UI.Controllers
                 var adminOverviewViewModel = new AdminOverviewViewModel();
                 adminOverviewViewModel.NumberOfCourses = uoW.CourseRepository.GetAllCoursesAsync(false).Result.Count();
                 adminOverviewViewModel.NumberOfModules = uoW.ModuleRepository.GetAllModulesAsync().Result.Count();
-                adminOverviewViewModel.NumberOfActivities = uoW.ActivityRepository.GetAllActivitiesAsync().Result.Count();                
-                adminOverviewViewModel.NumberOfAdmins = allUsers.Where(u=>u.Role=="Admin").Count();
+                adminOverviewViewModel.NumberOfActivities = uoW.ActivityRepository.GetAllActivitiesAsync().Result.Count();
+                adminOverviewViewModel.NumberOfAdmins = allUsers.Where(u => u.Role == "Admin").Count();
                 adminOverviewViewModel.NumberOfStudents = allUsers.Where(u => u.Role == "Student").Count();
                 adminOverviewViewModel.NumberOfTeachers = allUsers.Where(u => u.Role == "Teacher").Count();
                 adminOverviewViewModel.NumberOfUsers = allUsers.Count();

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Lms.MVC.Core.Entities;
@@ -15,6 +16,8 @@ namespace Lms.MVC.Core.Repositories
         Task<bool> SaveAsync();
         Task<bool> CourseExists(int id);
         void Update(Course course);
-
+        Task<DateTime> CalculateEndDateAsync(int id);
+        void SetAllCoursesEndDate();
+        Task<Course> SetCourseEndDateAsync(int id);
     }
 }
