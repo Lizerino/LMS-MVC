@@ -21,6 +21,7 @@ namespace Lms.MVC.Data.Repositories
 
         public void Remove<T>(T removed) => db.Remove(removed);
 
+
         public Task<T> GetT<T>()
         {
             throw new NotImplementedException();

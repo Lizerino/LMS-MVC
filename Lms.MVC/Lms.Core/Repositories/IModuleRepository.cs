@@ -8,6 +8,5 @@ namespace Lms.MVC.Core.Repositories
         Task AddAsync<T>(T added);
 
         Task<Module> GetModuleAsync(int moduleId);
-
     }
 }
