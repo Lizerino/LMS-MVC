@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using Lms.MVC.Core.Entities;
+﻿using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;
-
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Lms.MVC.Data.Repositories
 {
@@ -59,12 +58,54 @@ namespace Lms.MVC.Data.Repositories
 
         public async Task<bool> CourseExists(int id)
         {
-            return await db.Courses.AnyAsync(c=>c.Id==id);
+            return await db.Courses.AnyAsync(c => c.Id == id);
         }
 
         public void Update(Course course)
         {
             db.Update(course);
+        }
+
+        public async Task<DateTime> CalculateEndDateAsync(int id)
+        {
+         
+            var modulesEndDates = (await GetCourseAsync(id)).Modules.Select(m => m.EndDate).ToList();
+            var endDate = modulesEndDates.Last();
+            foreach (var date in modulesEndDates)
+            {
+                if (date > endDate)
+                {
+                    endDate = date;
+                }
+            }
+
+            return endDate;
+        }
+
+        public void SetAllCoursesEndDate()
+        {
+            var courses =  GetAllCoursesAsync(true).Result;
+            foreach (var course in courses)
+            {
+                var id = course.Id;
+                if (course.Modules.Any())
+                {
+                    course.EndDate =  CalculateEndDateAsync(id).Result;
+                }
+                else
+                {
+                    course.EndDate = course.StartDate;
+                }
+            }
+
+        }
+        public async Task<Course> SetCourseEndDateAsync(int id)
+        {
+            var course = await GetCourseAsync(id);
+            course.EndDate = await CalculateEndDateAsync(id);
+
+            return course;
+
         }
     }
 }

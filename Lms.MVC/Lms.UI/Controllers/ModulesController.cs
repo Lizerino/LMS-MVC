@@ -156,154 +156,157 @@ namespace Lms.MVC.UI
                 //Add Module to Course
                 currentCourse.Modules.Add(module);
 
+                // Update course end date
+                currentCourse = await uow.CourseRepository.SetCourseEndDateAsync(currentCourse.Id);
+
                 await uow.CompleteAsync();
 
-                // Send user back to list of modules for that course
-                return RedirectToAction("Index", new { id = moduleViewModel.CourseId });
+
+                    // Send user back to list of modules for that course
+                    return RedirectToAction("Index", new { id = moduleViewModel.CourseId });
             }
-            else
-            {
-                return View(moduleViewModel);
-            }
+                    return View(moduleViewModel);
         }
 
-        private void ValidateDates(CreateModuleViewModel moduleViewModel, Course currentCourse, IEnumerable<Module> modulesInCurrentCourse)
-        {
-            TimePeriodCollection activitiesTimeperiod = new TimePeriodCollection();
-            TimeRange activityTimeRange = new TimeRange(moduleViewModel.StartDate, moduleViewModel.EndDate);
-
-            if (modulesInCurrentCourse.Count() > 0)
+            private void ValidateDates(CreateModuleViewModel moduleViewModel, Course currentCourse, IEnumerable<Module> modulesInCurrentCourse)
             {
-                foreach (var item in modulesInCurrentCourse)
+                TimePeriodCollection activitiesTimeperiod = new TimePeriodCollection();
+                TimeRange activityTimeRange = new TimeRange(moduleViewModel.StartDate, moduleViewModel.EndDate);
+
+                if (modulesInCurrentCourse.Count() > 0)
                 {
-                    activitiesTimeperiod.Add(new TimeRange(item.StartDate, item.EndDate));
+                    foreach (var item in modulesInCurrentCourse)
+                    {
+                        activitiesTimeperiod.Add(new TimeRange(item.StartDate, item.EndDate));
+                    }
+                    if (activitiesTimeperiod.IntersectsWith(activityTimeRange))
+                    {
+                        ModelState.AddModelError("", $"Dates overlap other modules in this course");
+                    }
                 }
-                if (activitiesTimeperiod.IntersectsWith(activityTimeRange))
+
+                if (moduleViewModel.StartDate < currentCourse.StartDate)
                 {
-                    ModelState.AddModelError("", $"Dates overlap other modules in this course");
+                    ModelState.AddModelError("StartDate", "Modules start date is before Course start date");
+                }
+                if (moduleViewModel.StartDate > moduleViewModel.EndDate)
+                {
+                    ModelState.AddModelError("EndDate", "A module cannot end before it starts");
                 }
             }
 
-            if (moduleViewModel.StartDate < currentCourse.StartDate)
+            [HttpGet]
+            [Route("edit/{id}")]
+            [Authorize(Roles = "Teacher, Admin")]
+            public ActionResult Edit(int Id)
             {
-                ModelState.AddModelError("StartDate", "Modules start date is before Course start date");
+                //find and create display details of Module
+                var module = uow.ModuleRepository.GetAllModulesAsync(false).Result.FirstOrDefault(m => m.Id == Id);
+                EditModuleViewModel model = new EditModuleViewModel()
+                {
+                    Id = module.Id,
+                    Title = module.Title,
+                    Description = module.Description,
+                    StartDate = module.StartDate,
+                    EndDate = module.EndDate
+                };
+                return View(model);
             }
-            if (moduleViewModel.StartDate > moduleViewModel.EndDate)
+
+            [HttpPost]
+            [Route("edit/{id}")]
+            [Authorize(Roles = "Teacher, Admin")]
+            [ValidateAntiForgeryToken]
+            [ModelValid]
+            public async Task<ActionResult> Edit(int id, EditModuleViewModel moduleViewModel)
             {
-                ModelState.AddModelError("EndDate", "A module cannot end before it starts");
-            }
-        }
+                //find module            
+                var module = uow.ModuleRepository.GetModuleAsync(id).Result;
 
-        [HttpGet]
-        [Route("edit/{id}")]
-        [Authorize(Roles = "Teacher, Admin")]
-        public ActionResult Edit(int Id)
-        {
-            //find and create display details of Module
-            var module = uow.ModuleRepository.GetAllModulesAsync(false).Result.FirstOrDefault(m => m.Id == Id);
-            EditModuleViewModel model = new EditModuleViewModel()
-            {
-                Id = module.Id,
-                Title = module.Title,
-                Description = module.Description,
-                StartDate = module.StartDate,
-                EndDate = module.EndDate
-            };
-            return View(model);
-        }
+                try
+                {
+                    //mapper.Map(moduleDto, module);
+                    module.Title = moduleViewModel.Title;
+                    module.Description = moduleViewModel.Description;
+                    module.StartDate = moduleViewModel.StartDate;
+                    module.EndDate = moduleViewModel.EndDate;
 
-        [HttpPost]
-        [Route("edit/{id}")]
-        [Authorize(Roles = "Teacher, Admin")]
-        [ValidateAntiForgeryToken]
-        [ModelValid]
-        public async Task<ActionResult> Edit(int id, EditModuleViewModel moduleViewModel)
-        {
-            //find module            
-            var module = uow.ModuleRepository.GetModuleAsync(id).Result;
+                    uow.ModuleRepository.Update(module);
+                    await uow.CompleteAsync();
 
-            try
-            {
-                //mapper.Map(moduleDto, module);
-                module.Title = moduleViewModel.Title;
-                module.Description = moduleViewModel.Description;
-                module.StartDate = moduleViewModel.StartDate;
-                module.EndDate = moduleViewModel.EndDate;
-
-                uow.ModuleRepository.Update(module);
-                await uow.CompleteAsync();
-
-                return RedirectToAction("Index", "Home");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        [HttpGet]
-        [Route("delete")]
-        public ActionResult Delete(int id)
-        {
-            var module = uow.ModuleRepository.GetModuleAsync(id);
-            if (module == null)
-                return NotFound();
-
-            var model = mapper.Map<ListModuleViewModel>(module);
-            if (model == null) return View();
-
-            return View(model);
-        }
-
-        [Route("delete")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, ListModuleViewModel module)
-        {
-            try
-            {
-                var moduleDb = uow.ModuleRepository.GetModuleAsync(id);
-
-                if (moduleDb == null || moduleDb.Id != module.Id)
+                    return RedirectToAction("Index", "Home");
+                }
+                catch
+                {
                     return View();
-
-                uow.ModuleRepository.Remove(moduleDb);
-                uow.CompleteAsync();
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        private List<Module> GetModules(int id)
-        {
-            var modules = new List<Module>();
-
-            foreach (var module in uow.ModuleRepository.GetAllModulesAsync(false).Result)
-            {
-                if (module.CourseId == id)
-                {
-                    modules.Add(module);
-                }
-            }
-            return modules;
-        }
-
-        private List<Activity> GetActivities(int id)
-        {
-            var activities = new List<Activity>();
-
-            foreach (var activity in uow.ActivityRepository.GetAllActivitiesAsync().Result)
-            {
-                if (activity.ModuleId == id)
-                {
-                    activities.Add(activity);
                 }
             }
 
-            return activities;
-        }
+            [HttpGet]
+            [Route("delete")]
+            public ActionResult Delete(int id)
+            {
+                var module = uow.ModuleRepository.GetModuleAsync(id);
+                if (module == null)
+                    return NotFound();
+
+                var model = mapper.Map<ListModuleViewModel>(module);
+                if (model == null) return View();
+
+                return View(model);
+            }
+
+            [Route("delete")]
+            [HttpPost]
+            [ValidateAntiForgeryToken]
+            public ActionResult Delete(int id, ListModuleViewModel module)
+            {
+                try
+                {
+                    var moduleDb = uow.ModuleRepository.GetModuleAsync(id);
+
+                    if (moduleDb == null || moduleDb.Id != module.Id)
+                        return View();
+
+                    uow.ModuleRepository.Remove(moduleDb);
+                    uow.CompleteAsync();
+                    return RedirectToAction("Index");
+                }
+                catch
+                {
+                    return View();
+                }
+            }
+
+            private List<Module> GetModules(int id)
+            {
+                var modules = new List<Module>();
+
+                foreach (var module in uow.ModuleRepository.GetAllModulesAsync(false).Result)
+                {
+                    if (module.CourseId == id)
+                    {
+                        modules.Add(module);
+                    }
+                }
+                return modules;
+            }
+
+            private List<Activity> GetActivities(int id)
+            {
+                var activities = new List<Activity>();
+
+                foreach (var activity in uow.ActivityRepository.GetAllActivitiesAsync().Result)
+                {
+                    if (activity.ModuleId == id)
+                    {
+                        activities.Add(activity);
+                    }
+                }
+
+                return activities;
+            }
+        
+        
     }
 }
