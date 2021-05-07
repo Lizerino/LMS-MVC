@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Lms.MVC.Data.Migrations
+namespace Lms.API.Data.Migrations
 {
-    public partial class init0430 : Migration
+    public partial class _0506b : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

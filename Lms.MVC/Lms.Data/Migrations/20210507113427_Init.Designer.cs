@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lms.MVC.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210502172829_test 0502")]
-    partial class test0502
+    [Migration("20210507113427_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -165,6 +165,9 @@ namespace Lms.MVC.Data.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Lms.MVC.Core.Repositories
 {
     public interface IUoW
@@ -11,6 +12,7 @@ namespace Lms.MVC.Core.Repositories
         ICourseRepository CourseRepository { get; }
         IModuleRepository ModuleRepository { get; }
         IUserRepository UserRepository { get; }
+        IActivityRepository ActivityRepository { get; }
         Task CompleteAsync();
     }
 }

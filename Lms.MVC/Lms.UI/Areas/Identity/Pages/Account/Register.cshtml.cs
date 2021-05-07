@@ -1,7 +1,6 @@
 ﻿using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
-using Lms.MVC.Data.Repositories;
-
+using Lms.MVC.Data.Repositories.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -26,14 +26,14 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-        private readonly IUoW uoW;        
+        private readonly IUoW uoW;
 
-       public RegisterModel(
-           IUoW uoW,
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+        public RegisterModel(
+            IUoW uoW,
+             UserManager<ApplicationUser> userManager,
+             SignInManager<ApplicationUser> signInManager,
+             ILogger<RegisterModel> logger,
+             IEmailSender emailSender)
         {
             this.uoW = uoW;
             _userManager = userManager;
@@ -48,7 +48,8 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
         public string ReturnUrl { get; set; }
 
         public int CourseId { get; set; }
-        public List<int> courses { get; set; }
+
+        public List<int> Courses { get; set; }
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public class InputModel
@@ -56,6 +57,7 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
+            [Remote(action: "EmailExistsCreate", controller: "ApplicationUsers")]
             public string Email { get; set; }
 
             [Required]
@@ -80,18 +82,13 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
             [Display(Name = "Role :")]
             public string Role { get; set; }
 
-            public ICollection<Course> Courses { get; set; }
-
-            public int[] SelectedCourseIds { get; set; }
-            public bool IsChecked { get; set; }
-
-
             public int CourseId { get; set; }
         }
-       
+
         public async Task OnGetAsync(int CourseId, string returnUrl = null)
         {
             ReturnUrl = returnUrl;
@@ -101,6 +98,12 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(List<int> courses, string returnUrl = null)
         {
+            courses = courses.SkipLast(1).ToList();
+            if (Input.Role == RoleHelper.Student && (courses.Count != 1 || courses[0] == 0))
+            {
+                ModelState.AddModelError("Role", "A student must be assigned to one course");
+            }
+
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
@@ -111,30 +114,32 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
                 }
                 // Input.Courses = AssignCourses(Input.Courses, Input.SelectedCourseIds);
                 var password = "password";
-                
+
                 Input.Password = password;
                 Input.ConfirmPassword = password;
                 if (!User.IsInRole("Admin"))
                 {
                     Input.Role = "Student";
                 }
-                if (Input.Role is null)
+
+                if (String.IsNullOrWhiteSpace(Input.Role))
                 {
-                    ModelState.AddModelError("Role", "Please Choose a role");
+                    ModelState.AddModelError("Role", "Please chosose a role");
                 }
 
-
                 var user = GetUserByRole(Input.Role);
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
                     user.Courses = new List<Course>();
-                       
+
                     foreach (var item in courses)
                     {
                         user.Courses.Add(uoW.CourseRepository.GetCourseAsync(item).Result);
                     }
-                  await  uoW.UserRepository.ChangeRoleAsync(user);
+                    await uoW.UserRepository.ChangeRoleAsync(user);
+
                     var role = await _userManager.AddToRoleAsync(user, Input.Role);
                     _logger.LogInformation("User created a new account with password.");
 
@@ -149,7 +154,6 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-
                     var passwordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
                     passwordToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(passwordToken));
                     var resetPasswordCallbackUrl = Url.Page(
@@ -160,15 +164,13 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
 
                     if (!_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                    await _emailSender.SendEmailAsync(
-                        Input.Email,
-                        "You are registered in Lms",
-                        $"Your password is {Input.Password} \n Please reset your password by <a href='{HtmlEncoder.Default.Encode(resetPasswordCallbackUrl)}'>clicking here</a>.");
+                        await _emailSender.SendEmailAsync(
+                            Input.Email,
+                            "You are registered in Lms",
+                            $"Your password is {Input.Password} \n Please reset your password by <a href='{HtmlEncoder.Default.Encode(resetPasswordCallbackUrl)}'>clicking here</a>.");
                     }
 
-
                     return LocalRedirect(returnUrl);
-
 
                     //if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     //{
@@ -182,7 +184,6 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
                 }
                 foreach (var error in result.Errors)
                 {
-                
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
@@ -191,54 +192,26 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             return Page();
         }
 
-        public async Task GetUsersAsync()
-        {
-            var users = User.Identities.ToList();
-            var teachers = await _userManager.GetUsersInRoleAsync("Teacher");
-            var students = await _userManager.GetUsersInRoleAsync("Student");
-        }
         private ApplicationUser GetUserByRole(string role)
         {
-
-
             if (role == "Teacher" || role == "Admin")
             {
-                var appUser = new ApplicationUser { UserName = $"{Input.FirstName}.{Input.LastName}", Email = Input.Email, Name = Input.Name, Role = role , Courses = Input.Courses };
+                var appUser = new ApplicationUser { UserName = $"{Input.FirstName}.{Input.LastName}", Email = Input.Email, Name = Input.Name, Role = role };
                 return appUser;
             }
-            else 
+            else
             {
-                var appUser = new ApplicationUser { UserName = $"{Input.FirstName}.{Input.LastName}", Email = Input.Email, Name = Input.Name, Role = "Student"};
+                var appUser = new ApplicationUser { UserName = $"{Input.FirstName}.{Input.LastName}", Email = Input.Email, Name = Input.Name, Role = "Student" };
                 return appUser;
             }
-
-          
         }
-        private ICollection<Course> AssignCourses(ICollection<Course> courses, int[] selectedCoursesIds)
+
+        public JsonResult OnPostCheckEmail()
         {
-            var list = new List<Course>();
-            foreach (var listCourse in list)
-            {
-                if (Input.IsChecked)
-                {
+            var users = uoW.UserRepository.GetAllUsersAsync().Result.ToList().Select(u => u.Email).ToList(); ;
+            var valid = !users.Contains(Input.Email);
 
-                foreach (var course in courses)
-                {
-                    foreach (var id in selectedCoursesIds)
-                    {
-                        course.Id = id;
-
-                    }
-
-                    list.Add(course);
-                }
-                }
-                else
-                {
-                    continue;
-                }
-            }
-                return list;
+            return new JsonResult(valid);
         }
     }
 }

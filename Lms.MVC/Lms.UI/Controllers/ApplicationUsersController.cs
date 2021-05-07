@@ -253,5 +253,27 @@ namespace Lms.MVC.UI.Controllers
 
 
         }
+
+        [AcceptVerbs("GET", "POST")]
+        public async Task<IActionResult> EmailExistsEdit(string email, string id)
+        {
+            var users = await uoW.UserRepository.GetAllUsersAsync();
+            if (users.Any(u => email == u.Email && id != u.Id))
+            {
+                return Json($"Email already exits");
+            }
+            return Json(true);
+        }
+
+
+        public async Task<IActionResult> EmailExistsCreate([Bind(Prefix = "Input.Email")] string email)
+        {
+            var users = await uoW.UserRepository.GetAllUsersAsync();
+            if (users.Any(u => email == u.Email))
+            {
+                return Json($"Email already exits");
+            }
+            return Json(true);
+        }
     }
 }

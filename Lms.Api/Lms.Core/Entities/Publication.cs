@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Lms.API.Core.Entities
 {
-    public class Literature
+    public class Publication
     {
         [Key]
         public int Id { get; set; }
@@ -24,6 +24,6 @@ namespace Lms.API.Core.Entities
         public Level Level { get; set; }
         
         [Required]
-        public ICollection<AuthorLiterature> Authors { get; set; }
+        public ICollection<Author> Authors { get; set; }
     }
 }

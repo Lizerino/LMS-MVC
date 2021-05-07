@@ -39,24 +39,14 @@ namespace Lms.API.Data.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<int?>("PublicationId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("PublicationId");
+
                     b.ToTable("Authors");
-                });
-
-            modelBuilder.Entity("Lms.API.Core.Entities.AuthorLiterature", b =>
-                {
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LiteratureId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AuthorId", "LiteratureId");
-
-                    b.HasIndex("LiteratureId");
-
-                    b.ToTable("Authorship");
                 });
 
             modelBuilder.Entity("Lms.API.Core.Entities.Level", b =>
@@ -76,7 +66,7 @@ namespace Lms.API.Data.Migrations
                     b.ToTable("Levels");
                 });
 
-            modelBuilder.Entity("Lms.API.Core.Entities.Literature", b =>
+            modelBuilder.Entity("Lms.API.Core.Entities.Publication", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -108,7 +98,7 @@ namespace Lms.API.Data.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("Literature");
+                    b.ToTable("Publications");
                 });
 
             modelBuilder.Entity("Lms.API.Core.Entities.Subject", b =>
@@ -128,26 +118,14 @@ namespace Lms.API.Data.Migrations
                     b.ToTable("Subjects");
                 });
 
-            modelBuilder.Entity("Lms.API.Core.Entities.AuthorLiterature", b =>
+            modelBuilder.Entity("Lms.API.Core.Entities.Author", b =>
                 {
-                    b.HasOne("Lms.API.Core.Entities.Author", "Author")
-                        .WithMany("Bibliography")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Lms.API.Core.Entities.Literature", "Literature")
+                    b.HasOne("Lms.API.Core.Entities.Publication", null)
                         .WithMany("Authors")
-                        .HasForeignKey("LiteratureId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Literature");
+                        .HasForeignKey("PublicationId");
                 });
 
-            modelBuilder.Entity("Lms.API.Core.Entities.Literature", b =>
+            modelBuilder.Entity("Lms.API.Core.Entities.Publication", b =>
                 {
                     b.HasOne("Lms.API.Core.Entities.Level", "Level")
                         .WithMany()
@@ -162,12 +140,7 @@ namespace Lms.API.Data.Migrations
                     b.Navigation("Subject");
                 });
 
-            modelBuilder.Entity("Lms.API.Core.Entities.Author", b =>
-                {
-                    b.Navigation("Bibliography");
-                });
-
-            modelBuilder.Entity("Lms.API.Core.Entities.Literature", b =>
+            modelBuilder.Entity("Lms.API.Core.Entities.Publication", b =>
                 {
                     b.Navigation("Authors");
                 });

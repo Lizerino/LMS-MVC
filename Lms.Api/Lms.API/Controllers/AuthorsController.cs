@@ -1,15 +1,15 @@
-﻿using System;
+﻿using AutoMapper;
+using Lms.API.Core.Dto;
+using Lms.API.Core.Entities;
+using Lms.API.Core.Repositories;
+using Lms.API.Data.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Lms.API.Core.Entities;
-using Lms.API.Data.Data;
-using Lms.API.Core.Repositories;
-using Lms.API.Core.Dto;
-using AutoMapper;
 
 namespace Lms.API.UI.Controllers
 {
@@ -35,7 +35,25 @@ namespace Lms.API.UI.Controllers
             var authors = await uow.AuthorRepository.GetAllAuthorsAsync();
             var authorsDto = mapper.Map<AuthorDto[]>(authors);
 
-            return Ok(authorsDto);
+            if (Request.QueryString.HasValue)
+            {
+                var sortField = Request.Query["sort_by"];
+                var descOrder = Request.Query["order"]=="desc";
+                
+                if(sortField.ToString().ToLower() == "firstname")
+                {
+                    if (descOrder) authorsDto = authorsDto.OrderByDescending(o => o.FirstName).ToArray();
+                    authorsDto = authorsDto.OrderBy(o => o.FirstName).ToArray();                   
+                }
+                if(sortField.ToString().ToLower() == "age")
+                {
+                    if (descOrder) authorsDto = authorsDto.OrderByDescending(o => o.Age).ToArray();
+                    authorsDto = authorsDto.OrderBy(o => o.Age).ToArray();
+                }               
+            }
+
+            var response = JsonConvert.SerializeObject(authorsDto);
+            return Ok(response);
         }
 
         // GET: api/Authors/5
@@ -52,8 +70,8 @@ namespace Lms.API.UI.Controllers
             return Ok(authorDto);
         }
 
-        [HttpGet("{name}")]
-        public async Task<ActionResult<IEnumerable<Author>>> GetAuthor(string name)
+        [HttpGet("name/{name}")]
+        public async Task<ActionResult<IEnumerable<Author>>> GetAuthorsByName(string name)
         {
             var authorsDto = mapper.Map<AuthorDto[]>(await uow.AuthorRepository.GetAuthorByNameAsync(name));
 
@@ -101,8 +119,8 @@ namespace Lms.API.UI.Controllers
         [HttpPost]
         public async Task<ActionResult<Author>> PostAuthor(Author author)
         {
-            db.Authors.Add(author);
-            await db.SaveChangesAsync();
+            await uow.AuthorRepository.AddAsync(author);
+            await uow.AuthorRepository.SaveAsync();
 
             return CreatedAtAction("GetAuthor", new { id = author.Id }, author);
         }
@@ -117,8 +135,8 @@ namespace Lms.API.UI.Controllers
                 return NotFound();
             }
 
-            db.Authors.Remove(author);
-            await db.SaveChangesAsync();
+            uow.AuthorRepository.Remove(author);
+            await uow.AuthorRepository.SaveAsync();
 
             return NoContent();
         }

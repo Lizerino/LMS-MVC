@@ -1,25 +1,22 @@
 ﻿using System.Diagnostics;
 using System.Linq;
 
-using Lms.MVC.Data.Data;
+using Lms.MVC.Core.Repositories;
+using Lms.MVC.Data.Repositories;
 using Lms.MVC.UI.Models;
 using Lms.MVC.UI.Models.ViewModels.Admin;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace Lms.MVC.UI.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IUoW uow;
 
-        private readonly ApplicationDbContext db;
-
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+        public HomeController(IUoW uow)
         {
-            _logger = logger;
-            this.db = context;
+            this.uow = uow;
         }
 
         public IActionResult Index()
@@ -30,20 +27,21 @@ namespace Lms.MVC.UI.Controllers
             }
             else if (User.IsInRole("Admin"))
             {
+                var allUsers = uow.UserRepository.GetAllUsersAsync().Result;
                 var adminOverviewViewModel = new AdminOverviewViewModel();
-                adminOverviewViewModel.NumberOfActivities = db.Activities.Count();                
-                adminOverviewViewModel.NumberOfAdmins = db.Users.Where(u=>u.Role=="Admin").Count();
-                adminOverviewViewModel.NumberOfCourses = db.Courses.Count();
-                adminOverviewViewModel.NumberOfModules = db.Modules.Count();
-                adminOverviewViewModel.NumberOfStudents = db.Users.Where(u => u.Role == "Student").Count();
-                adminOverviewViewModel.NumberOfTeachers = db.Users.Where(u => u.Role == "Teacher").Count();
-                adminOverviewViewModel.NumberOfUsers = db.Users.Count();
+                adminOverviewViewModel.NumberOfCourses = uow.CourseRepository.GetAllCoursesAsync(false).Result.Count();
+                adminOverviewViewModel.NumberOfModules = uow.ModuleRepository.GetAllModulesAsync(false).Result.Count();
+                adminOverviewViewModel.NumberOfActivities = uow.ActivityRepository.GetAllActivitiesAsync().Result.Count();
+                adminOverviewViewModel.NumberOfAdmins = allUsers.Where(u => u.Role == "Admin").Count();
+                adminOverviewViewModel.NumberOfStudents = allUsers.Where(u => u.Role == "Student").Count();
+                adminOverviewViewModel.NumberOfTeachers = allUsers.Where(u => u.Role == "Teacher").Count();
+                adminOverviewViewModel.NumberOfUsers = allUsers.Count();
                 return View("~/Views/AdminLanding/AdminOverview.cshtml", adminOverviewViewModel);
             }
-            else 
-            {                
+            else
+            {
                 return RedirectToAction("Index", "Modules");
-            }            
+            }
         }
 
         public IActionResult Privacy()

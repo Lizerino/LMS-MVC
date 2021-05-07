@@ -24,11 +24,25 @@ namespace Lms.MVC.Data.Repositories
             await db.AddAsync(added);
         }
 
+        public async Task<IEnumerable<Module>> GetAllModulesAsync(bool includeActivities)
+        {
+            return includeActivities ? await db.Modules
+                        .Include(l => l.Activities)
+                        .ToListAsync() :
+                        await db.Modules
+                        .ToListAsync();
+        }
+
         public async Task<IEnumerable<Module>> GetAllModulesAsync(int id)
         {
             var query = db.Modules.AsQueryable().Where(m => m.CourseId == id);             
 
             return await query.ToArrayAsync();
+        }
+
+        public async Task<Module> GetModuleAsync(int id)
+        {
+            return await db.Modules.FindAsync(id);
         }
 
         public async Task<Module> GetModuleAsync(int id, int moduleId)
@@ -51,6 +65,10 @@ namespace Lms.MVC.Data.Repositories
         public async Task<bool> SaveAsync()
         {
             return (await db.SaveChangesAsync()) >= 0;
+        }
+        public void Update(Module module)
+        {
+            db.Update(module);
         }
     }
 }
