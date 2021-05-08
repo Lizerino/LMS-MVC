@@ -3,21 +3,16 @@ using Lms.API.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Models.ViewModels.PublicationViewModels;
+using Lms.MVC.UI.Utilities.Pagination;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-
-using Lms.API.Core.Entities;
-using Lms.MVC.UI.Filters;
-using Lms.MVC.UI.Utilities.Pagination;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-
-using Newtonsoft.Json;
 
 namespace Lms.MVC.UI.Controllers
 {
