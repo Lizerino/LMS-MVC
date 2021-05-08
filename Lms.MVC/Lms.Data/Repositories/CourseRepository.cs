@@ -34,8 +34,10 @@ namespace Lms.MVC.Data.Repositories
         {
             return includeModules ? await db.Courses
                         .Include(l => l.Modules)
+                        .Include(c => c.Users)
                         .ToListAsync() :
                         await db.Courses
+                        .Include(c => c.Users)
                         .ToListAsync();
         }
 

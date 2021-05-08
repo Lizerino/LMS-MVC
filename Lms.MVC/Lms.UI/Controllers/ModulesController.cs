@@ -42,10 +42,12 @@ namespace Lms.MVC.UI
             //Student View of Modules for Course
             if (User.IsInRole("Student"))
             {
+
                 var user = await userManager.GetUserAsync(User);
 
                 var userCourse = uow.CourseRepository.GetAllCoursesAsync(false).Result
-                    .Where(c => c.Users.Any(u => u.Id == user.Id)).FirstOrDefault(); ;
+                    .Where(c => c.Users.Any(u => u.Id == user.Id)).FirstOrDefault();
+                
 
                 var modules = uow.ModuleRepository.GetAllModulesAsync(false).Result
                     .Where(m => m.CourseId == userCourse.Id);
