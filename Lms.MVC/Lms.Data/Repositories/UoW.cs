@@ -18,6 +18,7 @@ namespace Lms.MVC.Data.Repositories
         public IModuleRepository ModuleRepository { get; }
         public IActivityRepository ActivityRepository { get; }
         public IUserRepository UserRepository { get; }
+        public IPublicationRepository PublicationRepository { get; }
 
         public UoW(ApplicationDbContext db, UserManager<ApplicationUser> userManager)
         {
@@ -27,6 +28,7 @@ namespace Lms.MVC.Data.Repositories
             ActivityRepository = new ActivityRepository(this.db);
             ModuleRepository = new ModuleRepository(this.db);
             UserRepository = new UserRepository(this.db, this.userManager);
+            PublicationRepository = new PublicationRepository();
         }
 
         public async Task CompleteAsync()

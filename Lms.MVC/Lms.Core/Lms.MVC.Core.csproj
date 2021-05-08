@@ -20,4 +20,8 @@
     </Page>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Lms.Api\Lms.Core\Lms.API.Core.csproj" />
+  </ItemGroup>
+
 </Project>
