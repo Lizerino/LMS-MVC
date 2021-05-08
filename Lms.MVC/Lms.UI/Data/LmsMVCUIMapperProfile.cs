@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-
+using Lms.API.Core.Entities;
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.UI.Models.ViewModels;
@@ -7,6 +7,7 @@ using Lms.MVC.UI.Models.ViewModels.ActivityViewModels;
 using Lms.MVC.UI.Models.ViewModels.ApplicationUserViewModels;
 using Lms.MVC.UI.Models.ViewModels.CourseViewModels;
 using Lms.MVC.UI.Models.ViewModels.ModelViewModels;
+using Lms.MVC.UI.Models.ViewModels.PublicationViewModels;
 
 namespace Lms.MVC.UI
 {
@@ -49,6 +50,11 @@ namespace Lms.MVC.UI
             //.ForMember(u => u.Courses, act => act.Ignore());
             CreateMap<EditApplicationUserViewModel, ApplicationUser>()
                                                                 .ForMember(u => u.Courses, act => act.Ignore());
+
+            //Publications/Literature
+            CreateMap<CreatePublicationViewModel, Publication>()
+              .ForMember(dest => dest.Authors, opt => opt.Ignore())
+              .ForMember(dest => dest.Subject, opt => opt.Ignore());
                                                                 
         }
     }

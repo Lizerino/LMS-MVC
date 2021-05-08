@@ -9,4 +9,8 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="5.0.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Lms.Api\Lms.Core\Lms.API.Core.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -122,7 +122,7 @@ namespace Lms.MVC.UI.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ModelValid]
-        public async Task<IActionResult> Edit(int id, EditActivityViewModel activityModel)// TODO Finish This
+        public async Task<IActionResult> Edit(int id, EditActivityViewModel activityModel)
         {
             var activity = await db.Activities.FindAsync(id);
             //activityModel.ModuleId = activity.ModuleId;
