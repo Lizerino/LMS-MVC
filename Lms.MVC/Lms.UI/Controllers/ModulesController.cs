@@ -45,7 +45,7 @@ namespace Lms.MVC.UI
 
                 var user = await userManager.GetUserAsync(User);
 
-                var userCourse = uow.CourseRepository.GetAllCoursesAsync(false).Result
+                var userCourse = uow.CourseRepository.GetAllCoursesAsync(false,true).Result
                     .Where(c => c.Users.Any(u => u.Id == user.Id)).FirstOrDefault();
                 
 
