@@ -1,42 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using Lms.MVC.Core.Entities;
-using Lms.MVC.Data;
 
 namespace Lms.MVC.UI.Models.ViewModels.ActivityViewModels
 {
     public class CreateActivityViewModel
     {
-       
+        [Required]
         [Display(Name = "Title")]
         public string Title { get; set; }
+
         [Display(Name = "Description")]
         public string Description { get; set; }
+        
         [Display(Name = "StartDate")]
-        // TODO: Why does this break the default value set in the controller
-        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd, HH:mm}", ApplyFormatInEditMode = true)]
+
+        // TODO: Why does displayformat break the default value set in the controller        
+        [DataType(DataType.Date), Required]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd, HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime StartDate { get; set; }
+        [DataType(DataType.Date), Required]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd, HH:mm}", ApplyFormatInEditMode = true)]
         [Display(Name = "EndDate")]
-        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd, HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime EndDate { get; set; }
+
         [Display(Name = "For Module")]
-        public int ModuleId { get; set ; }
+        public int ModuleId { get; set; }
+
         [Display(Name = "Module Title")]
         public string ModuleTitle { get; set; }
 
         public List<Activity> ActivityList { get; set; }
+
         public Microsoft.AspNetCore.Mvc.Rendering.SelectList ActivityTypes { get; set; }
 
         [Display(Name = "Type Of Activity")]
         public int ActivityTypeId { get; set; }
-      
 
         // nav prop
         public ActivityType ActivityType { get; set; }
+
         public ICollection<Document> Documents { get; set; }
     }
 }

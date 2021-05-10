@@ -11,16 +11,16 @@ namespace Lms.MVC.UI.Models.ViewModels.ModelViewModels
     {
         
         public int Id { get; set; }
-
+        [Required]
         [Display(Name = "Title")]
         public string Title { get; set; }
 
         [Display(Name = "Description")]
         public string Description { get; set; }
-
+        [Required]
         [Display(Name = "Start Date")]
         public DateTime StartDate { get; set; }
-
+        [Required]
         [Display(Name = "End Date")]
         public DateTime EndDate { get; set; }        
 
