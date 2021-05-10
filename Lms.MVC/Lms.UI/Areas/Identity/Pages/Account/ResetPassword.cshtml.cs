@@ -45,9 +45,9 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             public string Code { get; set; }
         }
 
-        public IActionResult OnGet(string code = null)
+        public IActionResult OnGet(string passwordToken = null)
         {
-            if (code == null)
+            if (passwordToken == null)
             {
                 return BadRequest("A code must be supplied for password reset.");
             }
@@ -55,7 +55,7 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             {
                 Input = new InputModel
                 {
-                    Code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code))
+                    Code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(passwordToken))
                 };
                 return Page();
             }
