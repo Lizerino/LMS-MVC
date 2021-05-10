@@ -62,7 +62,7 @@
 
                                 </ul>
                             </div>}
-                        @if (User.IsInRole("Teacher") && Model.CourseId == 0)
+                        @if ((User.IsInRole("Teacher") && !User.IsInRole("Admin")) && Model.CourseId == 0)
                         {
 
                             <div class="dropdown">
@@ -77,9 +77,14 @@
                                     @foreach (var item in await service.GetTypeAsync())
                                     {
                                         <li>
-                                            <label>
+
+                                           <div class="d-inline-flex">
+                                            <input type="radio" id="@item.Text.Replace(' ', '-')" name="courses" value="@item.Value"/>
+                                            <label class="" for="@item.Text.Replace(' ', '-')">@item.Text</label>
+                                               </div>
+                                            @*<label>
                                                 <input type="radio" name="courses" value="@item.Value"> @item.Text
-                                            </label>
+                                            </label>*@
                                         </li>
                                     }
 
@@ -107,6 +112,8 @@
                                 <label for="Admin">Admin</label>
                             </div>}
                         <br />
+                    </div>
+                    <div>
                         <span asp-validation-for="Input.Role" class="text-danger"></span>
                     </div>
                     <div class="form-group">
