@@ -19,6 +19,6 @@ namespace Lms.API.Core.Entities
         public string LastName { get; set; }
         [Required]
         [DataType(DataType.DateTime)]
-        public DateTime BirthDate { get; set; }
+        public DateTime DateOfBirth { get; set; }
     }
 }
