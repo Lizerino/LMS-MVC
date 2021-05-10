@@ -1,6 +1,5 @@
 ﻿using Lms.API.Core.Repositories;
 using Lms.API.Data.Data;
-using Lms.MVC.Data.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
