@@ -1,6 +1,7 @@
 ﻿using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Repositories.Helpers;
+using Lms.MVC.UI.Filters;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -89,20 +90,16 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
             public int CourseId { get; set; }
         }
 
+        [ModelValid]
         public async Task OnGetAsync(int CourseId, string returnUrl = null)
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             this.CourseId = CourseId;
         }
-
+       
         public async Task<IActionResult> OnPostAsync(List<int> courses, string returnUrl = null)
         {
-            courses = courses.SkipLast(1).ToList();
-            if (Input.Role == RoleHelper.Student && (courses.Count != 1 || courses[0] == 0))
-            {
-                ModelState.AddModelError("Role", "A student must be assigned to one course");
-            }
 
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -122,10 +119,17 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
                     Input.Role = "Student";
                 }
 
+            courses = courses.SkipLast(1).ToList();
+            if (Input.Role == RoleHelper.Student && (courses.Count != 1 || courses[0] == 0))
+            {
+                ModelState.AddModelError("Courses", "A student must be assigned to one course");
+            }
                 if (String.IsNullOrWhiteSpace(Input.Role))
                 {
                     ModelState.AddModelError("Role", "Please chosose a role");
                 }
+                if (ModelState.IsValid)
+                {
 
                 var user = GetUserByRole(Input.Role);
 
@@ -186,7 +190,8 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
-            }
+                }
+           }
 
             // If we got this far, something failed, redisplay form
             return Page();
