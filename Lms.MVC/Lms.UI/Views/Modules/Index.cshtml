@@ -4,23 +4,19 @@
     ViewData["CourseId"] = Model.CourseId;
 }
 
-@if (Model.ModuleList.Count() != 0)
-{
-
     <h1>@Model.CourseTitle</h1>
     @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
-    {
+    {       
         <p>
-          
-           
-        </p>
-        <p>
-            <a asp-action="Create" asp-route-id=@Model.CourseId>Create New Module</a> <span>|</span>
-            <a asp-area="Identity" asp-page="/Account/Register" asp-route-CourseId="@Model.CourseId" class="btn btn-primary">Add a student to this course</a><span>|</span>
-            <a asp-controller="Courses" asp-action="Edit" asp-route-id="@Model.CourseId">Edit Course</a>
+            <a asp-action="Create" asp-route-id=@Model.CourseId class="btn btn-primary mr-3">Create New Module</a>
+            <a asp-area="Identity" asp-page="/Account/Register" asp-route-CourseId="@Model.CourseId" class="btn btn-primary mr-3">Add a student to this course</a>
+            <a asp-controller="Courses" asp-action="Edit" asp-route-id="@Model.CourseId" class="btn btn-primary">Edit Course</a>
         </p>
 
     }
+@if (Model.ModuleList.Count() != 0)
+{
+
 
     <div class="card-deck">
         @foreach (var module in Model.ModuleList)
@@ -36,14 +32,7 @@
     </div>
  }
  else
- {
-     @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
-     {
-         <p>
-             <a asp-action="Create" asp-route-id=@Model.CourseId>Create New Module</a>
-         </p>
+ {       
          <p>No modules in this course</p>
-     }
- 
  }
 

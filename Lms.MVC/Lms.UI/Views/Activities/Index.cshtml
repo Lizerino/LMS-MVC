@@ -1,17 +1,17 @@
 @model ListActivityViewModel
 
 
-@if (Model.ActivityList.Count() != 0)
-{
     <h1>@Model.ModuleTitle</h1>
     @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
     {
         <p>
-            <a asp-action="Create" asp-route-id="@Model.ModuleId">Create New Activity</a><br />
-            <a asp-controller="Modules" asp-action="Edit" asp-route-id="@Model.ModuleId">Edit Module</a>
+            <a asp-action="Create" asp-route-id="@Model.ModuleId" class="btn btn-primary mr-3">Create New Activity</a><br />
+            <a asp-controller="Modules" asp-action="Edit" asp-route-id="@Model.ModuleId" class="btn btn-primary">Edit Module</a>
         </p>
     }
 
+@if (Model.ActivityList.Count() != 0)
+{
     <div class="card-deck">
         @foreach (var activity in Model.ActivityList)
         {
@@ -26,12 +26,6 @@
     </div>
 }
 else
-{
-    @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
-    {
-        <p>
-            <a asp-action="Create" asp-route-id="@Model.ModuleId">Create New Activity</a>
-        </p>
-        <p>No activities in this module</p>
-    }
+{    
+        <p>No activities in this module</p>    
 }
