@@ -212,6 +212,52 @@ namespace Lms.MVC.UI.Controllers
             }
         }
         
+        [HttpGet]
+        [Authorize]
+        public async Task<ActionResult> Delete(int id)
+        {
+            using (var client = new HttpClient())
+            {
+
+                var request = new HttpRequestMessage(HttpMethod.Get, Baseurl + $"api/publications/{id}");
+                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                // Sends request and ensures response
+                var response = await client.SendAsync(request);
+
+                response.EnsureSuccessStatusCode();
+
+                // Converts Json response to ViewModel
+                var content = await response.Content.ReadAsStringAsync();
+                content = content.TrimStart('\"');
+                content = content.TrimEnd('\"');
+                content = content.Replace("\\", "");
+                var model = JsonConvert.DeserializeObject<DeletePublicationViewModel>(content);
+
+                return View(model);
+
+
+            }
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [Authorize]
+        [AutoValidateAntiforgeryToken]
+        public async Task<ActionResult> DeleteConfirmed(int id)
+        {
+            using (var client = new HttpClient())
+            {
+                var request = new HttpRequestMessage(HttpMethod.Delete, Baseurl + $"api/publications/{id}");
+                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var response = await client.SendAsync(request);
+
+                response.EnsureSuccessStatusCode();
+
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
     }
 }
 

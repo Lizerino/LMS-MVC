@@ -99,7 +99,14 @@ namespace Lms.API.UI.Controllers
         {
             
             var newItem = JsonConvert.DeserializeObject<Publication>(publication);
+            var author = db.Authors.FirstOrDefault(a => a.FirstName == newItem.Authors.First().FirstName
+                                                        && a.LastName == newItem.Authors.First().LastName);
 
+            if (author != null)
+            {
+                newItem.Authors.Clear();
+                newItem.Authors.Add(author);
+            }
             try
             {
                 await uow.PublicationRepository.AddAsync(newItem);
