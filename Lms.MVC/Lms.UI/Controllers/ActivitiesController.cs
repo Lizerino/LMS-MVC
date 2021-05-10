@@ -72,8 +72,7 @@ namespace Lms.MVC.UI.Controllers
             var activityViewModel = new CreateActivityViewModel();
             activityViewModel.ModuleId = Id;
             activityViewModel.StartDate = DateTime.Now;
-            activityViewModel.EndDate = activityViewModel.StartDate.AddDays(1);
-            activityViewModel.ActivityTypes = new SelectList(db.ActivityTypes, nameof(ActivityType.Id), nameof(ActivityType.Name));
+            activityViewModel.EndDate = activityViewModel.StartDate.AddDays(1);            
             return View(activityViewModel);
         }
 

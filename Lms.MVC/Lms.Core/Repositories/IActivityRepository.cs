@@ -7,14 +7,20 @@ namespace Lms.MVC.Core.Repositories
 {
     public interface IActivityRepository
     {
-        Task AddAsync<T>(T added);
-        Task<IEnumerable<Activity>> GetAllActivitiesAsync();
-        Task<Activity> GetActivityAsync(int? id);
+        Task AddAsync(Activity added);
+
         void Remove(Activity removed);
-        void Remove<T>(T removed);
+
+        Task<IEnumerable<Activity>> GetAllActivitiesAsync();
+
+        Task<Activity> GetActivityAsync(int? id);
+
         Task<bool> SaveAsync();
+
         Task<bool> ActivityExists(int id);
+
         void Update(Activity activity);
 
+        Task<IEnumerable<ActivityType>> GetAllActivityTypesAsync();
     }
 }

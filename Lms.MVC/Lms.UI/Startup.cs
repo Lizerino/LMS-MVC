@@ -78,7 +78,8 @@ namespace Lms.MVC.UI
             
             services.AddScoped<IUoW, UoW>();
             services.AddScoped<ICourseSelectService, CourseSelectService>();
-            
+            services.AddScoped<IActivityTypeSelectService, ActivityTypeSelectService>();
+
             services.AddAutoMapper(typeof(LmsMVCDataMapperProfile),typeof(LmsMVCUIMapperProfile));
 
             // Email services
