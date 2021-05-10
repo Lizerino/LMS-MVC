@@ -173,7 +173,7 @@ namespace Lms.MVC.UI
 
 
                     // Send user back to list of modules for that course
-                    return RedirectToAction("Index", new { id = moduleViewModel.CourseId });
+                    return RedirectToAction("Index", "Modules",new { id = moduleViewModel.CourseId });
             }
                     return View(moduleViewModel);
         }

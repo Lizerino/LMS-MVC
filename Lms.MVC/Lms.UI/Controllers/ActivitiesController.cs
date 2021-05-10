@@ -101,8 +101,8 @@ namespace Lms.MVC.UI.Controllers
 
                 if (await db.SaveChangesAsync() == 1)
                 {
-                    // Send user back to list of modules for that course
-                    return RedirectToAction("Index", new { id = activityViewModel.ModuleId });
+                    // Send user back to list of activities for that module
+                    return RedirectToAction("Index", "Activities",new { id = activityViewModel.ModuleId });
                 }
                 else
                 {
