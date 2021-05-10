@@ -30,7 +30,7 @@ namespace Lms.MVC.Data.Repositories
             db.Remove(removed);
         }
 
-        public async Task<IEnumerable<Course>> GetAllCoursesAsync(bool includeModules, bool includeUsers = false)
+        public async Task<IEnumerable<Course>> GetAllCoursesAsync(bool includeModules=false, bool includeUsers = false)
         {
             return includeModules ?
                 includeUsers ?
@@ -53,10 +53,23 @@ namespace Lms.MVC.Data.Repositories
                         .ToListAsync();
         }
 
-        public async Task<Course> GetCourseAsync(int? id)
+        public async Task<Course> GetCourseAsync(int? id, bool includeModules=false, bool includeUsers = false)
         {
-            var query = db.Courses.AsQueryable();
-            return await query.Include(c => c.Modules).FirstOrDefaultAsync(c => c.Id == id);
+            return includeModules ?
+                includeUsers ?
+
+                await db.Courses.Where(c => c.Id == id)
+                        .Include(l => l.Modules)
+                        .Include(c => c.Users).FirstOrDefaultAsync()
+                        :
+                          await db.Courses.Where(c => c.Id == id)
+                        .Include(l => l.Modules).FirstOrDefaultAsync()
+                        :
+                        includeUsers ?
+                        await db.Courses.Where(c => c.Id == id)
+                        .Include(c => c.Users).FirstOrDefaultAsync()
+                        :
+                         await db.Courses.Where(c => c.Id == id).FirstOrDefaultAsync();
         }
 
         //public async Task<Course> GetCourseByTitleAsync(string title)
@@ -81,8 +94,10 @@ namespace Lms.MVC.Data.Repositories
         }
 
         public async Task<DateTime> CalculateEndDateAsync(int id)
-        {
-            var modulesEndDates = (await GetCourseAsync(id)).Modules.Select(m => m.EndDate).ToList();
+        {          
+            if (GetCourseAsync(id, true, false).Result.Modules.Count()>0)
+            {
+            var modulesEndDates = (await GetCourseAsync(id,true,false)).Modules.Select(m => m.EndDate).ToList();
             var endDate = modulesEndDates.Last();
             foreach (var date in modulesEndDates)
             {
@@ -93,6 +108,8 @@ namespace Lms.MVC.Data.Repositories
             }
 
             return endDate;
+            }
+            return DateTime.Now.AddMonths(1);
         }
 
         public void SetAllCoursesEndDate()
@@ -114,7 +131,7 @@ namespace Lms.MVC.Data.Repositories
 
         public async Task<Course> SetCourseEndDateAsync(int id)
         {
-            var course = await GetCourseAsync(id);
+            var course = await GetCourseAsync(id,false,false);
             course.EndDate = await CalculateEndDateAsync(id);
 
             return course;

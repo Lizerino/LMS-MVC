@@ -17,10 +17,11 @@ namespace Lms.MVC.UI.Models.ViewModels.ActivityViewModels
         [Display(Name = "Description")]
         public string Description { get; set; }
         [Display(Name = "StartDate")]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd, HH:mm}", ApplyFormatInEditMode = true)]
+        // TODO: Why does this break the default value set in the controller
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd, HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime StartDate { get; set; }
         [Display(Name = "EndDate")]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd, HH:mm}", ApplyFormatInEditMode = true)]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd, HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime EndDate { get; set; }
         [Display(Name = "For Module")]
         public int ModuleId { get; set ; }

@@ -49,12 +49,12 @@ namespace Lms.MVC.UI.Controllers
 
             if (showOnlyMyCourses == "true")
             {
-                courses = uoW.CourseRepository.GetAllCoursesAsync(false).Result
+                courses = uoW.CourseRepository.GetAllCoursesAsync(false,true).Result
             .Where(c => (String.IsNullOrEmpty(search) || (c.Title.Contains(search))) && (c.Users != null && (c.Users.Contains(currentUser))));
             }
             else
             {
-                courses =  uoW.CourseRepository.GetAllCoursesAsync(false).Result
+                courses =  uoW.CourseRepository.GetAllCoursesAsync(false,true).Result
                 .Where(c => String.IsNullOrEmpty(search) || (c.Title.Contains(search)));
             }
 
@@ -119,7 +119,7 @@ namespace Lms.MVC.UI.Controllers
         public async Task<IActionResult> RegisterForCourseToggle(int? id)
         {
             if (id == null) return NotFound();
-            var course = await uoW.CourseRepository.GetCourseAsync(id);
+            var course = await uoW.CourseRepository.GetCourseAsync(id,false,true);
             var currentUser = await userManager.GetUserAsync(User);
             var teacher = userManager.Users.Include(x => x.Courses).Single(u => u == currentUser);
 
@@ -182,7 +182,7 @@ namespace Lms.MVC.UI.Controllers
 
                 var course = mapper.Map<Course>(courseViewModel);
 
-                course.EndDate = await uoW.CourseRepository.CalculateEndDateAsync(course.Id);
+                course.EndDate = DateTime.Now.AddMonths(1);
 
                 await uoW.CourseRepository.AddAsync(course);
                 await uoW.CompleteAsync();
