@@ -13,6 +13,7 @@ namespace Lms.MVC.Core.Repositories
         IModuleRepository ModuleRepository { get; }
         IUserRepository UserRepository { get; }
         IActivityRepository ActivityRepository { get; }
+        IPublicationRepository PublicationRepository { get; }
         Task CompleteAsync();
     }
 }

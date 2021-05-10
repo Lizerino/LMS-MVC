@@ -9,6 +9,7 @@ using Lms.API.Core.Entities;
 using Lms.API.Data.Data;
 using AutoMapper;
 using Lms.API.Core.Repositories;
+using Newtonsoft.Json;
 
 namespace Lms.API.UI.Controllers
 {
@@ -92,15 +93,24 @@ namespace Lms.API.UI.Controllers
             return NoContent();
         }
 
-        // POST: api/Publications
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Publication>> PostPublication(Publication publication)
+        
+        [HttpPost("create")]
+        public async Task<ActionResult<Publication>> PostPublication([FromBody]string publication)
         {
-            await uow.PublicationRepository.AddAsync(publication);
-            await uow.PublicationRepository.SaveAsync();
+            
+            var newItem = JsonConvert.DeserializeObject<Publication>(publication);
 
-            return CreatedAtAction(nameof(GetPublication), new { id = publication.Id }, publication);
+            try
+            {
+                await uow.PublicationRepository.AddAsync(newItem);
+                await uow.PublicationRepository.SaveAsync();
+
+                return CreatedAtAction(nameof(GetPublication), new { id = newItem.Id }, newItem);//TODO Make a better response for Details view or something
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
 
         // DELETE: api/Publications/5

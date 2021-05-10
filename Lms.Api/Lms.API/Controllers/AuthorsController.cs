@@ -35,22 +35,6 @@ namespace Lms.API.UI.Controllers
             var authors = await uow.AuthorRepository.GetAllAuthorsAsync();
             var authorsDto = mapper.Map<AuthorDto[]>(authors);
 
-            if (Request.QueryString.HasValue)
-            {
-                var sortField = Request.Query["sort_by"];
-                var descOrder = Request.Query["order"]=="desc";
-                
-                if(sortField.ToString().ToLower() == "firstname")
-                {
-                    if (descOrder) authorsDto = authorsDto.OrderByDescending(o => o.FirstName).ToArray();
-                    authorsDto = authorsDto.OrderBy(o => o.FirstName).ToArray();                   
-                }
-                if(sortField.ToString().ToLower() == "age")
-                {
-                    if (descOrder) authorsDto = authorsDto.OrderByDescending(o => o.Age).ToArray();
-                    authorsDto = authorsDto.OrderBy(o => o.Age).ToArray();
-                }               
-            }
 
             var response = JsonConvert.SerializeObject(authorsDto);
             return Ok(response);
