@@ -3,7 +3,7 @@
 @using Lms.MVC.UI.Utilities.Pagination
 @using Lms.MVC.UI.Views.Shared.Components.Pagination
 @inject UserManager<ApplicationUser> userManager
-@Context.Request.Cookies.TryGetValue("ShowOnlyMyCourses", out string showOnlyMyCourses);
+@*@Context.Request.Cookies.TryGetValue("ShowOnlyMyCourses", out string showOnlyMyCourses);*@
 
 @{
     ViewData["Title"] = "Course List";
@@ -14,15 +14,19 @@
 <p>
     <a asp-action="Create">Create New Course</a>
 
-    @if (showOnlyMyCourses == "true")
-    {
-        <a class="btn btn-primary" asp-action="ToggleMyCourses">Show all courses</a>
-    }
-    else
-    {
-        <a class="btn btn-primary" asp-action="ToggleMyCourses">Show only my courses</a>
-    }
-</p>
+    @{
+        Context.Request.Cookies.TryGetValue("ShowOnlyMyCourses", out string showOnlyMyCourses);
+
+        if (showOnlyMyCourses == "true")
+        {
+            <a class="btn btn-primary" asp-action="ToggleMyCourses">Show all courses</a>
+        }
+        else
+        {
+            <a class="btn btn-primary" asp-action="ToggleMyCourses">Show only my courses</a>
+            }
+        }
+    </p>
 <form class="search-form">
     <div class="input-group">
         <input type="submit" value="Search" />
