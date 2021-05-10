@@ -43,28 +43,31 @@
     <tbody>
         @foreach (var item in Model.Results)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Subject.Title)
-                </td>
-                <td>
-                    @foreach (var author in item.Authors)
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Subject.Title)
+            </td>
+            <td>
+                @foreach (var author in item.Authors)
+                {
+                    @Html.DisplayFor(modelItem => author.LastName)
+                    @if (author != item.Authors.Last())
                     {
-                        @Html.DisplayFor(modelItem => author.LastName)
-                        @if (author != item.Authors.Last())
-                        {
-                            <a>, </a>
-                        }
-
+                        <a>, </a>
                     }
-                </td>
-                <td>
-                    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                </td>
-            </tr>
+
+                }
+            </td>
+            <td>
+                <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+            </td>
+            <td>
+                <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
