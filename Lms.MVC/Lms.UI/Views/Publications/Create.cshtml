@@ -23,17 +23,17 @@
                 <input asp-for="Description" class="form-control" rows="3" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group">               
-                    <label asp-for="SubjectTitle" class="control-label">Select Subject</label>
-                    <select asp-for="SubjectTitle"  class="form-control">                    
-                        @foreach(var item in Model.Subjects)
-                         {
-                             <option asp-for="SubjectTitle" value="@item.Title">
-                                 @item.Title
-                             </option>
-                         }
-                    </select>
-                    <span asp-validation-for="SubjectTitle" class="text-danger"></span>  
+            <div class="form-group">
+                <label asp-for="SubjectTitle" class="control-label">Select Subject</label>
+                <select asp-for="SubjectTitle" class="form-control">
+                    @foreach (var item in Model.Subjects)
+                    {
+                        <option asp-for="SubjectTitle" value="@item.Title">
+                            @item.Title
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="SubjectTitle" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ReleaseDate" class="control-label"></label>
@@ -45,22 +45,29 @@
                 <input asp-for="Url" class="form-control" />
                 <span asp-validation-for="Url" class="text-danger"></span>
             </div>
-            
-                <div class="form-row">
-                    <div class="form-group">
-                        <label asp-for="AuthorFirstName" class="control-label"></label>
-                        <input asp-for="AuthorFirstName" class="form-control" />
-                        <span asp-validation-for="AuthorFirstName" class="text-danger"></span>
-                    </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="AuthorFirstName" class="control-label"></label>
+                    <input asp-for="AuthorFirstName" class="form-control" />
+                    <span asp-validation-for="AuthorFirstName" class="text-danger"></span>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label asp-for="AuthorLastName" class="control-label"></label>
-                        <input asp-for="AuthorLastName" class="form-control" />
-                        <span asp-validation-for="AuthorLastName" class="text-danger"></span>
-                    </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="AuthorLastName" class="control-label"></label>
+                    <input asp-for="AuthorLastName" class="form-control" />
+                    <span asp-validation-for="AuthorLastName" class="text-danger"></span>
                 </div>
-            
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="AuthorDateOfBirth" class="control-label"></label>
+                    <input asp-for="AuthorDateOfBirth" class="form-control" />
+                    <span asp-validation-for="AuthorDateOfBirth" class="text-danger"></span>
+                </div>
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

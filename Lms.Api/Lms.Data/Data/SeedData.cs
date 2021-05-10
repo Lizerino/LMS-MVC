@@ -98,7 +98,7 @@ namespace Lms.API.Data.Data
                 {
                     FirstName = fake.Name.FirstName(),
                     LastName = fake.Name.LastName(),
-                    BirthDate = fake.Date.Between(DateTime.Today.AddYears(-100), DateTime.Today.AddYears(-20))
+                    DateOfBirth = fake.Date.Between(DateTime.Today.AddYears(-100), DateTime.Today.AddYears(-20))
                 };
                 authors.Add(author);
             }
