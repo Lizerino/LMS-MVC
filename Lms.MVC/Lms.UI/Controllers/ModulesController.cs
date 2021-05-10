@@ -130,7 +130,15 @@ namespace Lms.MVC.UI
         {
             var moduleViewModel = new CreateModuleViewModel();
             moduleViewModel.CourseId = Id;
-            moduleViewModel.StartDate = DateTime.Now;
+            if (uow.CourseRepository.GetCourseAsync(Id,true).Result.Modules.Count>0)
+            {
+                var modules = uow.CourseRepository.GetCourseAsync(Id, true).Result.Modules;
+                moduleViewModel.StartDate = modules.Last().EndDate;
+            }
+            else
+            {
+            moduleViewModel.StartDate = uow.CourseRepository.GetCourseAsync(Id).Result.StartDate.AddSeconds(1);
+            }
             moduleViewModel.EndDate = moduleViewModel.StartDate.AddDays(1);
             return View(moduleViewModel);
         }
