@@ -18,8 +18,9 @@ namespace Lms.MVC.UI
             // Courses
             CreateMap<Course, CreateCourseViewModel>().ReverseMap();
             CreateMap<Course, ListCourseViewModel>().ReverseMap();
-            CreateMap<Course, EditCourseViewModel>().ReverseMap();
             CreateMap<Course, DetailCourseViewModel>();
+            CreateMap<Course, EditCourseViewModel>().ReverseMap()
+                .ForMember(c => c.Modules, from => from.Ignore());
 
             // Modules
             CreateMap<Module, CreateModuleViewModel>().ReverseMap();            

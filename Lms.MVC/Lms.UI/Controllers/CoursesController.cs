@@ -223,6 +223,7 @@ namespace Lms.MVC.UI.Controllers
         {
             var course = await uoW.CourseRepository.GetCourseAsync(id);
             await uoW.CourseRepository.CalculateEndDateAsync(course.Id);
+            courseModel.Modules = course.Modules;
             mapper.Map(courseModel, course);
             try
             {
