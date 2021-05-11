@@ -167,6 +167,7 @@ namespace Lms.MVC.UI.Controllers
         [HttpGet]
         public ActionResult Create()
         {
+<<<<<<<<< Temporary merge branch 1
             
             var createPublicationViewModel = new CreatePublicationViewModel();
             createPublicationViewModel.Subjects = uow.PublicationRepository.GetSubjects();
@@ -179,6 +180,7 @@ namespace Lms.MVC.UI.Controllers
         [ModelValid, ModelNotNull]
         public async Task<IActionResult> Create(CreatePublicationViewModel createPublicationViewModel)
         {
+<<<<<<<<< Temporary merge branch 1
             
             if (createPublicationViewModel.ReleaseDate < createPublicationViewModel.AuthorBirthdate)
             {
