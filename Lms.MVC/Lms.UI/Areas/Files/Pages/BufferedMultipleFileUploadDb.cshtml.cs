@@ -19,6 +19,7 @@ namespace Lms.MVC.UI.Areas.Files
     {
         private readonly ApplicationDbContext db;
         private readonly long _fileSizeLimit;
+        // TODO: in whatever file we decide to use set the correct extensions
         private readonly string[] _permittedExtensions = { ".pdf", ".txt" };
 
         public BufferedMultipleFileUploadDbModel(ApplicationDbContext context, 
