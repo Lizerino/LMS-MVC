@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 using Itenso.TimePeriod;
 
-namespace Lms.MVC.UI.Utilities
+namespace Lms.MVC.UI.Utilities.TimeTools
 {
     public class TimeTools
     {
