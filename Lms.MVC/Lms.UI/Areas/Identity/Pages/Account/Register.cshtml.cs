@@ -124,7 +124,7 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
 
                 if (String.IsNullOrWhiteSpace(Input.Role))
                 {
-                    ModelState.AddModelError("Role", "Please chosose a role");
+                    ModelState.AddModelError("Role", "Please choose a role");
                 }
 
                 var user = GetUserByRole(Input.Role);
@@ -167,7 +167,7 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
                         await _emailSender.SendEmailAsync(
                             Input.Email,
                             "You are registered in Lms",
-                            $"Your password is {Input.Password} \n Please reset your password by <a href='{HtmlEncoder.Default.Encode(resetPasswordCallbackUrl)}'>clicking here</a>.");
+                            $"Your password is \"{Input.Password}\" \n Please reset your password by <a href='{HtmlEncoder.Default.Encode(resetPasswordCallbackUrl)}'>clicking here</a>.");
                     }
 
                     return LocalRedirect(returnUrl);

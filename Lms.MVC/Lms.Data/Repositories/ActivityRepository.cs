@@ -19,42 +19,20 @@ namespace Lms.MVC.Data.Repositories
             this.db = db;
         }
 
-        public async Task AddAsync<T>(T added)
-        {
-            await db.AddAsync(added);
-        }
+        public async Task AddAsync(Activity added) => await db.AddAsync(added);       
 
-        public void Remove<T>(T removed) => db.Remove(removed);
+        public void Remove(Activity removed) => db.Remove(removed);        
 
-        public void Remove(Activity removed)
-        {
-            db.Remove(removed);
-        }
+        public async Task<IEnumerable<Activity>> GetAllActivitiesAsync() => await db.Activities.ToListAsync();        
 
-        public async Task<IEnumerable<Activity>> GetAllActivitiesAsync()
-        {
-            return await db.Activities.ToListAsync();
-        }
+        public async Task<Activity> GetActivityAsync(int? id) => await db.Activities.FirstOrDefaultAsync(c => c.Id == id);
+        
+        public async Task<bool> SaveAsync() => (await db.SaveChangesAsync()) >= 0;        
 
-        public async Task<Activity> GetActivityAsync(int? id)
-        {
-            var query = db.Activities.AsQueryable();
-            return await query.FirstOrDefaultAsync(c => c.Id == id);
-        }
+        public async Task<bool> ActivityExists(int id) => await db.Activities.AnyAsync(c => c.Id == id);        
 
-        public async Task<bool> SaveAsync()
-        {
-            return (await db.SaveChangesAsync()) >= 0;
-        }
+        public void Update(Activity activity) => db.Update(activity);
 
-        public async Task<bool> ActivityExists(int id)
-        {
-            return await db.Activities.AnyAsync(c => c.Id == id);
-        }
-
-        public void Update(Activity activity)
-        {
-            db.Update(activity);
-        }
+        public async Task<IEnumerable<ActivityType>> GetAllActivityTypesAsync() => await db.ActivityTypes.ToListAsync();
     }
 }

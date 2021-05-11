@@ -13,6 +13,8 @@
   <ItemGroup>
     <Compile Include="Migrations\20210510072706_Init.cs" />
     <Compile Include="Migrations\20210510072706_Init.Designer.cs" />
+    <Compile Include="Migrations\20210510181216_changenameofbirthdate.cs" />
+    <Compile Include="Migrations\20210510181216_changenameofbirthdate.Designer.cs" />
     <Compile Include="Migrations\LmsAPIContextModelSnapshot.cs" />
   </ItemGroup>
 
@@ -30,8 +32,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Lms.MVC\Lms.Core\Lms.MVC.Core.csproj" />
-    <ProjectReference Include="..\..\Lms.MVC\Lms.Data\Lms.MVC.Data.csproj" />
     <ProjectReference Include="..\Lms.Core\Lms.API.Core.csproj" />
   </ItemGroup>
 

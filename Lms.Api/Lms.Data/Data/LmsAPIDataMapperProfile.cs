@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Lms.MVC.Data.Data;
 
 namespace Lms.API.Data.Data
 {
@@ -16,7 +15,7 @@ namespace Lms.API.Data.Data
         public LmsAPIDataMapperProfile()
         {
             CreateMap<Author, AuthorDto>()
-                .ForMember(dest => dest.Age, opt => opt.MapFrom((src => DateTime.Now.Year - src.BirthDate.Year)))
+                .ForMember(dest => dest.Age, opt => opt.MapFrom((src => DateTime.Now.Year - src.DateOfBirth.Year)))
                 .ReverseMap();
         }
     }

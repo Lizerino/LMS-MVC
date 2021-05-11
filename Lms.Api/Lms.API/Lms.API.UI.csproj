@@ -22,9 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Lms.MVC\Lms.Core\Lms.MVC.Core.csproj" />
-    <ProjectReference Include="..\..\Lms.MVC\Lms.Data\Lms.MVC.Data.csproj" />
-    <ProjectReference Include="..\..\Lms.MVC\Lms.UI\Lms.MVC.UI.csproj" />
     <ProjectReference Include="..\Lms.Core\Lms.API.Core.csproj" />
     <ProjectReference Include="..\Lms.Data\Lms.API.Data.csproj" />
   </ItemGroup>
