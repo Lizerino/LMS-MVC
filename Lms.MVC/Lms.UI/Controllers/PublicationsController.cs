@@ -171,7 +171,7 @@ namespace Lms.MVC.UI.Controllers
             var model = new CreatePublicationViewModel();
             model.Subjects = uow.PublicationRepository.GetSubjects();
             
-            return  View(createPublicationViewModel);
+            return  View(model);
         }
 
 
@@ -179,7 +179,7 @@ namespace Lms.MVC.UI.Controllers
         [ModelValid, ModelNotNull]
         public async Task<IActionResult> Create(CreatePublicationViewModel model)
         {
-            
+            // Checks Age vs Publication Date
             if (model.ReleaseDate < model.AuthorBirthdate)
             {
                 
@@ -187,14 +187,13 @@ namespace Lms.MVC.UI.Controllers
                 model.Subjects = uow.PublicationRepository.GetSubjects();
                 return View(model);
             }
-            
+            // Creates Author and Subject objects
             model.Authors = new List<Author>();
             model.Authors.Add(uow.PublicationRepository.CreateAuthor(model.AuthorFirstName, model.AuthorLastName,model.AuthorBirthdate));
             model.Subject = uow.PublicationRepository.CreateSubject(model.SubjectTitle);
-            //model.Author = new Author() { FirstName = model.AuthorFirstName, LastName = model.AuthorFirstName }; //TODO MOVE TO EXTENSION
-            //model.Subject = new Subject() { Title = model.SubjectTitle }; //TODO MOVE TO EXTENSION
             
-            mapper.Map<Publication>(model);//TODO Fix Mapping issue
+            
+            mapper.Map<Publication>(model);
             
             using (var client = new HttpClient())
             {
@@ -209,7 +208,7 @@ namespace Lms.MVC.UI.Controllers
                 
 
                 // Build Request
-                var jsonData = JsonConvert.SerializeObject(createPublicationViewModel);
+                var jsonData = JsonConvert.SerializeObject(model);
                 var url = Baseurl + "api/Publications/create";
 
 

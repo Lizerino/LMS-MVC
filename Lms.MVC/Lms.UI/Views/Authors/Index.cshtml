@@ -25,7 +25,9 @@
         <tr>
             <th>
                 <a asp-action="Index" asp-route-sort="@ViewData["FNameSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]"> First Name </a>
+                <a asp-action="Index" asp-route-thenBy="@ViewData["AlsoAge"]">Age Desc</a>
             </th>
+                
             <th>
                 <a asp-action="Index" asp-route-sort="@ViewData["LNameSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Last Name</a>
             </th>

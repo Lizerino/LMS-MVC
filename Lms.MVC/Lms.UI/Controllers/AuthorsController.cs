@@ -23,7 +23,7 @@ namespace Lms.MVC.UI.Controllers
             httpClient.DefaultRequestHeaders.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
-        public async Task<IActionResult> Index(string search, string sort, int page)
+        public async Task<IActionResult> Index(string search, string sort, string thenby, int page)
         {
             // Builds request to API
             var request = new HttpRequestMessage(HttpMethod.Get, "api/authors");
@@ -59,18 +59,32 @@ namespace Lms.MVC.UI.Controllers
             ViewData["FNameSortParam"] = String.IsNullOrEmpty(sort) ? "Name_desc" : "";
             ViewData["LNameSortParam"] = sort == "LName" ? "LName_desc" : "LName";
             ViewData["AgeSortParam"] = sort == "Age" ? "Age_desc" : "Age";
+            ViewData["AlsoAge"] = thenby == "Age" ? "Age_desc" : "Age";
+
 
             // Sort by order
             switch (sort)
             {
                 case "Name_desc":
-                    model = model.OrderByDescending(a => a.FirstName);
+                    {
+                        model = model.OrderByDescending(a => a.FirstName);
+                        if (thenby == "Age_desc") model = model.OrderByDescending(a => a.FirstName)
+                                  .ThenByDescending(a => a.Age);
                     break;
+                    }
                 case "LName":
-                    model = model.OrderBy(a => a.LastName);
+                    {
+                        model = model.OrderBy(a => a.LastName);
+                        if (thenby == "Age_desc") model = model.OrderBy(a => a.LastName)
+                                  .ThenByDescending(a => a.Age);
                     break;
+                    }
                 case "LName_desc":
-                    model = model.OrderByDescending(a => a.LastName);
+                    {
+                        model = model.OrderByDescending(a => a.LastName);
+                        if (thenby == "Age_desc") model = model.OrderByDescending(a => a.LastName)
+                                 .ThenByDescending(a => a.Age);
+                    }
                     break;
                 case "Age":
                     model = model.OrderBy(a => a.Age);
@@ -79,7 +93,11 @@ namespace Lms.MVC.UI.Controllers
                     model = model.OrderByDescending(a => a.Age);
                     break;
                 default:
-                    model = model.OrderBy(a => a.FirstName);
+                    {
+                        model = model.OrderBy(a => a.FirstName);
+                        if (thenby == "Age_desc") model = model.OrderBy(a => a.FirstName)
+                                .ThenByDescending(a => a.Age);
+                    }
                     break;
             }
             
