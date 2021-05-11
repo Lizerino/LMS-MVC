@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -9,12 +10,15 @@ using Itenso.TimePeriod;
 
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
+using Lms.MVC.Data.Repositories.Helpers;
 using Lms.MVC.UI.Filters;
+using Lms.MVC.UI.Models.ViewModels.ApplicationUserViewModels;
 using Lms.MVC.UI.Models.ViewModels.ModelViewModels;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace Lms.MVC.UI
 {
@@ -317,6 +321,20 @@ namespace Lms.MVC.UI
                 return activities;
             }
         
-        
+        public  ActionResult ShowMyClassMates(int courseId, string id)
+        {
+
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+
+            id = uow.UserRepository.GetAllUsersAsync().Result.Where(u => u.Email == userEmail).FirstOrDefault().Id;
+
+            courseId = uow.UserRepository.FindAsync(id, true).Result.Courses.FirstOrDefault().Id;
+
+            var coursesStudents = uow.CourseRepository.GetAllCoursesAsync(false, true).Result.FirstOrDefault(c=>c.Id == courseId).Users.Where(u=> u.Role == RoleHelper.Student);
+
+            var model =  mapper.Map<IEnumerable<ListApplicationUsersViewModel>>(coursesStudents);
+
+            return View(model);
+        }
     }
 }
