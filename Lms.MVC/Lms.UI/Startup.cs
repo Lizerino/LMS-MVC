@@ -14,6 +14,10 @@ using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Repositories;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Lms.MVC.UI.Services;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
+using Lms.MVC.UI.Controllers;
+using Lms.MVC.UI.Filters;
 
 namespace Lms.MVC.UI
 {
@@ -29,6 +33,39 @@ namespace Lms.MVC.UI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            #region snippet_AddRazorPages
+            services.AddRazorPages(options =>
+            {
+                options.Conventions
+                    .AddPageApplicationModelConvention("/StreamedSingleFileUploadDb",
+                        model =>
+                        {
+                            model.Filters.Add(
+                                new GenerateAntiforgeryTokenCookieAttribute());
+                            model.Filters.Add(
+                                new DisableFormValueModelBindingAttribute());
+                        });
+                options.Conventions
+                    .AddPageApplicationModelConvention("/StreamedSingleFileUploadPhysical",
+                        model =>
+                        {
+                            model.Filters.Add(
+                                new GenerateAntiforgeryTokenCookieAttribute());
+                            model.Filters.Add(
+                                new DisableFormValueModelBindingAttribute());
+                        });
+            });
+            #endregion
+
+            // To list physical files from a path provided by configuration:
+            var physicalProvider = new PhysicalFileProvider(Configuration.GetValue<string>("StoredFilesPath"));
+
+            // To list physical files in the temporary files folder, use:
+            //var physicalProvider = new PhysicalFileProvider(Path.GetTempPath());
+
+            services.AddSingleton<IFileProvider>(physicalProvider);            
+
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -74,11 +111,11 @@ namespace Lms.MVC.UI
                                   .Build();
 
                 config.Filters.Add(new AuthorizeFilter(policy));
-            });
-            
+            });            
+
             services.AddScoped<IUoW, UoW>();
             services.AddScoped<ICourseSelectService, CourseSelectService>();
-            services.AddScoped<IActivityTypeSelectService, ActivityTypeSelectService>();
+            services.AddScoped<IActivityTypeSelectService, ActivityTypeSelectService>();           
 
             services.AddAutoMapper(typeof(LmsMVCDataMapperProfile),typeof(LmsMVCUIMapperProfile));
 
