@@ -45,15 +45,15 @@
                             <div class="dropdown">
                                 <label asp-for="Courses"></label>
                                 <button class="btn btn-default dropdown-toggle" type="button"
-                                        id="register-dropdown" data-toggle="dropdown"
+                                        id="register-dropdown-btn" data-toggle="dropdown"
                                         aria-haspopup="true" aria-expanded="true">
                                     Select Courses
 
                                 </button>
-                                <ul id="register-dropdown" class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenu1">
+                                <ul id="register-dropdown" class="dropdown-menu checkbox-menu allow-focus keepopen" aria-labelledby="dropdownMenu1">
                                     @foreach (var item in await service.GetTypeAsync())
                                     {
-                                        <li>
+                                        <li class="dropdown-li-list">
                                             <label>
                                                 <input type="checkbox" name="courses" value="@item.Value"> @item.Text
                                             </label>
@@ -68,7 +68,7 @@
                             <div class="dropdown">
                                 <label asp-for="Courses"></label>
                                 <button class="btn btn-default dropdown-toggle" type="button"
-                                        id="register-dropdown" data-toggle="dropdown"
+                                        id="register-dropdown-btn" data-toggle="dropdown"
                                         aria-haspopup="true" aria-expanded="true">
                                     Select Courses
 
