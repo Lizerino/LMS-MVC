@@ -11,12 +11,13 @@ namespace Lms.MVC.Data.Repositories
 {
     public class PublicationRepository:IPublicationRepository
     {
-        public Author CreateAuthor(string firstName, string lastName)
+        public Author CreateAuthor(string firstName, string lastName, DateTime birthday)
         {
             var author = new Author()
             {
                 FirstName = firstName,
-                LastName = lastName
+                LastName = lastName,
+                BirthDate = birthday
             };
             return author;
         }

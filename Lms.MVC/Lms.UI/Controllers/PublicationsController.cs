@@ -167,6 +167,7 @@ namespace Lms.MVC.UI.Controllers
         [HttpGet]
         public ActionResult Create()
         {
+            
             var model = new CreatePublicationViewModel();
             model.Subjects = uow.PublicationRepository.GetSubjects();
             
@@ -178,12 +179,20 @@ namespace Lms.MVC.UI.Controllers
         [ModelValid, ModelNotNull]
         public async Task<IActionResult> Create(CreatePublicationViewModel model)
         {
+            
+            if (model.ReleaseDate < model.AuthorBirthdate)
+            {
+                
+                ModelState.AddModelError("AuthorBirthdate", "Publication Date Must Be After Author's Date of Birth.");
+                model.Subjects = uow.PublicationRepository.GetSubjects();
+                return View(model);
+            }
+            
             model.Authors = new List<Author>();
-            model.Authors.Add(uow.PublicationRepository.CreateAuthor(model.AuthorFirstName, model.AuthorLastName));
+            model.Authors.Add(uow.PublicationRepository.CreateAuthor(model.AuthorFirstName, model.AuthorLastName,model.AuthorBirthdate));
             model.Subject = uow.PublicationRepository.CreateSubject(model.SubjectTitle);
             //model.Author = new Author() { FirstName = model.AuthorFirstName, LastName = model.AuthorFirstName }; //TODO MOVE TO EXTENSION
             //model.Subject = new Subject() { Title = model.SubjectTitle }; //TODO MOVE TO EXTENSION
-
             
             mapper.Map<Publication>(model);//TODO Fix Mapping issue
             
@@ -208,8 +217,9 @@ namespace Lms.MVC.UI.Controllers
                 response.EnsureSuccessStatusCode();
 
                 return RedirectToAction("Index");
-
             }
+            
+            
         }
         
         [HttpGet]

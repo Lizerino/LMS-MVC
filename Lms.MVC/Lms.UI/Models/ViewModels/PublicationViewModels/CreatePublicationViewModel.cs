@@ -30,6 +30,10 @@ namespace Lms.MVC.UI.Models.ViewModels.PublicationViewModels
         [Display(Name = "Author Last Name")]
         public string AuthorLastName { get; set; }
 
+        // Author Birthday
+        [Display(Name = "Author Date Of Birth: ")]
+        public DateTime AuthorBirthdate { get; set; }
+
 
         //Subject Creation at Post
         public string SubjectTitle { get; set; }
