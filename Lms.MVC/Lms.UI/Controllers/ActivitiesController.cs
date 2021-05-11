@@ -51,7 +51,7 @@ namespace Lms.MVC.UI.Controllers
             else
             {
                 if (User.IsInRole("Student")) return RedirectToAction("Index", "Modules");
-                return RedirectToAction("Index", "Courses");
+                return RedirectToAction("Index");//, "Courses");
             }
         }
 

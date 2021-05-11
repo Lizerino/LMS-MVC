@@ -73,7 +73,7 @@ namespace Lms.MVC.UI
 
                     return View(moduleViewModel);
                 }
-                return RedirectToAction("Index", "Courses");
+                return RedirectToAction("Index");//, "Courses");
             }
 
             // TODO: Everyone execept students go to modules and activities via course list no??

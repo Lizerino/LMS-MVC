@@ -14,6 +14,7 @@ namespace Lms.API.Core.Repositories
         Task<IEnumerable<Publication>> GetPublicationByTitleAsync(string title);
         Task<IEnumerable<Publication>> GetPublicationBySearchAsync(string search);
         Task<bool> SaveAsync();
+        Task SaveChanges();
         Task AddAsync<T>(T added);
         void Remove(Publication removed);
     }

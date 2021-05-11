@@ -167,6 +167,7 @@ namespace Lms.MVC.UI.Controllers
         [HttpGet]
         public ActionResult Create()
         {
+            
             var createPublicationViewModel = new CreatePublicationViewModel();
             createPublicationViewModel.Subjects = uow.PublicationRepository.GetSubjects();
             
@@ -178,12 +179,20 @@ namespace Lms.MVC.UI.Controllers
         [ModelValid, ModelNotNull]
         public async Task<IActionResult> Create(CreatePublicationViewModel createPublicationViewModel)
         {
+            
+            if (createPublicationViewModel.ReleaseDate < createPublicationViewModel.AuthorBirthdate)
+            {
+                
+                ModelState.AddModelError("AuthorBirthdate", "Publication Date Must Be After Author's Date of Birth.");
+                createPublicationViewModel.Subjects = uow.PublicationRepository.GetSubjects();
+                return View(createPublicationViewModel);
+            }
+            
             createPublicationViewModel.Authors = new List<Author>();
-            createPublicationViewModel.Authors.Add(uow.PublicationRepository.CreateAuthor(createPublicationViewModel.AuthorFirstName, createPublicationViewModel.AuthorLastName, createPublicationViewModel.AuthorDateOfBirth));
+            createPublicationViewModel.Authors.Add(uow.PublicationRepository.CreateAuthor(createPublicationViewModel.AuthorFirstName, createPublicationViewModel.AuthorLastName,createPublicationViewModel.AuthorBirthdate));
             createPublicationViewModel.Subject = uow.PublicationRepository.CreateSubject(createPublicationViewModel.SubjectTitle);
             //model.Author = new Author() { FirstName = model.AuthorFirstName, LastName = model.AuthorFirstName }; //TODO MOVE TO EXTENSION
             //model.Subject = new Subject() { Title = model.SubjectTitle }; //TODO MOVE TO EXTENSION
-
             
             mapper.Map<Publication>(createPublicationViewModel);//TODO Fix Mapping issue
             
@@ -208,8 +217,9 @@ namespace Lms.MVC.UI.Controllers
                 response.EnsureSuccessStatusCode();
 
                 return RedirectToAction("Index");
-
             }
+            
+            
         }
         
         [HttpGet]

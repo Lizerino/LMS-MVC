@@ -82,7 +82,7 @@ namespace Lms.API.Data.Migrations
                         column: x => x.PublicationId,
                         principalTable: "Publications",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
