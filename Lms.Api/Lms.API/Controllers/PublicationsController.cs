@@ -129,9 +129,20 @@ namespace Lms.API.UI.Controllers
             {
                 return NotFound();
             }
+            try
+            {
+
 
             uow.PublicationRepository.Remove(publication);
-            await uow.PublicationRepository.SaveAsync();
+            if (await uow.PublicationRepository.SaveAsync() == true)
+            {
+                return Ok();
+            }
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
 
             return NoContent();
         }
