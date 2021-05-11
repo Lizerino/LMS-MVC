@@ -61,12 +61,18 @@ namespace Lms.API.Data.Repositories
 
         public void Remove(Publication removed)
         {
-            db.Remove(removed);
+           db.Remove(removed);
         }
 
         public async Task<bool> SaveAsync()
         {
             return (await db.SaveChangesAsync()) >= 0;
+        }
+
+        public async Task SaveChanges()
+        {
+            await db.SaveChangesAsync();
+            await db.DisposeAsync();
         }
     }
 }
