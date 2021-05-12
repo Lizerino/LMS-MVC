@@ -46,7 +46,7 @@
                 const response = await fetch(oFormElement.action, {
                     method: 'POST',
                     headers: {
-                        'RequestVerificationToken': getAntiForgeryToken({}) 
+                        'RequestVerificationToken': getAntiForgeryToken({ }) 
                     },
                     body: formData
                 });
