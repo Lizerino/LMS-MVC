@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 using Itenso.TimePeriod;
 
@@ -17,7 +14,7 @@ namespace Lms.MVC.UI.Utilities
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <returns></returns>
-        public static bool IsInside(DateTime containerStart, DateTime containerEnd, DateTime start,DateTime end)
+        public static bool IsInside(DateTime containerStart, DateTime containerEnd, DateTime start, DateTime end)
         {
             TimeRange Container = new TimeRange(containerStart, containerEnd);
             return Container.HasInside(new TimeRange(start, end));

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Bogus;
+
 using Lms.MVC.Core.Entities;
+
 using Microsoft.AspNetCore.Identity;
 
 namespace Lms.MVC.Data.Data
@@ -28,6 +31,7 @@ namespace Lms.MVC.Data.Data
         public int NumberOfStudentsPerClass { get; set; }
 
         public int NumberOfTeachers { get; set; }
+
         public int NumberOfTeachersPerClass { get; set; }
 
         public SeedData(ApplicationDbContext db, UserManager<ApplicationUser> userManager)
@@ -51,7 +55,7 @@ namespace Lms.MVC.Data.Data
             NumberOfTeachers = NumberOfCourses;
         }
 
-        public void Seed(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager,ApplicationDbContext db)
+        public void Seed(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext db)
         {
             for (int i = 0; i < NumberOfCourses; i++)
             {
@@ -65,7 +69,7 @@ namespace Lms.MVC.Data.Data
             var fake = new Faker("sv");
             var course = new Course();
 
-            course.Title = fake.Company.CatchPhrase()+" Course";
+            course.Title = fake.Company.CatchPhrase() + " Course";
             course.StartDate = DateTime.Now.AddDays(fake.Random.Int(-2, 2));
 
             course.Modules = new List<Module>();
@@ -87,7 +91,6 @@ namespace Lms.MVC.Data.Data
                 course.Users.Add(GetTeacher());
             }
 
-
             return course;
         }
 
@@ -97,7 +100,7 @@ namespace Lms.MVC.Data.Data
 
             var module = new Module();
 
-            module.Title = fake.Name.JobTitle()+" Module";
+            module.Title = fake.Name.JobTitle() + " Module";
             module.StartDate = fake.Date.Soon();
 
             module.Activities = new List<Activity>();
@@ -116,13 +119,11 @@ namespace Lms.MVC.Data.Data
             var ran = fake.Random.Int(1, 5);
             var activity = new Activity();
 
-
-                activity.Title = fake.Name.JobTitle()+" Activity";
-                activity.StartDate = fake.Date.Soon();
-                activity.EndDate = activity.StartDate.AddHours(fake.Random.Int(1, 8));
-                activity.Description = fake.Lorem.Sentence();
-                activity.ActivityType = GetActivityType(ran,db);
-            
+            activity.Title = fake.Name.JobTitle() + " Activity";
+            activity.StartDate = fake.Date.Soon();
+            activity.EndDate = activity.StartDate.AddHours(fake.Random.Int(1, 8));
+            activity.Description = fake.Lorem.Sentence();
+            activity.ActivityType = GetActivityType(ran, db);
 
             return activity;
         }
@@ -163,11 +164,11 @@ namespace Lms.MVC.Data.Data
             return student;
         }
 
-        private static ActivityType GetActivityType(int ran,ApplicationDbContext db)
+        private static ActivityType GetActivityType(int ran, ApplicationDbContext db)
 
         {
             var result = db.ActivityTypes.Where(a => a.Id == ran).FirstOrDefault();
             return result;
         }
-    }   
+    }
 }

@@ -1,24 +1,22 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
 
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Data.Data;
-using Lms.MVC.UI.Models;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 
-
 namespace Lms.MVC.UI.Areas.Files
 {
     public class IndexModel : PageModel
     {
         private readonly ApplicationDbContext db;
+
         private readonly IFileProvider _fileProvider;
 
         public IndexModel(ApplicationDbContext context, IFileProvider fileProvider)
@@ -28,11 +26,11 @@ namespace Lms.MVC.UI.Areas.Files
         }
 
         public IList<DbFile> DatabaseFiles { get; private set; }
+
         public IDirectoryContents PhysicalFiles { get; private set; }
 
         public async Task OnGetAsync()
         {
-            
             DatabaseFiles = await db.DbFile.AsNoTracking().ToListAsync();
             PhysicalFiles = _fileProvider.GetDirectoryContents(string.Empty);
         }

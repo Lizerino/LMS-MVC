@@ -1,24 +1,17 @@
+using Lms.API.Core.Repositories;
+using Lms.API.Data.Data;
+using Lms.API.Data.Repositories;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Lms.API.Data.Data;
-using Lms.API.Data.Repositories;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using System.Reflection;
-using System.IO;
-using Lms.API.Core.Repositories;
 
 namespace Lms.API.UI
 {
@@ -36,7 +29,6 @@ namespace Lms.API.UI
         {
             services.AddMvc(opt =>
             {
-
                 opt.Filters.Add(
                     new ProducesResponseTypeAttribute(StatusCodes.Status400BadRequest));
                 opt.Filters.Add(
@@ -44,7 +36,6 @@ namespace Lms.API.UI
                 opt.Filters.Add(
                     new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
                 opt.OutputFormatters.Add(new XmlSerializerOutputFormatter()); // Review! : Adding xml Serilizer to the controllers
-
             }
             )
                 .AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -55,7 +46,6 @@ namespace Lms.API.UI
             services.AddSwaggerGen(opt =>
             {
                 opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Lms.API", Version = "v1" });
-
             });
             services.AddDbContext<LmsAPIContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("LmsAPIContext")));

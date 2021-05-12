@@ -35,8 +35,4 @@
     <ProjectReference Include="..\Lms.Data\Lms.MVC.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="UploadedFiles\" />
-  </ItemGroup>
-
 </Project>

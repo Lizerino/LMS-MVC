@@ -10,4 +10,3 @@ userForm.addEventListener('submit', function (e) {
     let userSearchForm = document.querySelector('.search-form');
     userSearchForm.reset();
 })
-

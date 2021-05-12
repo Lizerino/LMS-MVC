@@ -1,21 +1,24 @@
 ﻿//TODO GitFix
-using Lms.MVC.Core.Entities;
-using Lms.MVC.Core.Repositories;
-using Lms.MVC.Data.Data;
-using Lms.MVC.Data.Repositories.Helpers;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Lms.MVC.Core.Entities;
+using Lms.MVC.Core.Repositories;
+using Lms.MVC.Data.Data;
+using Lms.MVC.Data.Repositories.Helpers;
+
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
 namespace Lms.MVC.Data.Repositories
 {
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext db;
+
         private readonly UserManager<ApplicationUser> userManager;
 
         public UserRepository(ApplicationDbContext db, UserManager<ApplicationUser> userManager)

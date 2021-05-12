@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 
-
 namespace Lms.MVC.UI.Utilities.Pagination
 {
     public static class LinqExtensions

@@ -2,7 +2,6 @@
 using System.Linq;
 
 using Lms.MVC.Core.Repositories;
-using Lms.MVC.Data.Repositories;
 using Lms.MVC.UI.Models;
 using Lms.MVC.UI.Models.ViewModels.Admin;
 

@@ -1,10 +1,10 @@
 using System;
+
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Lms.MVC.UI.Filters
 {
-    #region snippet_DisableFormValueModelBindingAttribute
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class DisableFormValueModelBindingAttribute : Attribute, IResourceFilter
     {
@@ -20,5 +20,4 @@ namespace Lms.MVC.UI.Filters
         {
         }
     }
-    #endregion
 }

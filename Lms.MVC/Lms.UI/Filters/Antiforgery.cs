@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Lms.MVC.UI.Filters
 {
     #region snippet_GenerateAntiforgeryTokenCookieAttribute
+
     public class GenerateAntiforgeryTokenCookieAttribute : ResultFilterAttribute
     {
         public override void OnResultExecuting(ResultExecutingContext context)
@@ -25,6 +26,6 @@ namespace Lms.MVC.UI.Filters
         {
         }
     }
-    #endregion
-}
 
+    #endregion snippet_GenerateAntiforgeryTokenCookieAttribute
+}

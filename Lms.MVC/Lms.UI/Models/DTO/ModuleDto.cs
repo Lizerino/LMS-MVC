@@ -1,15 +1,13 @@
-﻿using Lms.MVC.Core.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+
+using Lms.MVC.Core.Entities;
 
 namespace Lms.MVC.UI.Models.DTO
 {
     public class ModuleDto
     {
-        
         public int Id { get; set; }
 
         [Display(Name = "Title")]
@@ -25,7 +23,5 @@ namespace Lms.MVC.UI.Models.DTO
         public DateTime EndDate { get; set; }
 
         public ICollection<Activity> Activities { get; set; }
-
-
     }
 }

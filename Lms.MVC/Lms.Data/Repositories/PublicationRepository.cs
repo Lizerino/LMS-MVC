@@ -1,17 +1,14 @@
-﻿using Lms.API.Core.Entities;
-using Lms.MVC.Core.Entities;
-using Lms.MVC.Core.Repositories;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using Lms.API.Core.Entities;
+using Lms.MVC.Core.Repositories;
 
 namespace Lms.MVC.Data.Repositories
 {
-    public class PublicationRepository:IPublicationRepository
+    public class PublicationRepository : IPublicationRepository
     {
-        public Author CreateAuthor(string firstName, string lastName,DateTime dateOfBirth)
+        public Author CreateAuthor(string firstName, string lastName, DateTime dateOfBirth)
         {
             var author = new Author()
             {

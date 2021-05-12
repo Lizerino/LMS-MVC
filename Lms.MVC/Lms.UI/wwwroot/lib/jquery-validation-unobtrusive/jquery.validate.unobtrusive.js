@@ -8,12 +8,15 @@
 
 (function (factory) {
     if (typeof define === 'function' && define.amd) {
+
         // AMD. Register as an anonymous module.
         define("jquery.validate.unobtrusive", ['jquery-validation'], factory);
     } else if (typeof module === 'object' && module.exports) {
-        // CommonJS-like environments that support module.exports     
+
+        // CommonJS-like environments that support module.exports
         module.exports = factory(require('jquery-validation'));
     } else {
+
         // Browser global
         jQuery.validator.unobtrusive = factory(jQuery);
     }
@@ -34,6 +37,7 @@
     }
 
     function escapeAttributeValue(value) {
+
         // As mentioned on http://api.jquery.com/category/selectors/
         return value.replace(/([!"#$%&'()*+,./:;<=>?@\[\\\]^`{|}~])/g, "\\$1");
     }
@@ -102,6 +106,7 @@
         if ($form.data(key)) {
             return;
         }
+
         // Set a flag that indicates we're currently resetting the form.
         $form.data(key, true);
         try {
@@ -172,6 +177,7 @@
         adapters: [],
 
         parseElement: function (element, skipAttach) {
+
             /// <summary>
             /// Parses a single HTML element for unobtrusive validation attributes.
             /// </summary>
@@ -223,6 +229,7 @@
         },
 
         parse: function (selector) {
+
             /// <summary>
             /// Parses all the HTML elements in the specified selector. It looks for input elements decorated
             /// with the [data-val=true] attribute value and enables validation according to the data-val-*
@@ -255,6 +262,7 @@
     adapters = $jQval.unobtrusive.adapters;
 
     adapters.add = function (adapterName, params, fn) {
+
         /// <summary>Adds a new adapter to convert unobtrusive HTML into a jQuery Validate validation.</summary>
         /// <param name="adapterName" type="String">The name of the adapter to be added. This matches the name used
         /// in the data-val-nnnn HTML attribute (where nnnn is the adapter name).</param>
@@ -273,6 +281,7 @@
     };
 
     adapters.addBool = function (adapterName, ruleName) {
+
         /// <summary>Adds a new adapter to convert unobtrusive HTML into a jQuery Validate validation, where
         /// the jQuery Validate validation rule has no parameter values.</summary>
         /// <param name="adapterName" type="String">The name of the adapter to be added. This matches the name used
@@ -286,6 +295,7 @@
     };
 
     adapters.addMinMax = function (adapterName, minRuleName, maxRuleName, minMaxRuleName, minAttribute, maxAttribute) {
+
         /// <summary>Adds a new adapter to convert unobtrusive HTML into a jQuery Validate validation, where
         /// the jQuery Validate validation has three potential rules (one for min-only, one for max-only, and
         /// one for min-and-max). The HTML parameters are expected to be named -min and -max.</summary>
@@ -319,6 +329,7 @@
     };
 
     adapters.addSingleVal = function (adapterName, attribute, ruleName) {
+
         /// <summary>Adds a new adapter to convert unobtrusive HTML into a jQuery Validate validation, where
         /// the jQuery Validate validation rule has a single value.</summary>
         /// <param name="adapterName" type="String">The name of the adapter to be added. This matches the name used
@@ -360,6 +371,7 @@
         adapters.addSingleVal("accept", "mimtype");
         adapters.addSingleVal("extension", "extension");
     } else {
+
         // for backward compatibility, when the 'extension' validation method does not exist, such as with versions
         // of JQuery Validation plugin prior to 1.10, we should use the 'accept' method for
         // validating the extension, and ignore mime-type validations as they are not supported.
@@ -379,6 +391,7 @@
         setValidationValues(options, "equalTo", element);
     });
     adapters.add("required", function (options) {
+
         // jQuery Validate equates "required" with "mandatory" for checkbox elements
         if (options.element.tagName.toUpperCase() !== "INPUT" || options.element.type.toUpperCase() !== "CHECKBOX") {
             setValidationValues(options, "required", true);
@@ -396,6 +409,7 @@
             var paramName = appendModelPrefix(fieldName, prefix);
             value.data[paramName] = function () {
                 var field = $(options.form).find(":input").filter("[name='" + escapeAttributeValue(paramName) + "']");
+
                 // For checkboxes and radio buttons, only pick up values from checked fields.
                 if (field.is(":checkbox")) {
                     return field.filter(":checked").val() || field.filter(":hidden").val() || '';

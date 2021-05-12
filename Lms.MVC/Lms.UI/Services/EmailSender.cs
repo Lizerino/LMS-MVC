@@ -3,7 +3,6 @@
 using FluentEmail.Core;
 
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Lms.MVC.UI.Services
 {
@@ -21,9 +20,9 @@ namespace Lms.MVC.UI.Services
             var emailToSend = singleEmail
                 .To(email)
                 .Subject(subject)
-                .Body(htmlMessage,true);
+                .Body(htmlMessage, true);
 
             await emailToSend.SendAsync();
-        }       
+        }
     }
 }

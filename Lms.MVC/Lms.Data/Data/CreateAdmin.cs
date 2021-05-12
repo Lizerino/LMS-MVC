@@ -1,18 +1,16 @@
-﻿using Lms.MVC.Core.Entities;
+﻿using System;
+using System.Threading.Tasks;
+
+using Lms.MVC.Core.Entities;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lms.MVC.Data.Data
 {
     public class CreateAdmin
     {
-
         public static async Task CreateAdminAsync(IServiceProvider services, string adminPW)
         {
             using (var context = new ApplicationDbContext(services.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
@@ -39,7 +37,6 @@ namespace Lms.MVC.Data.Data
                     Email = adminEmail,
                     Name = "Admin",
                     Role = "Admin"
-                   
                 };
                 var addAdminResult = await userManager.CreateAsync(admin, adminPW);
 
@@ -51,13 +48,10 @@ namespace Lms.MVC.Data.Data
                 {
                     var addToRoleResult = await userManager.AddToRoleAsync(adminUser, roleName);
                     if (!addToRoleResult.Succeeded) throw new Exception(string.Join("\n", addToRoleResult.Errors));
-
                 }
 
                 await context.SaveChangesAsync();
             }
-
-
         }
     }
 }

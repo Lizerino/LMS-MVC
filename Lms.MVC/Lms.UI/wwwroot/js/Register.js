@@ -2,10 +2,10 @@
     $(this).closest("li").toggleClass("active", this.checked);
 });
 
-
 $(document).on('click', '.dropdown .dropdown-menu', function (e) {
     e.stopPropagation();
 });
+
 // ToDo: gitfix
 //$('.dropdown').on('click', function (e) {
 //    var target = $(e.target);
@@ -29,7 +29,7 @@ $(document).on('click', '.dropdown .dropdown-menu', function (e) {
 //            } else {
 //                $(this).data('closable', false);
 //            }
-        
+
 //        },
 //        "hide.bs.dropdown": function (event) {
 //            hide = $(this).data('closable');
@@ -38,8 +38,6 @@ $(document).on('click', '.dropdown .dropdown-menu', function (e) {
 //        }
 //    });
 //});
-
-
 
 //$('.dropdown').on('show.bs.dropdown', function (event) {
 //    if ($(event.target).closest('.dropdown-toggle').length) {

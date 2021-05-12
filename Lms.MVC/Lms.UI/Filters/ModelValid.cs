@@ -1,13 +1,13 @@
 ﻿//TODO GitFix
+using System;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System;
 
 namespace Lms.MVC.UI.Filters
 {
     public class ModelValid : Attribute
     {
-
         public void OnActionExecuting(ActionExecutingContext context)
         {
             if (!context.ModelState.IsValid)
@@ -20,6 +20,5 @@ namespace Lms.MVC.UI.Filters
                 };
             }
         }
-
     }
 }

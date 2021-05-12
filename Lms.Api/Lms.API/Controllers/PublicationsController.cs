@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+
+using AutoMapper;
+
+using Lms.API.Core.Entities;
+using Lms.API.Core.Repositories;
+using Lms.API.Data.Data;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Lms.API.Core.Entities;
-using Lms.API.Data.Data;
-using AutoMapper;
-using Lms.API.Core.Repositories;
+
 using Newtonsoft.Json;
 
 namespace Lms.API.UI.Controllers
@@ -18,7 +21,9 @@ namespace Lms.API.UI.Controllers
     public class PublicationsController : ControllerBase
     {
         private readonly LmsAPIContext db;
+
         private readonly IMapper mapper;
+
         private readonly IUoW uow;
 
         public PublicationsController(LmsAPIContext db, IMapper mapper, IUoW uow)
@@ -62,8 +67,7 @@ namespace Lms.API.UI.Controllers
             return Ok(result);
         }
 
-        // PUT: api/Publicatons/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // PUT: api/Publicatons/5 To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPublication(int id, Publication publication)
         {
@@ -93,11 +97,9 @@ namespace Lms.API.UI.Controllers
             return NoContent();
         }
 
-        
         [HttpPost("create")]
-        public async Task<ActionResult<Publication>> PostPublication([FromBody]string publication)
+        public async Task<ActionResult<Publication>> PostPublication([FromBody] string publication)
         {
-            
             var newItem = JsonConvert.DeserializeObject<Publication>(publication);
             var author = db.Authors.FirstOrDefault(a => a.FirstName == newItem.Authors.First().FirstName
                                                         && a.LastName == newItem.Authors.First().LastName);
@@ -131,15 +133,13 @@ namespace Lms.API.UI.Controllers
             }
             try
             {
-
-
-            uow.PublicationRepository.Remove(publication);
-            if (await uow.PublicationRepository.SaveAsync() == true)
-            {
-                return Ok();
+                uow.PublicationRepository.Remove(publication);
+                if (await uow.PublicationRepository.SaveAsync() == true)
+                {
+                    return Ok();
+                }
             }
-            }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }

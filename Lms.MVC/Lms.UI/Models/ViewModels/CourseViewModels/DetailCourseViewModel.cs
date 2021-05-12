@@ -16,6 +16,7 @@ namespace Lms.MVC.UI.Models.ViewModels.CourseViewModels
         public string Description { get; set; }
 
         public DateTime StartDate { get; set; }
+
         public DateTime EndDate { get; set; }
 
         // nav prop

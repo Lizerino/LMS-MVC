@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Lms.MVC.UI.Utilities.Pagination
 {
@@ -11,7 +10,7 @@ namespace Lms.MVC.UI.Utilities.Pagination
 
         public int PageSize { get; set; }
 
-        public int RowCount { get; set; }       
+        public int RowCount { get; set; }
     }
 
     public class PaginationResult<T> : PaginationResultBase where T : class

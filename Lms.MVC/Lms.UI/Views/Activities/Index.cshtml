@@ -1,6 +1,5 @@
 @model ListActivityViewModel
 
-
     <h1>@Model.ModuleTitle</h1>
     @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
     {
@@ -27,6 +26,6 @@
     </div>
 }
 else
-{    
-        <p>No activities in this module</p>    
+{
+        <p>No activities in this module</p>
 }

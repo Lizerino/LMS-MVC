@@ -1,5 +1,4 @@
-﻿
-h1 {
+﻿h1 {
     color: #fff;
     margin: 40px 0 60px 0;
     font-weight: 300;
@@ -10,7 +9,6 @@ h1 {
     height: auto;
     border-bottom: 15px #9c9cd1 solid;
     background: #fff;
-    
     text-align: center;
     border-radius: 10px;
     overflow: hidden;
@@ -52,7 +50,6 @@ h1 {
     position: relative;
     z-index: 10;
     background: #fff;
-
     padding: 15px;
     bottom: 0px;
     transition: all 0.5s ease;
@@ -67,30 +64,33 @@ h1 {
     border-color: #777;
     transition: 0.5s;
 }
+
 a {
     color: #0366d6;
 }
-.non-links{
-    color:black;
-}
-span{
-   color:coral;
-}
-.navbar-light {
-    background-color: transparent !important;
-    border-bottom:none!important;
-    box-shadow: rgba(0,0,0, 10) 0px 0px 10px 0px inset ;
+
+.non-links {
+    color: black;
 }
 
-.navbar-light a {
-    color: #9c9cd1 !important;
+span {
+    color: coral;
 }
+
+.navbar-light {
+    background-color: transparent !important;
+    border-bottom: none !important;
+    box-shadow: rgba(0,0,0, 10) 0px 0px 10px 0px inset;
+}
+
+    .navbar-light a {
+        color: #9c9cd1 !important;
+    }
 
     .navbar-light button {
         color: #9c9cd1 !important;
     }
 
-
-    /*.col-lg-6 {
+/*.col-lg-6 {
     background-color: rgba(256, 256, 256, 0.5);
 }*/

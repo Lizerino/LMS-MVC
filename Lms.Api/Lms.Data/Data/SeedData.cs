@@ -38,9 +38,8 @@ namespace Lms.API.Data.Data
 
                 var authors = GetAuthors();
                 var publications = GetPublications(authors, levels, subjects);
-                ConnectAuthorsWithPublications(authors,publications);
+                ConnectAuthorsWithPublications(authors, publications);
 
-                
                 await db.AddRangeAsync(authors);
                 await db.AddRangeAsync(publications);
                 await db.AddRangeAsync(subjects);
@@ -61,8 +60,8 @@ namespace Lms.API.Data.Data
                     int r = fake.Random.Int(0, authors.Count - 1);
                     if (!authorInsert.Contains(authors[r]))
                         authorInsert.Add(authors[r]);
-                }              
-                    lit.Authors = authorInsert;                
+                }
+                lit.Authors = authorInsert;
             }
         }
 

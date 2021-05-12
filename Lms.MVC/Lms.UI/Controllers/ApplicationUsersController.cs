@@ -1,17 +1,20 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+using AutoMapper;
+
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Models.ViewModels.ApplicationUserViewModels;
 using Lms.MVC.UI.Utilities.Pagination;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Lms.MVC.UI.Controllers
 {
@@ -101,11 +104,12 @@ namespace Lms.MVC.UI.Controllers
                 return NotFound();
             }
             var user = await uoW.UserRepository.FindAsync(id, true);
-           
+
             var model = mapper.Map<DetailsApplicationUserViewModel>(user);
 
             return View(model);
         }
+
         [ModelNotNull]
         public async Task<IActionResult> Edit(string id)
         {
@@ -183,11 +187,11 @@ namespace Lms.MVC.UI.Controllers
             return View(viewmodel);
         }
 
-        
         private bool UserExists(string id)
         {
             return uoW.UserRepository.Any(id);
         }
+
         [ModelNotNull]
         public async Task<IActionResult> Remove(string id)
         {
@@ -197,7 +201,7 @@ namespace Lms.MVC.UI.Controllers
             }
 
             var userToBeRemoved = await uoW.UserRepository.FindAsync(id, true);
-            
+
             var model = mapper.Map<DeleteApplicationUserViewModel>(userToBeRemoved);
 
             return View(model);
@@ -214,7 +218,7 @@ namespace Lms.MVC.UI.Controllers
             }
 
             var userToBeRemoved = await uoW.UserRepository.FindAsync(id, true);
-            
+
             uoW.UserRepository.Remove(userToBeRemoved);
             await uoW.CompleteAsync();
             return RedirectToAction(nameof(Index));

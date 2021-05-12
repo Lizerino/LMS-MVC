@@ -2,12 +2,10 @@ using System.Threading.Tasks;
 
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Data.Data;
-using Lms.MVC.UI.Models;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-
 
 namespace Lms.MVC.UI.Areas.Files
 {
@@ -30,8 +28,7 @@ namespace Lms.MVC.UI.Areas.Files
                 return RedirectToPage("/Index");
             }
 
-           
-           RemoveFile = await db.DbFile.SingleOrDefaultAsync(m => m.Id == id);
+            RemoveFile = await db.DbFile.SingleOrDefaultAsync(m => m.Id == id);
 
             if (RemoveFile == null)
             {
@@ -48,8 +45,7 @@ namespace Lms.MVC.UI.Areas.Files
                 return RedirectToPage("/Index");
             }
 
-            
-           RemoveFile = await db.DbFile.FindAsync(id);
+            RemoveFile = await db.DbFile.FindAsync(id);
 
             if (RemoveFile != null)
             {

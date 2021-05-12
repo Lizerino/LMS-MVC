@@ -1,6 +1,4 @@
-﻿using System;
-
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace Lms.MVC.Data.Data
 {
@@ -27,9 +25,7 @@ namespace Lms.MVC.Data.Data
                 IdentityRole role = new IdentityRole();
                 role.Name = "Admin";
                 roleManager.CreateAsync(role).Wait();
-            }            
+            }
         }
-
-        
     }
 }

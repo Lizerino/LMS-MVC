@@ -1,23 +1,27 @@
-﻿using Lms.MVC.Core.Entities;
+﻿using System.Threading.Tasks;
+
+using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;
+
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lms.MVC.Data.Repositories
 {
-  public  class UoW : IUoW
+    public class UoW : IUoW
     {
         private readonly ApplicationDbContext db;
+
         private readonly UserManager<ApplicationUser> userManager;
+
         public ICourseRepository CourseRepository { get; }
+
         public IModuleRepository ModuleRepository { get; }
+
         public IActivityRepository ActivityRepository { get; }
+
         public IUserRepository UserRepository { get; }
+
         public IPublicationRepository PublicationRepository { get; }
 
         public UoW(ApplicationDbContext db, UserManager<ApplicationUser> userManager)
@@ -30,7 +34,7 @@ namespace Lms.MVC.Data.Repositories
             UserRepository = new UserRepository(this.db, this.userManager);
             PublicationRepository = new PublicationRepository();
         }
+
         public async Task CompleteAsync() => await db.SaveChangesAsync();
-        
     }
 }
