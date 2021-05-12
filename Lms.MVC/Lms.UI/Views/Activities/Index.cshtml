@@ -19,6 +19,7 @@
                 <a asp-controller="Activities" asp-action="Details" asp-route-id="@activity.Id">
                     <h5 class="card-title">@activity.Title</h5>
                     <p class="card-body">@activity.Description</p>
+                    <div class="card-footer">Start Date: @activity.StartDate</div>
                     <div class="card-footer">End Date: @activity.EndDate</div>
                 </a>
             </div>

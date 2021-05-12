@@ -17,7 +17,6 @@ namespace Lms.MVC.UI.Models.ViewModels.ActivityViewModels
         public string Description { get; set; }
         
         [Display(Name = "StartDate")]
-
         // TODO: Why does displayformat break the default value set in the controller        
         [DataType(DataType.DateTime), Required]
         //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd, HH:mm}", ApplyFormatInEditMode = true)]
