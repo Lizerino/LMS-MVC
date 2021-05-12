@@ -87,10 +87,10 @@ namespace Lms.MVC.UI.Controllers
         public async Task<IActionResult> Create(CreateActivityViewModel activityViewModel)
         {
             //Find Module
-            var modules = await uoW.ModuleRepository.GetAllModulesAsync(true);
+            var modules = await uow.ModuleRepository.GetAllModulesAsync(true);
             var currentModule = modules.Where(c => c.Id == activityViewModel.ModuleId).FirstOrDefault();
 
-            var activities = uoW.ActivityRepository.GetAllActivitiesAsync().Result;
+            var activities = uow.ActivityRepository.GetAllActivitiesAsync().Result;
             var activitiesInCurrentModule = activities.Where(a => a.ModuleId == currentModule.Id);
 
             ValidateDates(activityViewModel, currentModule, activitiesInCurrentModule);

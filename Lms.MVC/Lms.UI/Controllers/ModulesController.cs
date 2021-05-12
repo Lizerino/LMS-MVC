@@ -265,7 +265,7 @@ namespace Lms.MVC.UI.Controllers
         {
             try
             {
-                var moduleDb = uow.ModuleRepository.GetModuleAsync(id);
+                var moduleDb = uow.ModuleRepository.GetModuleAsync(id).Result;
 
                 if (moduleDb == null || moduleDb.Id != module.Id)
                     return View();
