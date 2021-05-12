@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lms.API.Core.Entities
 {
@@ -14,15 +11,19 @@ namespace Lms.API.Core.Entities
 
         [Required]
         public string Title { get; set; }
+
         public string Description { get; set; }
+
         [Required]
         [DataType(DataType.Date)]
         public DateTime ReleaseDate { get; set; }
+
         public string Url { get; set; }
 
         public Subject Subject { get; set; }
+
         public Level Level { get; set; }
-        
+
         [Required]
         public ICollection<Author> Authors { get; set; }
     }

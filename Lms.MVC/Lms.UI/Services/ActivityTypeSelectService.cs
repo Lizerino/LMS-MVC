@@ -1,9 +1,9 @@
-﻿using Lms.MVC.Core.Repositories;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+
+using Lms.MVC.Core.Repositories;
+
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Lms.MVC.UI.Services
 {
@@ -16,10 +16,8 @@ namespace Lms.MVC.UI.Services
             this.uoW = uoW;
         }
 
-
         public IEnumerable<SelectListItem> GetTypeAsync()
         {
-
             var activityTypes = uoW.ActivityRepository.GetAllActivityTypesAsync().Result;
 
             return activityTypes.Select(c => new SelectListItem
@@ -27,8 +25,6 @@ namespace Lms.MVC.UI.Services
                 Text = c.Name.ToString(),
                 Value = c.Id.ToString()
             }).Distinct();
-
         }
-
     }
 }

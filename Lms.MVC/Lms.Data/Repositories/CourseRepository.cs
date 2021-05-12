@@ -1,11 +1,13 @@
-﻿using Lms.MVC.Core.Entities;
-using Lms.MVC.Core.Repositories;
-using Lms.MVC.Data.Data;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
+using Lms.MVC.Core.Entities;
+using Lms.MVC.Core.Repositories;
+using Lms.MVC.Data.Data;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace Lms.MVC.Data.Repositories
 {
@@ -17,16 +19,18 @@ namespace Lms.MVC.Data.Repositories
         {
             this.db = db;
         }
+
         public async Task AddAsync(Course added)
         {
             await db.AddAsync(added);
         }
+
         public void Remove(Course removed)
         {
             db.Remove(removed);
         }
 
-        public async Task<IEnumerable<Course>> GetAllCoursesAsync(bool includeModules=false, bool includeUsers = false)
+        public async Task<IEnumerable<Course>> GetAllCoursesAsync(bool includeModules = false, bool includeUsers = false)
         {
             return includeModules ?
                 includeUsers ?
@@ -49,7 +53,7 @@ namespace Lms.MVC.Data.Repositories
                         .ToListAsync();
         }
 
-        public async Task<Course> GetCourseAsync(int? id, bool includeModules=false, bool includeUsers = false)
+        public async Task<Course> GetCourseAsync(int? id, bool includeModules = false, bool includeUsers = false)
         {
             return includeModules ?
                 includeUsers ?
@@ -90,20 +94,20 @@ namespace Lms.MVC.Data.Repositories
         }
 
         public async Task<DateTime> CalculateEndDateAsync(int id)
-        {          
-            if (GetCourseAsync(id, true, false).Result.Modules.Count()>0)
+        {
+            if (GetCourseAsync(id, true, false).Result.Modules.Count() > 0)
             {
-            var modulesEndDates = (await GetCourseAsync(id,true,false)).Modules.Select(m => m.EndDate).ToList();
-            var endDate = modulesEndDates.Last();
-            foreach (var date in modulesEndDates)
-            {
-                if (date > endDate)
+                var modulesEndDates = (await GetCourseAsync(id, true, false)).Modules.Select(m => m.EndDate).ToList();
+                var endDate = modulesEndDates.Last();
+                foreach (var date in modulesEndDates)
                 {
-                    endDate = date;
+                    if (date > endDate)
+                    {
+                        endDate = date;
+                    }
                 }
-            }
 
-            return endDate;
+                return endDate;
             }
             return DateTime.Now.AddMonths(1);
         }
@@ -127,7 +131,7 @@ namespace Lms.MVC.Data.Repositories
 
         public async Task<Course> SetCourseEndDateAsync(int id)
         {
-            var course = await GetCourseAsync(id,false,false);
+            var course = await GetCourseAsync(id, false, false);
             course.EndDate = await CalculateEndDateAsync(id);
 
             return course;

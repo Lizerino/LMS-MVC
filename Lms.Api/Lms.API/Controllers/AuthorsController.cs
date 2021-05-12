@@ -1,15 +1,18 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+using AutoMapper;
+
 using Lms.API.Core.Dto;
 using Lms.API.Core.Entities;
 using Lms.API.Core.Repositories;
 using Lms.API.Data.Data;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Lms.API.UI.Controllers
 {
@@ -18,7 +21,9 @@ namespace Lms.API.UI.Controllers
     public class AuthorsController : ControllerBase
     {
         private readonly LmsAPIContext db;
+
         private readonly IMapper mapper;
+
         private readonly IUoW uow;
 
         public AuthorsController(LmsAPIContext db, IMapper mapper, IUoW uow)
@@ -34,7 +39,6 @@ namespace Lms.API.UI.Controllers
         {
             var authors = await uow.AuthorRepository.GetAllAuthorsAsync();
             var authorsDto = mapper.Map<AuthorDto[]>(authors);
-
 
             var response = JsonConvert.SerializeObject(authorsDto);
             return Ok(response);
@@ -67,8 +71,7 @@ namespace Lms.API.UI.Controllers
             return Ok(authorsDto);
         }
 
-        // PUT: api/Authors/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // PUT: api/Authors/5 To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAuthor(int id, Author author)
         {
@@ -98,8 +101,7 @@ namespace Lms.API.UI.Controllers
             return NoContent();
         }
 
-        // POST: api/Authors
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // POST: api/Authors To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Author>> PostAuthor(Author author)
         {

@@ -1,14 +1,16 @@
-﻿using Lms.MVC.UI.Models.DTO;
-using Lms.MVC.UI.Models.ViewModels.AuthorViewModels;
-using Lms.MVC.UI.Utilities.Pagination;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+
+using Lms.MVC.UI.Models.ViewModels.AuthorViewModels;
+using Lms.MVC.UI.Utilities.Pagination;
+
+using Microsoft.AspNetCore.Mvc;
+
+using Newtonsoft.Json;
 
 namespace Lms.MVC.UI.Controllers
 {
@@ -23,6 +25,7 @@ namespace Lms.MVC.UI.Controllers
             httpClient.DefaultRequestHeaders.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
+
         public async Task<IActionResult> Index(string search, string sort, string sortBy, int page)
         {
             // Builds request to API
@@ -31,7 +34,7 @@ namespace Lms.MVC.UI.Controllers
 
             // Sends request and ensures response
             var response = await httpClient.SendAsync(request);
-            
+
             response.EnsureSuccessStatusCode();
 
             // Converts Json response to ViewModel
@@ -40,7 +43,6 @@ namespace Lms.MVC.UI.Controllers
             content = content.TrimEnd('\"');
             content = content.Replace("\\", "");
             var model = JsonConvert.DeserializeObject<IEnumerable<IndexAuthorViewModel>>(content);
-
 
             // Checks Search
             if (search != null) page = 1;
@@ -61,33 +63,32 @@ namespace Lms.MVC.UI.Controllers
             //ViewData["AgeSortParam"] = sort == "Age" ? "Age_desc" : "Age";
             //ViewData["FNameAge"] = sort == "Age" ? "Age_desc" : "Age";
 
-
             // Sort by order
             switch (sortBy)
             {
                 case "FNAgeD":// First Name then Age Descending
-                    
-                        model = model.OrderBy(a => a.FirstName)
-                        .ThenByDescending(a => a.Age);
+
+                    model = model.OrderBy(a => a.FirstName)
+                    .ThenByDescending(a => a.Age);
                     break;
-                        
+
                 case "FNAgeA": // First Name then Age Ascending
-                    
-                        model = model.OrderBy(a => a.FirstName)
-                        .ThenBy(a => a.Age);
+
+                    model = model.OrderBy(a => a.FirstName)
+                    .ThenBy(a => a.Age);
                     break;
-                    
-                case "LName": // Last Name Ascending                   
-                    
-                        model = model.OrderBy(a => a.LastName);
+
+                case "LName": // Last Name Ascending
+
+                    model = model.OrderBy(a => a.LastName);
                     break;
-                        
+
                 case "LNAgeD": // Last Name then Age Descending
-                        
+
                     model = model.OrderBy(a => a.LastName)
                         .ThenByDescending(a => a.Age);
                     break;
-                    
+
                 case "LNAgeA": // Last Name then Age Ascending
 
                     model = model.OrderBy(a => a.LastName)
@@ -112,11 +113,11 @@ namespace Lms.MVC.UI.Controllers
                     break;
 
                 default:
-                    
-                        model = model.OrderBy(a => a.FirstName);
+
+                    model = model.OrderBy(a => a.FirstName);
                     break;
             }
-            
+
             // Paginated Results
             var paginatedResult = model.AsQueryable().GetPagination(page, 10);
 

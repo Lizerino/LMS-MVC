@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 using Lms.MVC.Core.Entities;
@@ -15,12 +14,13 @@ namespace Lms.MVC.UI.Models.ViewModels.ActivityViewModels
 
         [Display(Name = "Description")]
         public string Description { get; set; }
-        
+
         [Display(Name = "StartDate")]
-        // TODO: Why does displayformat break the default value set in the controller        
+
+        // TODO: Why does displayformat break the default value set in the controller
         [DataType(DataType.DateTime), Required]
-        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd, HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime StartDate { get; set; }
+
         [DataType(DataType.DateTime), Required]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd, HH:mm}", ApplyFormatInEditMode = true)]
         [Display(Name = "EndDate")]

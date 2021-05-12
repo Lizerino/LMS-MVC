@@ -1,25 +1,31 @@
-﻿using AutoMapper;
-using Lms.API.Core.Entities;
-using Lms.MVC.Core.Repositories;
-using Lms.MVC.UI.Filters;
-using Lms.MVC.UI.Models.ViewModels.PublicationViewModels;
-using Lms.MVC.UI.Utilities.Pagination;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
+using AutoMapper;
+
+using Lms.API.Core.Entities;
+using Lms.MVC.Core.Repositories;
+using Lms.MVC.UI.Filters;
+using Lms.MVC.UI.Models.ViewModels.PublicationViewModels;
+using Lms.MVC.UI.Utilities.Pagination;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+using Newtonsoft.Json;
+
 namespace Lms.MVC.UI.Controllers
 {
     public class PublicationsController : Controller
     {
-        string Baseurl = "https://localhost:44302/";
+        private string Baseurl = "https://localhost:44302/";
+
         private readonly IMapper mapper;
+
         private readonly IUoW uow;
 
         public PublicationsController(IMapper mapper, IUoW uow)
@@ -46,11 +52,12 @@ namespace Lms.MVC.UI.Controllers
 
             using (var client = new HttpClient())
             {
-                //Passing service base url  
+                //Passing service base url
                 client.BaseAddress = new Uri(Baseurl);
 
                 client.DefaultRequestHeaders.Clear();
-                //Define request data format  
+
+                //Define request data format
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                 //Sending request to find web api REST service resource GetAllEmployees using HttpClient
@@ -58,13 +65,13 @@ namespace Lms.MVC.UI.Controllers
                     await client.GetAsync("api/Publications") :
                     await client.GetAsync("api/Publications/search/" + search);
 
-                //Checking the response is successful or not which is sent using HttpClient  
+                //Checking the response is successful or not which is sent using HttpClient
                 if (Res.IsSuccessStatusCode)
                 {
-                    //Storing the response details recieved from web api   
+                    //Storing the response details recieved from web api
                     var PublicationResponse = Res.Content.ReadAsStringAsync().Result;
 
-                    //Deserializing the response recieved from web api and storing into the Employee list  
+                    //Deserializing the response recieved from web api and storing into the Employee list
                     publications = JsonConvert.DeserializeObject<List<Publication>>(PublicationResponse);
 
                     switch (sortOrder)
@@ -72,22 +79,27 @@ namespace Lms.MVC.UI.Controllers
                         case "title_desc":
                             publications = publications.OrderByDescending(p => p.Title).ToList();
                             break;
+
                         case "subject":
                             publications = publications.OrderBy(p => p.Subject.Title).ToList();
                             break;
+
                         case "subject_desc":
                             publications = publications.OrderByDescending(p => p.Subject.Title).ToList();
                             break;
+
                         case "author":
                             publications = publications
                                 .OrderBy(p => p.Authors.FirstOrDefault() != null ?
                                 p.Authors.FirstOrDefault().LastName : "").ToList();
                             break;
+
                         case "author_desc":
                             publications = publications
                                 .OrderByDescending(p => p.Authors.FirstOrDefault() != null ?
                                 p.Authors.FirstOrDefault().LastName : "").ToList();
                             break;
+
                         default:
                             publications = publications.OrderBy(p => p.Title).ToList();
                             break;
@@ -105,7 +117,8 @@ namespace Lms.MVC.UI.Controllers
         }
 
         [HttpGet]
-        [Authorize][ModelNotNull]
+        [Authorize]
+        [ModelNotNull]
         public async Task<IActionResult> Edit(int? id)
         {
             using (var client = new HttpClient())
@@ -116,15 +129,15 @@ namespace Lms.MVC.UI.Controllers
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                HttpResponseMessage Res = 
+                HttpResponseMessage Res =
                     await client.GetAsync("api/Publications/" + id);
 
                 if (Res.IsSuccessStatusCode)
                 {
-                    //Storing the response details recieved from web api   
+                    //Storing the response details recieved from web api
                     var PublicationResponse = Res.Content.ReadAsStringAsync().Result;
 
-                    //Deserializing the response recieved from web api and storing into the Employee list  
+                    //Deserializing the response recieved from web api and storing into the Employee list
                     publication = JsonConvert.DeserializeObject<Publication>(PublicationResponse);
 
                     return View(publication);
@@ -135,7 +148,6 @@ namespace Lms.MVC.UI.Controllers
                 }
             }
         }
-
 
         [HttpPut]
         [Authorize]
@@ -160,42 +172,38 @@ namespace Lms.MVC.UI.Controllers
                 {
                     return View();
                 }
-                
             }
         }
 
         [HttpGet]
         public ActionResult Create()
         {
-            
             var createPublicationViewModel = new CreatePublicationViewModel();
             createPublicationViewModel.Subjects = uow.PublicationRepository.GetSubjects();
-            
-            return  View(createPublicationViewModel);
-        }
 
+            return View(createPublicationViewModel);
+        }
 
         [HttpPost]
         [ModelValid, ModelNotNull]
         public async Task<IActionResult> Create(CreatePublicationViewModel createPublicationViewModel)
         {
-            
             if (createPublicationViewModel.ReleaseDate < createPublicationViewModel.AuthorBirthdate)
             {
-                
                 ModelState.AddModelError("AuthorBirthdate", "Publication Date Must Be After Author's Date of Birth.");
                 createPublicationViewModel.Subjects = uow.PublicationRepository.GetSubjects();
                 return View(createPublicationViewModel);
             }
-            
+
             createPublicationViewModel.Authors = new List<Author>();
-            createPublicationViewModel.Authors.Add(uow.PublicationRepository.CreateAuthor(createPublicationViewModel.AuthorFirstName, createPublicationViewModel.AuthorLastName,createPublicationViewModel.AuthorBirthdate));
+            createPublicationViewModel.Authors.Add(uow.PublicationRepository.CreateAuthor(createPublicationViewModel.AuthorFirstName, createPublicationViewModel.AuthorLastName, createPublicationViewModel.AuthorBirthdate));
             createPublicationViewModel.Subject = uow.PublicationRepository.CreateSubject(createPublicationViewModel.SubjectTitle);
+
             //model.Author = new Author() { FirstName = model.AuthorFirstName, LastName = model.AuthorFirstName }; //TODO MOVE TO EXTENSION
             //model.Subject = new Subject() { Title = model.SubjectTitle }; //TODO MOVE TO EXTENSION
-            
+
             mapper.Map<Publication>(createPublicationViewModel);//TODO Fix Mapping issue
-            
+
             using (var client = new HttpClient())
             {
                 // Building request url
@@ -203,32 +211,27 @@ namespace Lms.MVC.UI.Controllers
 
                 // Fixing request head
                 client.DefaultRequestHeaders.Clear();
+
                 // Define request format
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                
-                
 
                 // Build Request
                 var jsonData = JsonConvert.SerializeObject(createPublicationViewModel);
                 var url = Baseurl + "api/Publications/create";
-
 
                 var response = await client.PostAsJsonAsync(url, jsonData);
                 response.EnsureSuccessStatusCode();
 
                 return RedirectToAction("Index");
             }
-            
-            
         }
-        
+
         [HttpGet]
         [Authorize]
         public async Task<ActionResult> Delete(int id)
         {
             using (var client = new HttpClient())
             {
-
                 var request = new HttpRequestMessage(HttpMethod.Get, Baseurl + $"api/publications/{id}");
                 request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -245,8 +248,6 @@ namespace Lms.MVC.UI.Controllers
                 var model = JsonConvert.DeserializeObject<DeletePublicationViewModel>(content);
 
                 return View(model);
-
-
             }
         }
 
@@ -267,7 +268,5 @@ namespace Lms.MVC.UI.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
-
     }
 }
-

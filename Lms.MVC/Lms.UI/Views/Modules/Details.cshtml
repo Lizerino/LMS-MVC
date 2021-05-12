@@ -28,12 +28,12 @@
 }
 else
 {
-    @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
-    {
+@if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
+{
     <p>
         <a asp-action="Create" asp-route-id="@Model.Id">Create New Activity</a> |
         <a asp-action="Index">Back to Module</a>
     </p>
     <p>No activities in this module</p>
-     }
- }
+}
+}

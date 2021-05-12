@@ -34,7 +34,7 @@ namespace Lms.MVC.UI.Controllers
             this.userManager = userManager;
         }
 
-        // GET: Courses       
+        // GET: Courses
         public async Task<IActionResult> Index(string search, string sortOrder, int page)
         {
             if (search != null)
@@ -79,6 +79,7 @@ namespace Lms.MVC.UI.Controllers
                 case "StartDate_desc":
                     result = result.OrderByDescending(s => s.StartDate);
                     break;
+
                 case "EndDate_desc":
                     result = result.OrderByDescending(s => s.EndDate);
                     break;
@@ -115,11 +116,11 @@ namespace Lms.MVC.UI.Controllers
 
             return RedirectToAction("Index", "Courses");
         }
-        
+
         public async Task<IActionResult> RegisterForCourseToggle(int? id)
         {
             if (id == null) return NotFound();
-            var course = await uoW.CourseRepository.GetCourseAsync(id,false,true);
+            var course = await uoW.CourseRepository.GetCourseAsync(id, false, true);
             var currentUser = await userManager.GetUserAsync(User);
             var teacher = userManager.Users.Include(x => x.Courses).Single(u => u == currentUser);
 

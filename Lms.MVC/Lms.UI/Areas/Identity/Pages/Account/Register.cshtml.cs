@@ -1,7 +1,15 @@
-﻿using Lms.MVC.Core.Entities;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
+
+using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Repositories.Helpers;
-using Lms.MVC.UI.Filters;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -10,13 +18,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 
 namespace Lms.MVC.UI.Areas.Identity.Pages.Account
 {
@@ -25,9 +26,13 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
+
         private readonly UserManager<ApplicationUser> _userManager;
+
         private readonly ILogger<RegisterModel> _logger;
+
         private readonly IEmailSender _emailSender;
+
         private readonly IUoW uoW;
 
         public RegisterModel(
@@ -52,6 +57,7 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
         public int CourseId { get; set; }
 
         public List<int> Courses { get; set; }
+
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public class InputModel
@@ -100,7 +106,6 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(List<int> courses, string returnUrl = null)
         {
-
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
@@ -109,6 +114,7 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
                 {
                     courses.Add((int)CourseId);
                 }
+
                 // Input.Courses = AssignCourses(Input.Courses, Input.SelectedCourseIds);
                 var password = "password";
 
@@ -132,7 +138,6 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
                 }
                 if (ModelState.IsValid)
                 {
-
                     var user = GetUserByRole(Input.Role);
 
                     var result = await _userManager.CreateAsync(user, Input.Password);
@@ -168,13 +173,13 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
                             values: new { area = "Identity", passwordToken },
                             protocol: Request.Scheme);
 
-                    if (!_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        await _emailSender.SendEmailAsync(
-                            Input.Email,
-                            "You are registered in Lms",
-                            $"Your password is \"{Input.Password}\" \n Please reset your password by <a href='{HtmlEncoder.Default.Encode(resetPasswordCallbackUrl)}'>clicking here</a>.");
-                    }
+                        if (!_userManager.Options.SignIn.RequireConfirmedAccount)
+                        {
+                            await _emailSender.SendEmailAsync(
+                                Input.Email,
+                                "You are registered in Lms",
+                                $"Your password is \"{Input.Password}\" \n Please reset your password by <a href='{HtmlEncoder.Default.Encode(resetPasswordCallbackUrl)}'>clicking here</a>.");
+                        }
 
                         return LocalRedirect(returnUrl);
 

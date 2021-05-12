@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Lms.MVC.UI.Services
 {

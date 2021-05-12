@@ -15,6 +15,7 @@ namespace Lms.MVC.UI.Models.ViewModels.CourseViewModels
         public string Title { get; set; }
 
         public string Description { get; set; }
+
         [Required]
         public DateTime StartDate { get; set; }
 

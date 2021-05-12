@@ -1,14 +1,15 @@
+using System;
+using System.Linq;
+
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Data.Data;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Linq;
 
 namespace Lms.MVC.UI
 {
@@ -22,7 +23,7 @@ namespace Lms.MVC.UI
             {
                 using (var scope = host.Services.CreateScope())
                 {
-                    var services = scope.ServiceProvider;                    
+                    var services = scope.ServiceProvider;
                     var db = services.GetRequiredService<ApplicationDbContext>();
                     var config = services.GetRequiredService<IConfiguration>();
 
@@ -38,11 +39,11 @@ namespace Lms.MVC.UI
 
                     CreateRoles.Create(roleManager);
                     CreateActivityTypes.Create(db);
-                   
-                    SeedData seedData = new SeedData(db,userManager);
+
+                    SeedData seedData = new SeedData(db, userManager);
                     if (!db.Users.Any())
                     {
-                    seedData.Seed(userManager, roleManager,db);
+                        seedData.Seed(userManager, roleManager, db);
                     }
 
                     try
@@ -53,7 +54,7 @@ namespace Lms.MVC.UI
                     {
                         var logger = services.GetRequiredService<ILogger<Program>>();
                         logger.LogError(ex.Message, "Seed Fail");
-                    }                    
+                    }
 
                     host.Run();
                 }

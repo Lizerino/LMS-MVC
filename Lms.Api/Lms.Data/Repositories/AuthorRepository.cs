@@ -4,15 +4,16 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Lms.API.Core.Dto;
+
 using Lms.API.Core.Entities;
 using Lms.API.Core.Repositories;
 using Lms.API.Data.Data;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Lms.API.Data.Repositories
 {
-    class AuthorRepository : IAuthorRepository
+    internal class AuthorRepository : IAuthorRepository
     {
         private readonly LmsAPIContext db;
 
@@ -40,7 +41,7 @@ namespace Lms.API.Data.Repositories
         {
             var names = name.Split(" ");
             var authors = await db.Authors.ToListAsync();
-            foreach(string n in names)
+            foreach (string n in names)
             {
                 authors = authors.Where(a => a.FirstName.Contains(n, StringComparison.OrdinalIgnoreCase) || a.LastName.Contains(n, StringComparison.OrdinalIgnoreCase)).ToList();
             }
@@ -101,9 +102,8 @@ namespace Lms.API.Data.Repositories
                 authors = authors.OrderBy(x => x.FirstName);
                 return;
             }
+
             //authors =  authors.OrderBy(orderQuery);
         }
-
-        
     }
 }

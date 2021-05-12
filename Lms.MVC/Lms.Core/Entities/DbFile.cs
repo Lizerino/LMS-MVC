@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace Lms.MVC.Core.Entities
 {
@@ -9,16 +8,12 @@ namespace Lms.MVC.Core.Entities
 
         public byte[] Content { get; set; }
 
-        
         public string UntrustedName { get; set; }
 
-       
         public string Note { get; set; }
 
-       
         public long Size { get; set; }
 
-        
         public DateTime UploadDT { get; set; }
     }
 }

@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+
 using Lms.API.Core.Entities;
 using Lms.API.Core.Repositories;
 using Lms.API.Data.Data;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Lms.API.Data.Repositories
 {
-    class PublicationRepository : IPublicationRepository
+    internal class PublicationRepository : IPublicationRepository
     {
         private readonly LmsAPIContext db;
 
@@ -26,7 +27,7 @@ namespace Lms.API.Data.Repositories
 
         public async Task<IEnumerable<Publication>> GetAllPublicationsAsync()
         {
-            return await db.Publications.Include(l => l.Subject).Include(l => l.Level).Include(a=>a.Authors).ToListAsync();
+            return await db.Publications.Include(l => l.Subject).Include(l => l.Level).Include(a => a.Authors).ToListAsync();
         }
 
         public async Task<Publication> GetPublicationAsync(int? id)
@@ -51,17 +52,16 @@ namespace Lms.API.Data.Repositories
             {
                 result = result.Where(l => l.Title.Contains(word, StringComparison.OrdinalIgnoreCase) ||
                     l.Subject.Title.Contains(word, StringComparison.OrdinalIgnoreCase) ||
-                    l.Authors.Where(a => a.FirstName.Contains(word, StringComparison.OrdinalIgnoreCase) || 
+                    l.Authors.Where(a => a.FirstName.Contains(word, StringComparison.OrdinalIgnoreCase) ||
                     a.LastName.Contains(word, StringComparison.OrdinalIgnoreCase)).Count() > 0).ToList();
             }
-            
 
             return result;
         }
 
         public void Remove(Publication removed)
         {
-           db.Remove(removed);
+            db.Remove(removed);
         }
 
         public async Task<bool> SaveAsync()

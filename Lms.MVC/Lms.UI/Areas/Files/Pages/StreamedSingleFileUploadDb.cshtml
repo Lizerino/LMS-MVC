@@ -23,7 +23,7 @@
         </dd>
     </dl>
 
-    <input class="btn" type="submit" value="Upload" />    
+    <input class="btn" type="submit" value="Upload" />
     <div style="margin-top:15px">
         <output form="uploadForm" name="result"></output>
     </div>
@@ -48,7 +48,7 @@
                 const response = await fetch(oFormElement.action, {
                     method: 'POST',
                     headers: {
-                        'RequestVerificationToken': getAntiForgeryToken({ }) 
+                        'RequestVerificationToken': getAntiForgeryToken({})
                     },
                     body: formData
                 });
@@ -58,6 +58,6 @@
             } catch (error) {
                 console.error('Error:', error);
             }
-        }        
+        }
     </script>
 }

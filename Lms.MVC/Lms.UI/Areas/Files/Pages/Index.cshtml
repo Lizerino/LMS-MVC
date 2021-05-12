@@ -34,7 +34,8 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var file in Model.DatabaseFiles) {
+            @foreach (var file in Model.DatabaseFiles)
+            {
                 <tr>
                     <td>
                         <a asp-page="./DeleteDbFile" asp-route-id="@file.Id">Delete</a>
@@ -84,7 +85,8 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var file in Model.PhysicalFiles) {
+            @foreach (var file in Model.PhysicalFiles)
+            {
                 <tr>
                     <td>
                         <a asp-page="./DeletePhysicalFile" asp-route-fileName="@file.Name">Delete</a>

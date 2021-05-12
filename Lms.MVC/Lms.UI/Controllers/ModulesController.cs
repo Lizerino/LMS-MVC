@@ -2,14 +2,18 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+
 using AutoMapper;
+
 using Itenso.TimePeriod;
+
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Repositories.Helpers;
 using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Models.ViewModels.ApplicationUserViewModels;
 using Lms.MVC.UI.Models.ViewModels.ModuleViewModels;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -101,6 +105,7 @@ namespace Lms.MVC.UI.Controllers
 
         // This is an unneccecary method.. the link should redirecto to activities
         [HttpGet]
+
         //[Route("details/{title}")]//Todo Fix Navigation
         public ActionResult Details(int id, string title)
         {
@@ -309,22 +314,20 @@ namespace Lms.MVC.UI.Controllers
                 }
             }
 
-                return activities;
-            }
-<<<<<<<<< Temporary merge branch 1
-        
-        public  ActionResult ShowMyClassMates(int courseId, string id)
-        {
+            return activities;
+        }
 
+        public ActionResult ShowMyClassMates(int courseId, string id)
+        {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
 
             id = uow.UserRepository.GetAllUsersAsync().Result.Where(u => u.Email == userEmail).FirstOrDefault().Id;
 
             courseId = uow.UserRepository.FindAsync(id, true).Result.Courses.FirstOrDefault().Id;
 
-            var coursesStudents = uow.CourseRepository.GetAllCoursesAsync(false, true).Result.FirstOrDefault(c=>c.Id == courseId).Users.Where(u=> u.Role == RoleHelper.Student);
+            var coursesStudents = uow.CourseRepository.GetAllCoursesAsync(false, true).Result.FirstOrDefault(c => c.Id == courseId).Users.Where(u => u.Role == RoleHelper.Student);
 
-            var model =  mapper.Map<IEnumerable<ListApplicationUsersViewModel>>(coursesStudents);
+            var model = mapper.Map<IEnumerable<ListApplicationUsersViewModel>>(coursesStudents);
 
             return View(model);
         }

@@ -7,6 +7,5 @@ namespace Lms.MVC.UI.Areas.Files
         public void OnGet()
         {
         }
-       
     }
 }
