@@ -60,7 +60,7 @@ namespace Lms.MVC.UI.Controllers
 
         #region snippet_UploadDatabase
         [HttpPost]
-        [DisableFormValueModelBinding]
+        [DisableFormValueModelBinding]        
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UploadDatabase()
         {

@@ -45,16 +45,7 @@ namespace Lms.MVC.UI
                                 new GenerateAntiforgeryTokenCookieAttribute());
                             model.Filters.Add(
                                 new DisableFormValueModelBindingAttribute());
-                        });
-                options.Conventions
-                    .AddPageApplicationModelConvention("/StreamedSingleFileUploadPhysical",
-                        model =>
-                        {
-                            model.Filters.Add(
-                                new GenerateAntiforgeryTokenCookieAttribute());
-                            model.Filters.Add(
-                                new DisableFormValueModelBindingAttribute());
-                        });
+                        });                
             });
             #endregion
 
