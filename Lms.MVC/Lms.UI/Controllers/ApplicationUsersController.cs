@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Lms.MVC.UI.Controllers
 {
-    [Authorize(Roles = "Teacher,Admin")]
+    [Authorize(Roles = "Teacher,Admin,Student")]
     public class ApplicationUsersController : Controller
     {
         private readonly ILogger<ApplicationUsersController> _logger;
@@ -39,6 +39,7 @@ namespace Lms.MVC.UI.Controllers
         }
 
         // GET: ApplicationUsersController
+        [Authorize(Roles = "Teacher,Admin")]
         public async Task<IActionResult> Index(string search, string sortOrder, int page)
         {
             if (search != null)
@@ -95,7 +96,7 @@ namespace Lms.MVC.UI.Controllers
         }
 
         // GET: ApplicationUsersController/Details/5
-
+        [Authorize(Roles = "Teacher, Admin, Student")]
         [ModelNotNull]
         public async Task<IActionResult> Details(string id)
         {
@@ -110,6 +111,7 @@ namespace Lms.MVC.UI.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         [ModelNotNull]
         public async Task<IActionResult> Edit(string id)
         {
@@ -129,6 +131,7 @@ namespace Lms.MVC.UI.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPost(string id, EditApplicationUserViewModel viewmodel)
@@ -192,6 +195,7 @@ namespace Lms.MVC.UI.Controllers
             return uoW.UserRepository.Any(id);
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         [ModelNotNull]
         public async Task<IActionResult> Remove(string id)
         {
@@ -207,6 +211,7 @@ namespace Lms.MVC.UI.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         [HttpPost, ActionName("Remove")]
         [ValidateAntiForgeryToken]
         [ModelNotNull]
@@ -224,6 +229,7 @@ namespace Lms.MVC.UI.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         [AcceptVerbs("GET", "POST")]
         public async Task<IActionResult> EmailExistsEdit(string email, string id)
         {
@@ -235,6 +241,7 @@ namespace Lms.MVC.UI.Controllers
             return Json(true);
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         public async Task<IActionResult> EmailExistsCreate([Bind(Prefix = "Input.Email")] string email)
         {
             var users = await uoW.UserRepository.GetAllUsersAsync();

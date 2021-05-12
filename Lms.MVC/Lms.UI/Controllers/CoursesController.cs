@@ -102,7 +102,7 @@ namespace Lms.MVC.UI.Controllers
         {
             string showOnlyMyCourses = Request.Cookies["ShowOnlyMyCourses"];
 
-            CookieOptions option = new CookieOptions();
+            CookieOptions option = new();
             option.Expires = DateTime.Now.AddDays(900);
 
             if (showOnlyMyCourses == "true")

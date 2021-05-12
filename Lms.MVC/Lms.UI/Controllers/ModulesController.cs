@@ -180,7 +180,7 @@ namespace Lms.MVC.UI.Controllers
 
         private void ValidateDates(CreateModuleViewModel moduleViewModel, Course currentCourse, IEnumerable<Module> modulesInCurrentCourse)
         {
-            TimePeriodCollection activitiesTimeperiod = new TimePeriodCollection();
+            TimePeriodCollection activitiesTimeperiod = new();
             TimeRange activityTimeRange = new TimeRange(moduleViewModel.StartDate, moduleViewModel.EndDate);
 
             if (modulesInCurrentCourse.Count() > 0)
@@ -314,8 +314,8 @@ namespace Lms.MVC.UI.Controllers
                 }
             }
 
-            return activities;
-        }
+                return activities;
+            }        
 
         public ActionResult ShowMyClassMates(int courseId, string id)
         {

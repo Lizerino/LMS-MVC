@@ -119,8 +119,8 @@ namespace Lms.MVC.UI.Controllers
 
         private void ValidateDates(CreateActivityViewModel activityViewModel, Module currentModule, IEnumerable<Activity> activitiesInCurrentModule)
         {
-            TimePeriodCollection activitiesTimeperiod = new TimePeriodCollection();
-            TimeRange activityTimeRange = new TimeRange(activityViewModel.StartDate, activityViewModel.EndDate);
+            TimePeriodCollection activitiesTimeperiod = new();
+            TimeRange activityTimeRange = new(activityViewModel.StartDate, activityViewModel.EndDate);
 
             if (activitiesInCurrentModule.Count() > 0)
             {
