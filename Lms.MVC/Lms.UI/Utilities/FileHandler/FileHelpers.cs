@@ -107,7 +107,7 @@ namespace Lms.MVC.UI.Utilities.FileHandler
 
                 return Array.Empty<byte>();
             }
-
+            
             try
             {
                 using (var memoryStream = new MemoryStream())

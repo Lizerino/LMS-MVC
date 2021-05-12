@@ -34,7 +34,7 @@ namespace Lms.MVC.UI.Controllers
             this.userManager = userManager;
         }
 
-        // GET: Courses
+        // GET: Courses       
         public async Task<IActionResult> Index(string search, string sortOrder, int page)
         {
             if (search != null)
@@ -49,12 +49,12 @@ namespace Lms.MVC.UI.Controllers
 
             if (showOnlyMyCourses == "true")
             {
-                courses = uoW.CourseRepository.GetAllCoursesAsync(false,true).Result
+                courses = uoW.CourseRepository.GetAllCoursesAsync(false, true).Result
             .Where(c => (String.IsNullOrEmpty(search) || (c.Title.Contains(search))) && (c.Users != null && (c.Users.Contains(currentUser))));
             }
             else
             {
-                courses =  uoW.CourseRepository.GetAllCoursesAsync(false,true).Result
+                courses = uoW.CourseRepository.GetAllCoursesAsync(false, true).Result
                 .Where(c => String.IsNullOrEmpty(search) || (c.Title.Contains(search)));
             }
 
@@ -78,12 +78,12 @@ namespace Lms.MVC.UI.Controllers
 
                 case "StartDate_desc":
                     result = result.OrderByDescending(s => s.StartDate);
-                    break; 
+                    break;
                 case "EndDate_desc":
                     result = result.OrderByDescending(s => s.EndDate);
                     break;
 
-                     case "EndDate":
+                case "EndDate":
                     result = result.OrderByDescending(s => s.EndDate);
                     break;
 
@@ -93,7 +93,7 @@ namespace Lms.MVC.UI.Controllers
             }
 
             var paginatedResult = result.AsQueryable().GetPagination(page, 10);
-             uoW.CourseRepository.SetAllCoursesEndDate();
+            uoW.CourseRepository.SetAllCoursesEndDate();
             return View(paginatedResult);
         }
 
@@ -115,7 +115,7 @@ namespace Lms.MVC.UI.Controllers
 
             return RedirectToAction("Index", "Courses");
         }
-
+        
         public async Task<IActionResult> RegisterForCourseToggle(int? id)
         {
             if (id == null) return NotFound();
