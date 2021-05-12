@@ -310,8 +310,7 @@ namespace Lms.MVC.UI.Controllers
             }
 
                 return activities;
-            }
-        
+            }        
         public  ActionResult ShowMyClassMates(int courseId, string id)
         {
 
