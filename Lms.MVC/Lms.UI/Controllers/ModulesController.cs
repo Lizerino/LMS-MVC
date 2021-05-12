@@ -254,6 +254,7 @@ namespace Lms.MVC.UI.Controllers
 
         [HttpGet]
         [Route("delete")]
+        [Authorize(Roles = "Teacher, Admin")]
         public ActionResult Delete(int id)
         {
             var module = uow.ModuleRepository.GetModuleAsync(id);
@@ -268,6 +269,7 @@ namespace Lms.MVC.UI.Controllers
 
         [Route("delete")]
         [HttpPost]
+        [Authorize(Roles = "Teacher, Admin")]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, ListModuleViewModel module)
         {
