@@ -1,6 +1,7 @@
 ﻿using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Repositories.Helpers;
+using Lms.MVC.UI.Filters;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -19,6 +20,7 @@ using System.Threading.Tasks;
 
 namespace Lms.MVC.UI.Areas.Identity.Pages.Account
 {
+    // ToDo: gitfix
     [Authorize(Roles = "Admin , Teacher")]
     public class RegisterModel : PageModel
     {
@@ -98,11 +100,6 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(List<int> courses, string returnUrl = null)
         {
-            courses = courses.SkipLast(1).ToList();
-            if (Input.Role == RoleHelper.Student && (courses.Count != 1 || courses[0] == 0))
-            {
-                ModelState.AddModelError("Role", "A student must be assigned to one course");
-            }
 
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -121,46 +118,55 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
                 {
                     Input.Role = "Student";
                 }
-
+                if (courses.Last() == 0)
+                {
+                    courses = courses.SkipLast(1).ToList();
+                }
+                if (Input.Role == RoleHelper.Student && (courses.Count != 1 || courses[0] == 0))
+                {
+                    ModelState.AddModelError("Courses", "A student must be assigned to one course");
+                }
                 if (String.IsNullOrWhiteSpace(Input.Role))
                 {
                     ModelState.AddModelError("Role", "Please choose a role");
                 }
-
-                var user = GetUserByRole(Input.Role);
-
-                var result = await _userManager.CreateAsync(user, Input.Password);
-                if (result.Succeeded)
+                if (ModelState.IsValid)
                 {
-                    user.Courses = new List<Course>();
 
-                    foreach (var item in courses)
+                    var user = GetUserByRole(Input.Role);
+
+                    var result = await _userManager.CreateAsync(user, Input.Password);
+                    if (result.Succeeded)
                     {
-                        user.Courses.Add(uoW.CourseRepository.GetCourseAsync(item).Result);
-                    }
-                    await uoW.UserRepository.ChangeRoleAsync(user);
+                        user.Courses = new List<Course>();
 
-                    var role = await _userManager.AddToRoleAsync(user, Input.Role);
-                    _logger.LogInformation("User created a new account with password.");
+                        foreach (var item in courses)
+                        {
+                            user.Courses.Add(uoW.CourseRepository.GetCourseAsync(item).Result);
+                        }
+                        await uoW.UserRepository.ChangeRoleAsync(user);
 
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
+                        var role = await _userManager.AddToRoleAsync(user, Input.Role);
+                        _logger.LogInformation("User created a new account with password.");
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                        var callbackUrl = Url.Page(
+                            "/Account/ConfirmEmail",
+                            pageHandler: null,
+                            values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
+                            protocol: Request.Scheme);
 
-                    var passwordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    passwordToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(passwordToken));
-                    var resetPasswordCallbackUrl = Url.Page(
-                        "/Account/ResetPassword",
-                        pageHandler: null,
-                        values: new { area = "Identity", passwordToken },
-                        protocol: Request.Scheme);
+                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                        var passwordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                        passwordToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(passwordToken));
+                        var resetPasswordCallbackUrl = Url.Page(
+                            "/Account/ResetPassword",
+                            pageHandler: null,
+                            values: new { area = "Identity", passwordToken },
+                            protocol: Request.Scheme);
 
                     if (!_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
@@ -170,21 +176,22 @@ namespace Lms.MVC.UI.Areas.Identity.Pages.Account
                             $"Your password is \"{Input.Password}\" \n Please reset your password by <a href='{HtmlEncoder.Default.Encode(resetPasswordCallbackUrl)}'>clicking here</a>.");
                     }
 
-                    return LocalRedirect(returnUrl);
+                        return LocalRedirect(returnUrl);
 
-                    //if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    //{
-                    //    return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    //}
-                    //else
-                    //{
-                    //    await _signInManager.SignInAsync(user, isPersistent: false);
-                    //    return LocalRedirect(returnUrl);
-                    //}
-                }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                        //if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                        //{
+                        //    return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        //}
+                        //else
+                        //{
+                        //    await _signInManager.SignInAsync(user, isPersistent: false);
+                        //    return LocalRedirect(returnUrl);
+                        //}
+                    }
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
                 }
             }
 

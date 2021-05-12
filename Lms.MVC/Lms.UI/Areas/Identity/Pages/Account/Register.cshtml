@@ -3,7 +3,7 @@
 @inject ICourseSelectService service
 @{ ViewData["Title"] = "Register"; }
 
-
+@* ToDo: gitfix *@
 <div class="card-holder d-flex justify-content-center">
 
     <div class="lms-logo align-self-lg-center">
@@ -45,15 +45,15 @@
                             <div class="dropdown">
                                 <label asp-for="Courses"></label>
                                 <button class="btn btn-default dropdown-toggle" type="button"
-                                        id="register-dropdown" data-toggle="dropdown"
+                                        id="register-dropdown-btn" data-toggle="dropdown"
                                         aria-haspopup="true" aria-expanded="true">
                                     Select Courses
 
                                 </button>
-                                <ul id="register-dropdown" class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenu1">
+                                <ul id="register-dropdown" class="dropdown-menu checkbox-menu allow-focus keepopen" aria-labelledby="dropdownMenu1">
                                     @foreach (var item in await service.GetTypeAsync())
                                     {
-                                        <li>
+                                        <li class="dropdown-li-list">
                                             <label>
                                                 <input type="checkbox" name="courses" value="@item.Value"> @item.Text
                                             </label>
@@ -62,13 +62,13 @@
 
                                 </ul>
                             </div>}
-                        @if (User.IsInRole("Teacher") && Model.CourseId == 0)
+                        @if ((User.IsInRole("Teacher") && !User.IsInRole("Admin")) && Model.CourseId == 0)
                         {
 
                             <div class="dropdown">
                                 <label asp-for="Courses"></label>
                                 <button class="btn btn-default dropdown-toggle" type="button"
-                                        id="register-dropdown" data-toggle="dropdown"
+                                        id="register-dropdown-btn" data-toggle="dropdown"
                                         aria-haspopup="true" aria-expanded="true">
                                     Select Courses
 
@@ -77,9 +77,14 @@
                                     @foreach (var item in await service.GetTypeAsync())
                                     {
                                         <li>
-                                            <label>
+
+                                           <div class="d-inline-flex">
+                                            <input type="radio" id="@item.Text.Replace(' ', '-')" name="courses" value="@item.Value"/>
+                                            <label class="" for="@item.Text.Replace(' ', '-')">@item.Text</label>
+                                               </div>
+                                            @*<label>
                                                 <input type="radio" name="courses" value="@item.Value"> @item.Text
-                                            </label>
+                                            </label>*@
                                         </li>
                                     }
 
@@ -107,6 +112,8 @@
                                 <label for="Admin">Admin</label>
                             </div>}
                         <br />
+                    </div>
+                    <div>
                         <span asp-validation-for="Input.Role" class="text-danger"></span>
                     </div>
                     <div class="form-group">

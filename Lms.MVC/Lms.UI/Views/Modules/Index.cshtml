@@ -3,17 +3,28 @@
 @{ 
     ViewData["CourseId"] = Model.CourseId;
 }
+@* ToDo: gitfix *@
+
+
 
     <h1>@Model.CourseTitle</h1>
     @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
-    {       
-        <p>
-            <a asp-action="Create" asp-route-id=@Model.CourseId class="btn btn-primary mr-3">Create New Module</a>
-            <a asp-area="Identity" asp-page="/Account/Register" asp-route-CourseId="@Model.CourseId" class="btn btn-primary mr-3">Add a student to this course</a>
-            <a asp-controller="Courses" asp-action="Edit" asp-route-id="@Model.CourseId" class="btn btn-primary">Edit Course</a>
-        </p>
+    {
+<p>
+    <a asp-action="Create" asp-route-id=@Model.CourseId class="btn btn-primary mr-3">Create New Module</a>
+    @if (!User.IsInRole("Admin"))
+    {
+        <a asp-area="Identity" asp-page="/Account/Register" asp-route-CourseId="@Model.CourseId" class="btn btn-primary mr-3">Add a student to this course</a> }
+                        else
+                        {
+                            <a asp-area="Identity" asp-page="/Account/Register" asp-route-CourseId="@Model.CourseId" class="btn btn-primary mr-3">Add a user to this course</a>
+                        }
+
+    <a asp-controller="Courses" asp-action="Edit" asp-route-id="@Model.CourseId" class="btn btn-primary">Edit Course</a>
+</p>
 
     }
+
 @if (Model.ModuleList.Count() != 0)
 {
 

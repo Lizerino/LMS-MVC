@@ -171,7 +171,7 @@ namespace Lms.MVC.UI.Controllers
             var createPublicationViewModel = new CreatePublicationViewModel();
             createPublicationViewModel.Subjects = uow.PublicationRepository.GetSubjects();
             
-            return  View(model);
+            return  View(createPublicationViewModel);
         }
 
 
@@ -209,7 +209,7 @@ namespace Lms.MVC.UI.Controllers
                 
 
                 // Build Request
-                var jsonData = JsonConvert.SerializeObject(model);
+                var jsonData = JsonConvert.SerializeObject(createPublicationViewModel);
                 var url = Baseurl + "api/Publications/create";
 
 

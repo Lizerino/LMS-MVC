@@ -78,6 +78,23 @@ namespace Lms.MVC.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DbFile",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Content = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    UntrustedName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Size = table.Column<long>(type: "bigint", nullable: false),
+                    UploadDT = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DbFile", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -404,6 +421,9 @@ namespace Lms.MVC.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "DbFile");
 
             migrationBuilder.DropTable(
                 name: "Documents");

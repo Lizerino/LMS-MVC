@@ -50,7 +50,7 @@ namespace Lms.MVC.UI
             #endregion
 
             // To list physical files from a path provided by configuration:
-            var physicalProvider = new PhysicalFileProvider(Configuration.GetValue<string>("StoredFilesPath"));
+           var physicalProvider = new PhysicalFileProvider(Configuration.GetValue<string>("StoredFilesPath"));
 
             // To list physical files in the temporary files folder, use:
             //var physicalProvider = new PhysicalFileProvider(Path.GetTempPath());
