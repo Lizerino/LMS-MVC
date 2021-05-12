@@ -10,6 +10,9 @@
 }
 
 <h1>Course List</h1>
+@* Todo: remove after testing view component *@
+@await Component.InvokeAsync("ListFiles", new { UserCourseModuleActivity="user", id = userManager.GetUserAsync(User).Result.Id })
+
 
 <p>
     <a asp-action="Create">Create New Course</a>
@@ -26,7 +29,7 @@
             <a class="btn btn-primary" asp-action="ToggleMyCourses">Show only my courses</a>
         }
     }
-    </p>
+</p>
 <form class="search-form">
     <div class="input-group">
         <input type="submit" value="Search" />

@@ -6,14 +6,14 @@
 
 <h1>Stream a file with AJAX to a database with a controller endpoint</h1>
 
-<form id="uploadForm" asp-action="UploadDatabase" asp-controller="Streaming" method="post"
+<form id="uploadForm" asp-action="UploadDatabase" asp-controller="Files" method="post"
       enctype="multipart/form-data" onsubmit="AJAXSubmit(this);return false;">
     <dl>
         <dt>
-            <label for="note">Note</label>
+            <label for="note">Description</label>
         </dt>
         <dd>
-            <input id="note" type="text" name="note" />
+            <input id="description" type="text" name="description" />
         </dd>
         <dt>
             <label for="file">File</label>
@@ -28,36 +28,9 @@
         <output form="uploadForm" name="result"></output>
     </div>
 </form>
+<li><a asp-page="/StreamedSingleFileUploadDb">Stream a file with AJAX to a controller endpoint</a></li>
 
 @section Scripts {
 
-    <script type="text/javascript">
-        function getAntiForgeryToken() {
-            token = $('input[name=__RequestVerificationToken]').val();
-            return token;
-        };
-    </script>
 
-    <script>
-        "use strict";
-
-        async function AJAXSubmit(oFormElement) {
-            const formData = new FormData(oFormElement);
-
-            try {
-                const response = await fetch(oFormElement.action, {
-                    method: 'POST',
-                    headers: {
-                        'RequestVerificationToken': getAntiForgeryToken({})
-                    },
-                    body: formData
-                });
-
-                oFormElement.elements.namedItem("result").value =
-                    'Result: ' + response.status + ' ' + response.statusText;
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-    </script>
 }

@@ -2,7 +2,7 @@ using System;
 
 namespace Lms.MVC.Core.Entities
 {
-    public class DbFile
+    public class ApplicationFile
     {
         public int Id { get; set; }
 
@@ -10,10 +10,10 @@ namespace Lms.MVC.Core.Entities
 
         public string UntrustedName { get; set; }
 
-        public string Note { get; set; }
+        public string Description { get; set; }
 
         public long Size { get; set; }
 
-        public DateTime UploadDT { get; set; }
+        public DateTime UploadDT { get; set; }        
     }
 }

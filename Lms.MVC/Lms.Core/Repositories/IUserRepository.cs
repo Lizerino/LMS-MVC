@@ -11,7 +11,7 @@ namespace Lms.MVC.Core.Repositories
 
         string GetRole(ApplicationUser user);
 
-        Task<ApplicationUser> FindAsync(string id, bool includeCourses);
+        Task<ApplicationUser> GetUserByIdAsync(string id, bool includeCourses);
 
         void Update(ApplicationUser user);
 
@@ -20,5 +20,6 @@ namespace Lms.MVC.Core.Repositories
         public bool Any(string id);
 
         Task ChangeRoleAsync(ApplicationUser user);
+        Task<ICollection<ApplicationFile>> GetAllFilesByUserId(string id);
     }
 }

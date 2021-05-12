@@ -22,5 +22,6 @@ namespace Lms.MVC.Core.Repositories
         void Update(Activity activity);
 
         Task<IEnumerable<ActivityType>> GetAllActivityTypesAsync();
+        Task<ICollection<ApplicationFile>> GetAllFilesByActivityId(int id);
     }
 }

@@ -22,5 +22,6 @@ namespace Lms.MVC.Core.Repositories
         void Update(Module module);
 
         Task<bool> SaveAsync();
+        Task<ICollection<ApplicationFile>> GetAllFilesByModuleId(int id);
     }
 }

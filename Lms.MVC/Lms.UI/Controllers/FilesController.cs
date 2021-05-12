@@ -21,22 +21,29 @@ using Microsoft.Net.Http.Headers;
 
 namespace Lms.MVC.UI.Controllers
 {
-    public class StreamingController : Controller
+    public class FilesController : Controller
     {
         // todo: file unit of work
         private readonly ApplicationDbContext db;
 
         private readonly long fileSizeLimit;
 
-        private readonly ILogger<StreamingController> logger;
+        private readonly ILogger<FilesController> logger;
 
-        private readonly string[] permittedExtensions = { ".pdf" };        
+        private readonly string[] permittedExtensions = { ".pdf",".png" };
+
+
+        public IActionResult Index()
+        {
+            return View();
+        }
+
 
         // Get the default form options so that we can use them to set the default limits for
         // request body data.
         private static readonly FormOptions defaultFormOptions = new FormOptions();
 
-        public StreamingController(ILogger<StreamingController> logger,
+        public FilesController(ILogger<FilesController> logger,
             ApplicationDbContext db, IConfiguration config)
         {
             this.logger = logger;
@@ -188,11 +195,11 @@ namespace Lms.MVC.UI.Controllers
             // used on the file before making the file available for download or for use by other
             // systems. For more information, see the topic that accompanies this sample app.
 
-            var file = new DbFile()
+            var file = new Core.Entities.ApplicationFile()
             {
                 Content = streamedFileContent,
                 UntrustedName = untrustedFileNameForStorage,
-                Note = formData.Note,
+                Description = formData.Description,
                 Size = streamedFileContent.Length,
                 UploadDT = DateTime.UtcNow
             };
@@ -200,7 +207,7 @@ namespace Lms.MVC.UI.Controllers
             db.DbFile.Add(file);
             await db.SaveChangesAsync();
 
-            return Created(nameof(StreamingController), null);
+            return Created(nameof(FilesController), null);
         }
 
         private static Encoding GetEncoding(MultipartSection section)
@@ -220,6 +227,6 @@ namespace Lms.MVC.UI.Controllers
 
     public class FormData
     {
-        public string Note { get; set; }
+        public string Description { get; set; }
     }
 }

@@ -1,0 +1,14 @@
+﻿@using Lms.MVC.UI.Views.Shared.Components.ListFiles
+@model ListFiles
+
+    @if (Model.FileList != null)
+    {
+        foreach (var file in Model.FileList)
+        {
+            <p>@file.UntrustedName</p><br />
+        }
+    }
+    else
+    {
+        <p>No files found.</p>
+    }

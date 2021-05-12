@@ -27,5 +27,6 @@ namespace Lms.MVC.Core.Repositories
         void SetAllCoursesEndDate();
 
         Task<Course> SetCourseEndDateAsync(int id);
+        Task<ICollection<ApplicationFile>> GetAllFilesByCourseId(int id);
     }
 }

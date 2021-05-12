@@ -136,5 +136,11 @@ namespace Lms.MVC.Data.Repositories
 
             return course;
         }
+
+        public async Task<ICollection<ApplicationFile>> GetAllFilesByCourseId(int id)
+        {
+            var course = await db.Courses.Where(c => c.Id == id).Include(c => c.Files).FirstOrDefaultAsync();
+            return course.Files;            
+        }
     }
 }
