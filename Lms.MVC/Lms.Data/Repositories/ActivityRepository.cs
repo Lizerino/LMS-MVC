@@ -1,8 +1,8 @@
-﻿using Lms.MVC.Core.Entities;
+﻿//TODO GitFix
+using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,15 +17,11 @@ namespace Lms.MVC.Data.Repositories
 
 
         public async Task<Activity> GetActivity(int? Id) => await db.Activities.FirstOrDefaultAsync(d => d.Id == Id);
-        public async Task AddAsync<T>(T added) => await db.AddAsync(added);
+        public async Task AddAsync(Activity added) => await db.AddAsync(added);
 
-        public void Remove<T>(T removed) => db.Remove(removed);
+        public void Remove(Activity removed) => db.Remove(removed);
 
-        public Task<IEnumerable<T>> GetTs<T>()
-        {
-            throw new NotImplementedException();
-        }
-        //public async Task<IEnumerable<Activity>> GetAllActivities() => await db.Activities.ToListAsync();
+        public async Task<IEnumerable<Activity>> GetAllActivities() => await db.Activities.ToListAsync();
 
         public async Task<IEnumerable<Activity>> GetAllActivities(int id)
             =>await db.Activities.Where(a => a.ModuleId == id).ToListAsync();
@@ -45,11 +41,5 @@ namespace Lms.MVC.Data.Repositories
 
             return activities;
         }
-
-        public Task<T> GetT<T>()
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }

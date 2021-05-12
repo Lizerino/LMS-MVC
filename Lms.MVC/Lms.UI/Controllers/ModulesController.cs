@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿//TODO GitFix
+using AutoMapper;
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;

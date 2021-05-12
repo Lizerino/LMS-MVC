@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿//TODO GitFix
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,7 +24,6 @@ namespace Lms.MVC.Data.Repositories
         {
             await db.AddAsync(added);
         }
-        public void Remove<T>(T removed) => db.Remove(removed);
 
         public async Task<IEnumerable<Module>> GetAllModulesAsync(int id)
         {
@@ -56,6 +56,7 @@ namespace Lms.MVC.Data.Repositories
         {
             db.Remove(removed);
         }
+
         public async Task<bool> SaveAsync()
         {
             return (await db.SaveChangesAsync()) >= 0;

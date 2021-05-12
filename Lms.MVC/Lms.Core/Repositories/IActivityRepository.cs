@@ -11,10 +11,8 @@ namespace Lms.MVC.Core.Repositories
     {
         Task<IEnumerable<Activity>> GetAllActivities(int id);
         Task<Activity> GetActivity(int? Id);
-        Task<T> GetT<T>();
-        Task<IEnumerable<T>> GetTs<T>();
-        Task AddAsync<T>(T added);
-        void Remove<T>(T Removed);
+        Task AddAsync(Activity added);
+        void Remove(Activity Removed);
 
     }
 }
