@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿//TODO GitFix
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Lms.MVC.Data.Repositories
 {
-    internal class ModuleRepository : IModuleRepository
+    public class ModuleRepository : IModuleRepository
     {
         private readonly ApplicationDbContext db;
 
@@ -51,6 +52,14 @@ namespace Lms.MVC.Data.Repositories
             return await query.FirstOrDefaultAsync(m => m.Id == moduleId && m.CourseId == id);
         }
 
+
+        public async Task<Module> GetModuleAsync(int moduleId)
+        {
+            var query = db.Modules.AsQueryable().Include(a => a.Activities);
+            return await query.FirstOrDefaultAsync(m => m.Id == moduleId);
+        }
+
+
         public async Task<Module> GetModuleByTitleAsync(int id, string title)
         {
             var query = db.Modules.AsQueryable();
@@ -61,7 +70,7 @@ namespace Lms.MVC.Data.Repositories
         {
             db.Remove(removed);
         }
-        public void Remove<T>(T removed) => db.Remove(removed);
+
         public async Task<bool> SaveAsync()
         {
             return (await db.SaveChangesAsync()) >= 0;

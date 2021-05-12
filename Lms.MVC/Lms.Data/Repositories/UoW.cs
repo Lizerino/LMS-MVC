@@ -30,10 +30,7 @@ namespace Lms.MVC.Data.Repositories
             UserRepository = new UserRepository(this.db, this.userManager);
             PublicationRepository = new PublicationRepository();
         }
-
-        public async Task CompleteAsync()
-        {
-            await db.SaveChangesAsync();
-        }
+        public async Task CompleteAsync() => await db.SaveChangesAsync();
+        
     }
 }

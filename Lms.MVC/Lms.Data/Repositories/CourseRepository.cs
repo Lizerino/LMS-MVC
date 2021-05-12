@@ -2,7 +2,6 @@
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,14 +16,10 @@ namespace Lms.MVC.Data.Repositories
         {
             this.db = db;
         }
-
-        public async Task AddAsync<T>(T added)
+        public async Task AddAsync(Course added)
         {
             await db.AddAsync(added);
         }
-
-        public void Remove<T>(T removed) => db.Remove(removed);
-
         public void Remove(Course removed)
         {
             db.Remove(removed);

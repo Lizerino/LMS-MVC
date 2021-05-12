@@ -1,4 +1,5 @@
-﻿using Lms.MVC.Core.Entities;
+﻿//TODO GitFix
+using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;
 using Lms.MVC.Data.Repositories.Helpers;

@@ -7,6 +7,9 @@ using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;
 
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Lms.MVC.Data.Repositories
 {
@@ -19,9 +22,9 @@ namespace Lms.MVC.Data.Repositories
             this.db = db;
         }
 
-        public async Task AddAsync(Activity added) => await db.AddAsync(added);       
+        public async Task AddAsync(Activity added) => await db.AddAsync(added);
 
-        public void Remove(Activity removed) => db.Remove(removed);        
+        public void Remove(Activity removed) => db.Remove(removed);
 
         public async Task<IEnumerable<Activity>> GetAllActivitiesAsync() => await db.Activities.ToListAsync();        
 

@@ -98,7 +98,7 @@ namespace Lms.MVC.UI.Controllers
 
         // This is an unneccecary method.. the link should redirecto to activities
         [HttpGet]
-        [Route("details/{title}")]//Todo Fix Navigation
+        //[Route("details/{title}")]//Todo Fix Navigation
         public ActionResult Details(int id, string title)
         {
             //Find course
