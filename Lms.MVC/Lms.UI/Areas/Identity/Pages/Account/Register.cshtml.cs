@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 
 namespace Lms.MVC.UI.Areas.Identity.Pages.Account
 {
+    // ToDo: gitfix
     [Authorize(Roles = "Admin , Teacher")]
     public class RegisterModel : PageModel
     {

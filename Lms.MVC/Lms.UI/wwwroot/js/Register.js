@@ -6,7 +6,7 @@
 $(document).on('click', '.dropdown .dropdown-menu', function (e) {
     e.stopPropagation();
 });
-
+// ToDo: gitfix
 //$('.dropdown').on('click', function (e) {
 //    var target = $(e.target);
 //    var dropdown = target.closest('.checkbox-menu');
