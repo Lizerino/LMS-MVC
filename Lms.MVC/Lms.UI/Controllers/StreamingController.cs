@@ -235,11 +235,11 @@ namespace Lms.MVC.UI.Controllers
             var reader = new MultipartReader(boundary, HttpContext.Request.Body);
             var section = await reader.ReadNextSectionAsync();
 
-            while (section != null)
-            {
                 var hasContentDispositionHeader = 
                     ContentDispositionHeaderValue.TryParse(
                         section.ContentDisposition, out var contentDisposition);
+            while (section != null || contentDisposition.Name== "{__RequestVerificationToken}")
+            {
 
                 if (hasContentDispositionHeader)
                 {
