@@ -311,7 +311,6 @@ namespace Lms.MVC.UI.Controllers
 
                 return activities;
             }
-<<<<<<<<< Temporary merge branch 1
         
         public  ActionResult ShowMyClassMates(int courseId, string id)
         {
