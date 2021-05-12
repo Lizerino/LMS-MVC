@@ -6,7 +6,7 @@ using Lms.MVC.UI.Models.ViewModels;
 using Lms.MVC.UI.Models.ViewModels.ActivityViewModels;
 using Lms.MVC.UI.Models.ViewModels.ApplicationUserViewModels;
 using Lms.MVC.UI.Models.ViewModels.CourseViewModels;
-using Lms.MVC.UI.Models.ViewModels.ModelViewModels;
+using Lms.MVC.UI.Models.ViewModels.ModuleViewModels;
 using Lms.MVC.UI.Models.ViewModels.PublicationViewModels;
 
 namespace Lms.MVC.UI

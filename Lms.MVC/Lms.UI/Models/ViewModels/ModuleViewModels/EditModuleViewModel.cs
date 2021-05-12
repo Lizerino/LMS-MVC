@@ -5,11 +5,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Lms.MVC.UI.Models.ViewModels.ModelViewModels
+namespace Lms.MVC.UI.Models.ViewModels.ModuleViewModels
 {
     public class EditModuleViewModel
-    {
-        
+    {        
         public int Id { get; set; }
 
         [Display(Name = "Title")]
