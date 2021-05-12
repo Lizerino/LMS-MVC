@@ -23,7 +23,7 @@ namespace Lms.MVC.UI.Controllers
             httpClient.DefaultRequestHeaders.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
-        public async Task<IActionResult> Index(string search, string sort, string sortBy, int page)
+        public async Task<IActionResult> Index(string search, string sort, int page)
         {
             // Builds request to API
             var request = new HttpRequestMessage(HttpMethod.Get, "api/authors");
@@ -155,63 +155,7 @@ namespace Lms.MVC.UI.Controllers
                         break;
                 }
             
-            if(sortBy != null)
-            {
-
-            switch (sortBy)
-            {
-                case "FNAgeD":// First Name then Age Descending
-                    
-                        model = model.OrderBy(a => a.FirstName)
-                        .ThenByDescending(a => a.Age);
-                    break;
-                        
-                case "FNAgeA": // First Name then Age Ascending
-                    
-                        model = model.OrderBy(a => a.FirstName)
-                        .ThenBy(a => a.Age);
-                    break;
-                    
-                case "LName": // Last Name Ascending                   
-                    
-                        model = model.OrderBy(a => a.LastName);
-                    break;
-                        
-                case "LNAgeD": // Last Name then Age Descending
-                        
-                    model = model.OrderBy(a => a.LastName)
-                        .ThenByDescending(a => a.Age);
-                    break;
-                    
-                case "LNAgeA": // Last Name then Age Ascending
-
-                    model = model.OrderBy(a => a.LastName)
-                        .ThenBy(a => a.Age);
-                    break;
-
-                case "Age": // Age Ascending
-
-                    model = model.OrderBy(a => a.Age);
-                    break;
-
-                case "AFName": // Age Ascending First then First Name
-
-                    model = model.OrderBy(a => a.Age)
-                        .ThenBy(a => a.FirstName);
-                    break;
-
-                case "ALName": // Age Ascending First then Last Name
-
-                    model = model.OrderBy(a => a.Age)
-                        .ThenBy(a => a.LastName);
-                    break;
-
-                default:
-                    
-                        model = model.OrderBy(a => a.FirstName);
-                    break;
-            }
-            }
+            
             
             // Paginated Results
             var paginatedResult = model.AsQueryable().GetPagination(page, 10);
