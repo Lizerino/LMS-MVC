@@ -20,6 +20,8 @@ namespace Lms.MVC.Data.Repositories
             this.db = db;
         }
 
+        public async Task<Module> GetModuleWithFilesAsync(int? id) => await db.Modules.Include(c => c.Files).Where(c => c.Id == id).FirstOrDefaultAsync();
+
         public async Task AddAsync(Module added) => await db.AddAsync(added);
 
         public async Task<IEnumerable<Module>> GetAllModulesAsync(bool includeActivities)
@@ -74,6 +76,12 @@ namespace Lms.MVC.Data.Repositories
         public void Update(Module module)
         {
             db.Update(module);
+        }
+
+        public async Task<ICollection<ApplicationFile>> GetAllFilesByModuleId(int id)
+        {
+            var module = await db.Modules.Where(c => c.Id == id).Include(c => c.Files).FirstOrDefaultAsync();
+            return module.Files;
         }
     }
 }

@@ -13,6 +13,7 @@ namespace Lms.MVC.Core.Repositories
 
         Task<Module> GetModuleAsync(int id);
 
+        Task<Module> GetModuleWithFilesAsync(int? id);
         Task<Module> GetModuleAsync(int id, int moduleId);
 
         Task<Module> GetModuleByTitleAsync(int id, string title);
@@ -22,5 +23,6 @@ namespace Lms.MVC.Core.Repositories
         void Update(Module module);
 
         Task<bool> SaveAsync();
+        Task<ICollection<ApplicationFile>> GetAllFilesByModuleId(int id);
     }
 }

@@ -18,7 +18,7 @@ namespace Lms.MVC.Core.Entities
         public int CourseId { get; set; }
 
         // nav prop
-        public ICollection<Document> Documents { get; set; }
+        public ICollection<ApplicationFile> Files { get; set; }
 
         public ICollection<Activity> Activities { get; set; }
     }

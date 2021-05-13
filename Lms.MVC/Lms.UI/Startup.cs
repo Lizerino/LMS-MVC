@@ -10,12 +10,14 @@ using Lms.MVC.UI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace Lms.MVC.UI
@@ -63,8 +65,8 @@ namespace Lms.MVC.UI
                         Configuration.GetConnectionString("ApplicationDbContextSQLite")
                     );
                 }
-            });
-            
+            });            
+
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             // Identity

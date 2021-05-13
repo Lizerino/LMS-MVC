@@ -24,6 +24,8 @@ namespace Lms.MVC.Data.Repositories
 
         public IPublicationRepository PublicationRepository { get; }
 
+        public IFileRepository FileRepository { get; }        
+
         public UoW(ApplicationDbContext db, UserManager<ApplicationUser> userManager)
         {
             this.db = db;
@@ -33,6 +35,7 @@ namespace Lms.MVC.Data.Repositories
             ModuleRepository = new ModuleRepository(this.db);
             UserRepository = new UserRepository(this.db, this.userManager);
             PublicationRepository = new PublicationRepository();
+            FileRepository = new FileRepository(db);
         }
 
         public async Task CompleteAsync() => await db.SaveChangesAsync();

@@ -53,6 +53,8 @@ namespace Lms.MVC.Data.Repositories
                         .ToListAsync();
         }
 
+        public async Task<Course> GetCourseWithFilesAsync(int? id) => await db.Courses.Include(c => c.Files).Where(c => c.Id == id).FirstOrDefaultAsync();
+
         public async Task<Course> GetCourseAsync(int? id, bool includeModules = false, bool includeUsers = false)
         {
             return includeModules ?
@@ -95,7 +97,7 @@ namespace Lms.MVC.Data.Repositories
 
         public async Task<DateTime> CalculateEndDateAsync(int id)
         {
-            if (GetCourseAsync(id, true, false).Result.Modules.Count() > 0)
+            if (GetCourseAsync(id, true, false).Result.Modules.Count > 0)
             {
                 var modulesEndDates = (await GetCourseAsync(id, true, false)).Modules.Select(m => m.EndDate).ToList();
                 var endDate = modulesEndDates.Last();
@@ -135,6 +137,12 @@ namespace Lms.MVC.Data.Repositories
             course.EndDate = await CalculateEndDateAsync(id);
 
             return course;
+        }
+
+        public async Task<ICollection<ApplicationFile>> GetAllFilesByCourseId(int id)
+        {
+            var course = await db.Courses.Where(c => c.Id == id).Include(c => c.Files).FirstOrDefaultAsync();
+            return course.Files;
         }
     }
 }

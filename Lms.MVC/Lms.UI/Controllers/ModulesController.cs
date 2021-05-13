@@ -323,7 +323,7 @@ namespace Lms.MVC.UI.Controllers
 
             id = uow.UserRepository.GetAllUsersAsync().Result.Where(u => u.Email == userEmail).FirstOrDefault().Id;
 
-            courseId = uow.UserRepository.FindAsync(id, true).Result.Courses.FirstOrDefault().Id;
+            courseId = uow.UserRepository.GetUserByIdAsync(id, true).Result.Courses.FirstOrDefault().Id;
 
             var coursesStudents = uow.CourseRepository.GetAllCoursesAsync(false, true).Result.FirstOrDefault(c => c.Id == courseId).Users.Where(u => u.Role == RoleHelper.Student);
 
