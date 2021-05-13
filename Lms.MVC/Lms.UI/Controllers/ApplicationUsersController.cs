@@ -52,44 +52,26 @@ namespace Lms.MVC.UI.Controllers
             var model = mapper.Map<IEnumerable<ListApplicationUsersViewModel>>(users);
 
             // Add to get the search to work
-            if (!String.IsNullOrWhiteSpace(search))
+            if (!string.IsNullOrWhiteSpace(search))
             {
                 model = model.Where(u => u.Name.ToLower().StartsWith(search.ToLower()) || u.Email.ToLower().Contains(search.ToLower()) || u.Role.ToLower().Trim() == search.ToLower());
             }
 
             ViewData["CurrentFilter"] = search;
             ViewData["CurrentSort"] = sortOrder;
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Name_desc" : "";
+            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "Name_desc" : "";
             ViewData["EmailSortParm"] = sortOrder == "Email" ? "Email_desc" : "Email";
             ViewData["RoleSortParm"] = sortOrder == "Email" ? "Role_desc" : "Role";
 
-            switch (sortOrder)
+            model = sortOrder switch
             {
-                case "Name_desc":
-                    model = model.OrderByDescending(s => s.Name);
-                    break;
-
-                case "Email":
-                    model = model.OrderBy(s => s.Email);
-                    break;
-
-                case "Email_desc":
-                    model = model.OrderByDescending(s => s.Email);
-                    break;
-
-                case "Role":
-                    model = model.OrderBy(s => s.Role);
-                    break;
-
-                case "Role_desc":
-                    model = model.OrderByDescending(s => s.Role);
-                    break;
-
-                default:
-                    model = model.OrderBy(s => s.Name);
-                    break;
-            }
-
+                "Name_desc" => model.OrderByDescending(s => s.Name),
+                "Email" => model.OrderBy(s => s.Email),
+                "Email_desc" => model.OrderByDescending(s => s.Email),
+                "Role" => model.OrderBy(s => s.Role),
+                "Role_desc" => model.OrderByDescending(s => s.Role),
+                _ => model.OrderBy(s => s.Name),
+            };
             var paginatedResult = model.AsQueryable().GetPagination(page, 10);
 
             return View(paginatedResult);
