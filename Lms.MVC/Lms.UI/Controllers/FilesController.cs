@@ -1,17 +1,22 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 
+using AutoMapper;
+
 using Lms.MVC.Core.Entities;
-using Lms.MVC.Data.Data;
+using Lms.MVC.Core.Repositories;
+using Lms.MVC.Data.Repositories;
 using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Utilities.FileHandler;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.WebUtilities;
@@ -23,32 +28,64 @@ namespace Lms.MVC.UI.Controllers
 {
     public class FilesController : Controller
     {
-        // todo: file unit of work
-        private readonly ApplicationDbContext db;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        private readonly long fileSizeLimit;
+        private readonly IMapper mapper;
+
+        private readonly IUoW uoW;
+
+        private readonly long fileSizeLimit;        
 
         private readonly ILogger<FilesController> logger;
-
-        private readonly string[] permittedExtensions = { ".pdf",".png" };
-
-
-        public IActionResult Index()
-        {
-            return View();
-        }
-
 
         // Get the default form options so that we can use them to set the default limits for
         // request body data.
         private static readonly FormOptions defaultFormOptions = new FormOptions();
 
-        public FilesController(ILogger<FilesController> logger,
-            ApplicationDbContext db, IConfiguration config)
+        private readonly string[] permittedExtensions = { ".pdf", ".png" };
+
+        public FilesController(IUoW uoW, IMapper mapper, UserManager<ApplicationUser> userManager, ILogger<FilesController> logger, IConfiguration config)
         {
+            this.uoW = uoW;
+            this.mapper = mapper;
+            this.userManager = userManager;
             this.logger = logger;
-            this.db = db;
             fileSizeLimit = config.GetValue<long>("FileSizeLimit");
+        }
+
+        public async Task<IActionResult> DownloadFile(int? id)
+        {
+            if (id == null)
+            {
+                return View();
+            }
+            var requestFile = await uoW.FileRepository.GetFileByIdAsync((int)id);
+            if (requestFile == null)
+            {
+                return View();
+            }
+
+            // Don't display the untrusted file name in the UI. HTML-encode the value.
+            return File(requestFile.Content, MediaTypeNames.Application.Octet, WebUtility.HtmlEncode(requestFile.UntrustedName));
+        }
+
+        // Add confirmation
+        public async Task<IActionResult> DeleteFile(int? id)
+        {
+            if (id == null)
+            {
+                return RedirectToPage("/Index");
+            }
+
+            var RemoveFile = await uoW.FileRepository.GetFileByIdAsync((int)id);
+
+            if (RemoveFile != null)
+            {
+                uoW.FileRepository.Remove(RemoveFile);
+                await uoW.CompleteAsync();
+            }
+
+            return RedirectToPage("/Index");
         }
 
         // The following upload methods:
@@ -204,8 +241,8 @@ namespace Lms.MVC.UI.Controllers
                 UploadDT = DateTime.UtcNow
             };
 
-            db.DbFile.Add(file);
-            await db.SaveChangesAsync();
+            await uoW.FileRepository.AddAsync(file);
+            await uoW.CompleteAsync();
 
             return Created(nameof(FilesController), null);
         }

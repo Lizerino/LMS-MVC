@@ -28,5 +28,15 @@ namespace Lms.MVC.Data.Repositories
         {
             return await db.Files.Where(f => f.Id == id).FirstOrDefaultAsync();
         }
+
+        public void Remove(ApplicationFile RemoveFile)
+        {
+            db.Files.Remove(RemoveFile);
+        }
+
+        public async Task AddAsync(ApplicationFile AddFile)
+        {
+            await db.Files.AddAsync(AddFile);
+        }
     }
 }

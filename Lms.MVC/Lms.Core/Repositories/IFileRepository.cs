@@ -9,5 +9,8 @@ namespace Lms.MVC.Core.Repositories
     {
         Task<IEnumerable<ApplicationFile>> GetAllFilesAsync();
         Task<ApplicationFile> GetFileByIdAsync(int id);
+        void Remove(ApplicationFile RemoveFile);
+
+        Task AddAsync(ApplicationFile AddFile);
     }
 }

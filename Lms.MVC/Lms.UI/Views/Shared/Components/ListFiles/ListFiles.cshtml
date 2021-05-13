@@ -1,0 +1,31 @@
+﻿@using Lms.MVC.UI.Views.Shared.Components.ListFiles
+@model ICollection<ApplicationFile>
+
+@if (Model != null)
+{
+    foreach (var file in Model)
+    {
+        <tr>
+            <td>
+                <a asp-page="DeleteFile" asp-area="Files" asp-route-id="@file.Id">Delete</a>
+            </td>
+            <td>
+                <b>@file.UntrustedName</b><br>
+                @Html.DisplayFor(modelItem => file.Description)
+            </td>
+            <td class="text-center">
+                @Html.DisplayFor(modelItem => file.UploadDT)
+            </td>
+            <td class="text-center">
+                @Html.DisplayFor(modelItem => file.Size)
+            </td>
+            <td class="text-center">
+                <a asp-action="DownloadFile" asp-controller="Files" asp-route-id="@file.Id">Download</a>
+            </td>
+        </tr>
+    }
+}
+else
+{
+    <p>No files found.</p>
+}
