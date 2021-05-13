@@ -7,6 +7,16 @@ using Lms.MVC.Core.Repositories;
 
 using Microsoft.AspNetCore.Mvc;
 
+// The component is implemented as below
+// Valid CMATypes are course, module and activity
+
+//@using Microsoft.AspNetCore.Identity
+//@inject UserManager<ApplicationUser> userManager
+//
+// You put the line below where you want the component to go
+//
+//@await Component.InvokeAsync("UploadFile", new { userId = userManager.GetUserAsync(User).Result.Id, Id = Model.CourseId, CMAType = "Course" })
+
 namespace Lms.MVC.UI.Views.Shared.Components.UploadFile
 {
     public class FileInfo
