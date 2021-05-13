@@ -7,7 +7,7 @@
     {
         <tr>
             <td>
-                <a asp-action="DeleteFile" asp-controller="Files" asp-route-id="@file.Id">Delete</a>
+                <a asp-action="DeleteFile" asp-controller="Files" asp-route-id="@file.Id" asp-route-CMAType="@Model.CMAType">Delete</a>
             </td>
             <td>
                 <b>@file.UntrustedName</b><br>

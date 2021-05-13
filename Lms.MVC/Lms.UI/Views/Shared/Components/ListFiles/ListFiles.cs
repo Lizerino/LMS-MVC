@@ -11,6 +11,7 @@ namespace Lms.MVC.UI.Views.Shared.Components.ListFiles
     public class ListFiles
     {
         public ICollection<ApplicationFile> FileList { get; set; }
+        public string CMAType { get; set; }
     }
 
     public class ListFilesViewComponent : ViewComponent
@@ -22,25 +23,26 @@ namespace Lms.MVC.UI.Views.Shared.Components.ListFiles
             this.uow = uow;
         }
 
-        public IViewComponentResult Invoke(string UserCourseModuleActivity, string id)
+        public IViewComponentResult Invoke(string CMAType, string id)
         {
             ListFiles files = new ListFiles();
-            if (UserCourseModuleActivity.ToLower() == "user")
+            if (CMAType.ToLower() == "user")
             {
                 files.FileList = uow.UserRepository.GetAllFilesByUserId(id).Result;
             }
-            if (UserCourseModuleActivity.ToLower() == "course")
+            if (CMAType.ToLower() == "course")
             {
                 files.FileList = uow.CourseRepository.GetAllFilesByCourseId(Int32.Parse(id)).Result;
             }
-            if (UserCourseModuleActivity.ToLower() == "module")
+            if (CMAType.ToLower() == "module")
             {
                 files.FileList = uow.ModuleRepository.GetAllFilesByModuleId(Int32.Parse(id)).Result;
             }
-            if (UserCourseModuleActivity.ToLower() == "activity")
+            if (CMAType.ToLower() == "activity")
             {
                 files.FileList = uow.ActivityRepository.GetAllFilesByActivityId(Int32.Parse(id)).Result;
             }
+            files.CMAType = CMAType.ToLower();
 
             return View(files);
         }
