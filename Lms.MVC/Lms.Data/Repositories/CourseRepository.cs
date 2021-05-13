@@ -95,7 +95,7 @@ namespace Lms.MVC.Data.Repositories
 
         public async Task<DateTime> CalculateEndDateAsync(int id)
         {
-            if (GetCourseAsync(id, true, false).Result.Modules.Count() > 0)
+            if (GetCourseAsync(id, true, false).Result.Modules.Count > 0)
             {
                 var modulesEndDates = (await GetCourseAsync(id, true, false)).Modules.Select(m => m.EndDate).ToList();
                 var endDate = modulesEndDates.Last();
