@@ -1,13 +1,13 @@
-﻿@using Lms.MVC.UI.Views.Shared.Components.ListFiles
-@model ICollection<ApplicationFile>
+﻿@using Lms.MVC.UI.Views.Shared.Components.ListFiles 
+@model ListFiles
 
-@if (Model != null)
+@if (Model.FileList.Count != 0)
 {
-    foreach (var file in Model)
+    foreach (var file in Model.FileList)
     {
         <tr>
             <td>
-                <a asp-page="DeleteFile" asp-area="Files" asp-route-id="@file.Id">Delete</a>
+                <a asp-action="DeleteFile" asp-controller="Files" asp-route-id="@file.Id">Delete</a>
             </td>
             <td>
                 <b>@file.UntrustedName</b><br>

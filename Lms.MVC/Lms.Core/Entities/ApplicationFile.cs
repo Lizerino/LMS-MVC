@@ -14,6 +14,6 @@ namespace Lms.MVC.Core.Entities
 
         public long Size { get; set; }
 
-        public DateTime UploadDT { get; set; }        
+        public DateTime UploadDT { get; set; }       
     }
 }

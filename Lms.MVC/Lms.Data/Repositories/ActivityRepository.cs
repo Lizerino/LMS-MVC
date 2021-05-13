@@ -19,6 +19,8 @@ namespace Lms.MVC.Data.Repositories
             this.db = db;
         }
 
+        public async Task<Activity> GetActivityWithFilesAsync(int? id) => await db.Activities.Include(c => c.Files).Where(c => c.Id == id).FirstOrDefaultAsync();
+
         public async Task AddAsync(Activity added) => await db.AddAsync(added);
 
         public void Remove(Activity removed) => db.Remove(removed);

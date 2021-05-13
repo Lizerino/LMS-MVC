@@ -1,4 +1,7 @@
-﻿<form id="uploadForm" asp-action="UploadDatabase" asp-controller="Files" method="post"
+﻿@using Lms.MVC.UI.Views.Shared.Components.UploadFile
+@model FileInfo
+
+<form id="uploadForm" asp-action="UploadDatabase" asp-controller="Files" method="post"
       enctype="multipart/form-data" onsubmit="AJAXSubmit(this);return false;">
     <dl>
         <dt>
@@ -19,6 +22,9 @@
     <div style="margin-top:15px">
         <output form="uploadForm" name="result"></output>
     </div>
+    <input type="hidden" name="CMAType" value="@Model.CMAType" />
+    <input type="hidden" name="CMAId" value="@Model.Id" />
+    <input type="hidden" name="UserId" value="@Model.userId" />
 </form>
 
 <script src="~/Components/UploadFile/js/site.js"></script>

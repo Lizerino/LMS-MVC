@@ -26,7 +26,9 @@ namespace Lms.MVC.Data.Repositories
             this.db = db;
             this.userManager = userManager;
             
-        }        
+        }
+
+        public async Task<ApplicationUser> GetUserWithFilesByIdAsync(string id) => await db.Users.Include(u=>u.Files).Where(u=>u.Id==id).FirstOrDefaultAsync();
 
         public async Task<ApplicationUser> GetUserByIdAsync(string id, bool includeCourses = false)
         {

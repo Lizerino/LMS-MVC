@@ -240,6 +240,26 @@ namespace Lms.MVC.UI.Controllers
                 Size = streamedFileContent.Length,
                 UploadDT = DateTime.UtcNow
             };
+            
+            // This needs to be updated for other types.. should be able to be done in a way that the program knows that type it comes from 
+            var cmaType =formData.CMAType.ToLower();
+            if (cmaType=="course")
+            {
+                var course = uoW.CourseRepository.GetCourseWithFilesAsync(formData.CMAId).Result;
+                course.Files.Add(file);
+            }
+            else if (cmaType == "module")
+            {
+                var module = uoW.ModuleRepository.GetModuleWithFilesAsync(formData.CMAId).Result;
+                module.Files.Add(file);
+            }
+            else if (cmaType == "activity")
+            {
+                var activity = uoW.ActivityRepository.GetActivityWithFilesAsync(formData.CMAId).Result;
+                activity.Files.Add(file);
+            }
+            var user = uoW.UserRepository.GetUserWithFilesByIdAsync(formData.UserId).Result;
+            user.Files.Add(file);
 
             await uoW.FileRepository.AddAsync(file);
             await uoW.CompleteAsync();
@@ -265,5 +285,8 @@ namespace Lms.MVC.UI.Controllers
     public class FormData
     {
         public string Description { get; set; }
+        public int CMAId { get; set; }
+        public string UserId { get; set; }
+        public string CMAType { get; set; }
     }
 }

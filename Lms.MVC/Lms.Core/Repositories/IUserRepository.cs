@@ -13,6 +13,7 @@ namespace Lms.MVC.Core.Repositories
 
         Task<ApplicationUser> GetUserByIdAsync(string id, bool includeCourses);
 
+        Task<ApplicationUser> GetUserWithFilesByIdAsync(string id);
         void Update(ApplicationUser user);
 
         void Remove(ApplicationUser user);

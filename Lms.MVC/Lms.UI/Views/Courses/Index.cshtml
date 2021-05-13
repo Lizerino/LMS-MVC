@@ -8,15 +8,6 @@
 @{
     ViewData["Title"] = "Course List";
 }
-
-<h1>Course List</h1>
-@* Todo: remove after testing view component *@
-@await Component.InvokeAsync("ListFiles", new { UserCourseModuleActivity = "user", id = userManager.GetUserAsync(User).Result.Id })
-<p>between the viewcomponents</p>
-@await Component.InvokeAsync("UploadFile")
-
-
-
 <p>
     <a asp-action="Create">Create New Course</a>
 

@@ -53,6 +53,8 @@ namespace Lms.MVC.Data.Repositories
                         .ToListAsync();
         }
 
+        public async Task<Course> GetCourseWithFilesAsync(int? id) => await db.Courses.Include(c => c.Files).Where(c => c.Id == id).FirstOrDefaultAsync();
+
         public async Task<Course> GetCourseAsync(int? id, bool includeModules = false, bool includeUsers = false)
         {
             return includeModules ?
@@ -140,7 +142,7 @@ namespace Lms.MVC.Data.Repositories
         public async Task<ICollection<ApplicationFile>> GetAllFilesByCourseId(int id)
         {
             var course = await db.Courses.Where(c => c.Id == id).Include(c => c.Files).FirstOrDefaultAsync();
-            return course.Files;            
+            return course.Files;
         }
     }
 }

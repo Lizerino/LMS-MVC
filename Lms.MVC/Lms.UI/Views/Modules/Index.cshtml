@@ -1,9 +1,16 @@
-﻿@model ListModuleViewModel
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> userManager
+@model ListModuleViewModel
 
 @{
     ViewData["CourseId"] = Model.CourseId;
 }
-@await Component.InvokeAsync("ListFiles", new { UserCourseModuleActivity = "course", id = Model.CourseId.ToString() })
+
+@* Todo: remove after testing view component *@
+@await Component.InvokeAsync("ListFiles", new { UserCourseModuleActivity = "user", id = userManager.GetUserAsync(User).Result.Id })
+<p>between the viewcomponents</p>
+@await Component.InvokeAsync("UploadFile", new { userId = userManager.GetUserAsync(User).Result.Id, Id = Model.CourseId,CMAType="Course" })
+
 <h1>@Model.CourseTitle</h1>
 @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
 {
