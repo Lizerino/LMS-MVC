@@ -14,6 +14,8 @@ namespace Lms.MVC.Core.Repositories
 
         IPublicationRepository PublicationRepository { get; }
 
+        IFileRepository FileRepository { get; }
+
         Task CompleteAsync();
     }
 }

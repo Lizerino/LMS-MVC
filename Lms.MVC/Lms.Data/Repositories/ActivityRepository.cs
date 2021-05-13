@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Lms.MVC.Core.Entities;
@@ -18,6 +19,8 @@ namespace Lms.MVC.Data.Repositories
             this.db = db;
         }
 
+        public async Task<Activity> GetActivityWithFilesAsync(int? id) => await db.Activities.Include(c => c.Files).Where(c => c.Id == id).FirstOrDefaultAsync();
+
         public async Task AddAsync(Activity added) => await db.AddAsync(added);
 
         public void Remove(Activity removed) => db.Remove(removed);
@@ -33,5 +36,11 @@ namespace Lms.MVC.Data.Repositories
         public void Update(Activity activity) => db.Update(activity);
 
         public async Task<IEnumerable<ActivityType>> GetAllActivityTypesAsync() => await db.ActivityTypes.ToListAsync();
+
+        public async Task<ICollection<ApplicationFile>> GetAllFilesByActivityId(int id)
+        {
+            var activity = await db.Activities.Where(c => c.Id == id).Include(c => c.Files).FirstOrDefaultAsync();
+            return activity.Files;
+        }
     }
 }

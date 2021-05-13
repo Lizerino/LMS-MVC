@@ -103,7 +103,7 @@ namespace Lms.MVC.UI.Controllers
             {
                 return NotFound();
             }
-            var user = await uoW.UserRepository.FindAsync(id, true);
+            var user = await uoW.UserRepository.GetUserByIdAsync(id, true);
 
             var model = mapper.Map<DetailsApplicationUserViewModel>(user);
 
@@ -117,7 +117,7 @@ namespace Lms.MVC.UI.Controllers
             {
                 return NotFound();
             }
-            var user = await uoW.UserRepository.FindAsync(id, true);
+            var user = await uoW.UserRepository.GetUserByIdAsync(id, true);
 
             var model = mapper.Map<EditApplicationUserViewModel>(user);
 
@@ -137,7 +137,7 @@ namespace Lms.MVC.UI.Controllers
             {
                 return NotFound();
             }
-            var user = await uoW.UserRepository.FindAsync(id, true);
+            var user = await uoW.UserRepository.GetUserByIdAsync(id, true);
             viewmodel.Courses = user.Courses;
             if (user.Email.ToLower().Contains("admin@lms.se"))
             {
@@ -200,7 +200,7 @@ namespace Lms.MVC.UI.Controllers
                 return NotFound();
             }
 
-            var userToBeRemoved = await uoW.UserRepository.FindAsync(id, true);
+            var userToBeRemoved = await uoW.UserRepository.GetUserByIdAsync(id, true);
 
             var model = mapper.Map<DeleteApplicationUserViewModel>(userToBeRemoved);
 
@@ -217,7 +217,7 @@ namespace Lms.MVC.UI.Controllers
                 return NotFound();
             }
 
-            var userToBeRemoved = await uoW.UserRepository.FindAsync(id, true);
+            var userToBeRemoved = await uoW.UserRepository.GetUserByIdAsync(id, true);
 
             uoW.UserRepository.Remove(userToBeRemoved);
             await uoW.CompleteAsync();

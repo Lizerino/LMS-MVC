@@ -15,24 +15,19 @@ namespace Lms.MVC.UI.Areas.Files
 {
     public class IndexModel : PageModel
     {
-        private readonly ApplicationDbContext db;
+        // todo: unit of work
+        private readonly ApplicationDbContext db;       
 
-        private readonly IFileProvider _fileProvider;
-
-        public IndexModel(ApplicationDbContext context, IFileProvider fileProvider)
+        public IndexModel(ApplicationDbContext context)
         {
-            db = context;
-            _fileProvider = fileProvider;
+            db = context;           
         }
 
-        public IList<DbFile> DatabaseFiles { get; private set; }
-
-        public IDirectoryContents PhysicalFiles { get; private set; }
+        public IList<ApplicationFile> DatabaseFiles { get; private set; }        
 
         public async Task OnGetAsync()
         {
-            DatabaseFiles = await db.DbFile.AsNoTracking().ToListAsync();
-            PhysicalFiles = _fileProvider.GetDirectoryContents(string.Empty);
+            DatabaseFiles = await db.DbFile.AsNoTracking().ToListAsync();            
         }
 
         public async Task<IActionResult> OnGetDownloadDbAsync(int? id)
@@ -49,13 +44,6 @@ namespace Lms.MVC.UI.Areas.Files
 
             // Don't display the untrusted file name in the UI. HTML-encode the value.
             return File(requestFile.Content, MediaTypeNames.Application.Octet, WebUtility.HtmlEncode(requestFile.UntrustedName));
-        }
-
-        public IActionResult OnGetDownloadPhysical(string fileName)
-        {
-            var downloadFile = _fileProvider.GetFileInfo(fileName);
-
-            return PhysicalFile(downloadFile.PhysicalPath, MediaTypeNames.Application.Octet, fileName);
-        }
+        }                
     }
 }

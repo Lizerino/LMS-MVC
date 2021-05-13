@@ -22,6 +22,6 @@ namespace Lms.MVC.Core.Entities
         // nav prop
         public ActivityType ActivityType { get; set; }
 
-        public ICollection<Document> Documents { get; set; }
+        public ICollection<ApplicationFile> Files { get; set; }
     }
 }

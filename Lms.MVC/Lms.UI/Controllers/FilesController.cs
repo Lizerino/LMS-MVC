@@ -1,17 +1,22 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 
+using AutoMapper;
+
 using Lms.MVC.Core.Entities;
-using Lms.MVC.Data.Data;
+using Lms.MVC.Core.Repositories;
+using Lms.MVC.Data.Repositories;
 using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Utilities.FileHandler;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.WebUtilities;
@@ -21,27 +26,66 @@ using Microsoft.Net.Http.Headers;
 
 namespace Lms.MVC.UI.Controllers
 {
-    public class StreamingController : Controller
+    public class FilesController : Controller
     {
-        // todo: file unit of work
-        private readonly ApplicationDbContext db;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        private readonly long fileSizeLimit;
+        private readonly IMapper mapper;
 
-        private readonly ILogger<StreamingController> logger;
+        private readonly IUoW uoW;
 
-        private readonly string[] permittedExtensions = { ".pdf" };        
+        private readonly long fileSizeLimit;        
+
+        private readonly ILogger<FilesController> logger;
 
         // Get the default form options so that we can use them to set the default limits for
         // request body data.
         private static readonly FormOptions defaultFormOptions = new FormOptions();
 
-        public StreamingController(ILogger<StreamingController> logger,
-            ApplicationDbContext db, IConfiguration config)
+        private readonly string[] permittedExtensions = { ".pdf", ".png" };
+
+        public FilesController(IUoW uoW, IMapper mapper, UserManager<ApplicationUser> userManager, ILogger<FilesController> logger, IConfiguration config)
         {
+            this.uoW = uoW;
+            this.mapper = mapper;
+            this.userManager = userManager;
             this.logger = logger;
-            this.db = db;
             fileSizeLimit = config.GetValue<long>("FileSizeLimit");
+        }
+
+        public async Task<IActionResult> DownloadFile(int? id)
+        {
+            if (id == null)
+            {
+                return View();
+            }
+            var requestFile = await uoW.FileRepository.GetFileByIdAsync((int)id);
+            if (requestFile == null)
+            {
+                return View();
+            }
+
+            // Don't display the untrusted file name in the UI. HTML-encode the value.
+            return File(requestFile.Content, MediaTypeNames.Application.Octet, WebUtility.HtmlEncode(requestFile.UntrustedName));
+        }
+
+        // Add confirmation
+        public async Task<IActionResult> DeleteFile(int? id, string CMAType)
+        {
+            if (id == null)
+            {
+                return RedirectToAction("Index",CMAType+"s");                
+            }
+
+            var RemoveFile = await uoW.FileRepository.GetFileByIdAsync((int)id);
+
+            if (RemoveFile != null)
+            {
+                uoW.FileRepository.Remove(RemoveFile);
+                await uoW.CompleteAsync();
+            }
+
+            return RedirectToAction("Index", CMAType + "s");
         }
 
         // The following upload methods:
@@ -188,19 +232,39 @@ namespace Lms.MVC.UI.Controllers
             // used on the file before making the file available for download or for use by other
             // systems. For more information, see the topic that accompanies this sample app.
 
-            var file = new DbFile()
+            var file = new Core.Entities.ApplicationFile()
             {
                 Content = streamedFileContent,
                 UntrustedName = untrustedFileNameForStorage,
-                Note = formData.Note,
+                Description = formData.Description,
                 Size = streamedFileContent.Length,
                 UploadDT = DateTime.UtcNow
             };
+            
+            // This needs to be updated for other types.. should be able to be done in a way that the program knows that type it comes from 
+            var cmaType =formData.CMAType.ToLower();
+            if (cmaType=="course")
+            {
+                var course = uoW.CourseRepository.GetCourseWithFilesAsync(formData.CMAId).Result;
+                course.Files.Add(file);
+            }
+            else if (cmaType == "module")
+            {
+                var module = uoW.ModuleRepository.GetModuleWithFilesAsync(formData.CMAId).Result;
+                module.Files.Add(file);
+            }
+            else if (cmaType == "activity")
+            {
+                var activity = uoW.ActivityRepository.GetActivityWithFilesAsync(formData.CMAId).Result;
+                activity.Files.Add(file);
+            }
+            var user = uoW.UserRepository.GetUserWithFilesByIdAsync(formData.UserId).Result;
+            user.Files.Add(file);
 
-            db.DbFile.Add(file);
-            await db.SaveChangesAsync();
+            await uoW.FileRepository.AddAsync(file);
+            await uoW.CompleteAsync();
 
-            return Created(nameof(StreamingController), null);
+            return Created(nameof(FilesController), null);
         }
 
         private static Encoding GetEncoding(MultipartSection section)
@@ -220,6 +284,9 @@ namespace Lms.MVC.UI.Controllers
 
     public class FormData
     {
-        public string Note { get; set; }
+        public string Description { get; set; }
+        public int CMAId { get; set; }
+        public string UserId { get; set; }
+        public string CMAType { get; set; }
     }
 }

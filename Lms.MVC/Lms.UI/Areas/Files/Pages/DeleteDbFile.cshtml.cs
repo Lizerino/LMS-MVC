@@ -19,7 +19,7 @@ namespace Lms.MVC.UI.Areas.Files
         }
 
         [BindProperty]
-        public DbFile RemoveFile { get; private set; }
+        public ApplicationFile RemoveFile { get; private set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
