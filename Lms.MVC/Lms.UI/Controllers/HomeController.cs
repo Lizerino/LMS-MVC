@@ -37,7 +37,7 @@ namespace Lms.MVC.UI.Controllers
                 adminOverviewViewModel.NumberOfUsers = allUsers.Count();
                 return View("~/Views/AdminLanding/AdminOverview.cshtml", adminOverviewViewModel);
             }
-            else
+            else if (User.IsInRole("Student"))
             {
                 return RedirectToAction("Index", "Modules");
             }
