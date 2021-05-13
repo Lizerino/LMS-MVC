@@ -1,8 +1,23 @@
-﻿@model IEnumerable<ListApplicationUsersViewModel>
+﻿@model PaginationResult<ListApplicationUsersViewModel>
 
 @{
-    ViewData["Title"] = "ShowMyClassMates";
+    ViewData["Title"] = "My class mates";
 }
+<form class="search-form">
+    <div class="input-group">
+<button class="btn bg-" type="submit">Search <i class="fas fa-search"></i> </button>
+        <input type="text" name="Search" class="form-control" placeholder="Search..." autofocus>
+        <button type="reset" class="btn bg-transparent" tabindex="-1" style="margin-left: -40px; z-index: 100;">
+            <i class="fa fa-times"></i>
+
+        </button>
+    </div>
+</form>
+
+<form class="clear-search-form">
+    <a href="#" class="clear-anchor">Clear Search</a>
+    <input type="hidden" name="Search" value="" />
+</form>
 
 <h1>My Class Mates</h1>
 <table class="table">
@@ -10,19 +25,17 @@
         <tr>
 
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                <a asp-action="ShowMyClassMates" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                <a asp-action="ShowMyClassMates" asp-route-sortOrder="@ViewData["EmailSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Email </a>
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Role)
-            </th>
+          
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Results)
         {
             <tr>
 
@@ -33,14 +46,11 @@
                     @Html.DisplayFor(modelItem => item.Email)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Role)
-                </td>
-            <td>
-                
-                <a asp-controller="ApplicationUsers" asp-action="Details" asp-route-id="@item.Id" class="text-info"> Details</a>
+                    <a asp-controller="ApplicationUsers" asp-action="Details" asp-route-id="@item.Id" class="text-info"> Details</a>
 
-            </td>
+                </td>
             </tr>
         }
-        </tbody>
-    </table>
+    </tbody>
+</table>
+@(await Component.InvokeAsync<PaginationViewComponent>(Model))

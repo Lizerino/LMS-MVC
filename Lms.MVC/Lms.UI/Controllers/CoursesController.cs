@@ -36,7 +36,56 @@ namespace Lms.MVC.UI.Controllers
             this.mapper = mapper;
             this.userManager = userManager;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="courseId"></param>
+        /// <param name="id"></param>
+        /// <param name="search"></param>
+        /// <param name="sortOrder"></param>
+        /// <param name="page"></param>
+        /// <returns></returns>
+        public  ActionResult ShowMyClassMates(int courseId, string id, string search, string sortOrder, int page)
+        {  
+            if (search != null)
+            {
+                page = 1;
+            }
 
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+
+            id = uow.UserRepository.GetAllUsersAsync().Result.Where(u => u.Email == userEmail).FirstOrDefault().Id;
+
+            courseId = uow.UserRepository.FindAsync(id, true).Result.Courses.FirstOrDefault().Id;
+
+            var coursesStudents = uow.CourseRepository.GetAllCoursesAsync(false, true).Result.FirstOrDefault(c => c.Id == courseId).Users.Where(u => u.Role == RoleHelper.Student);
+
+            var result = mapper.Map<IEnumerable<ListApplicationUsersViewModel>>(coursesStudents);
+
+            // Add to get the search to work
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+             result =  result.Where(u => u.Name.ToLower().StartsWith(search.ToLower()) || u.Email.ToLower().Contains(search.ToLower()));
+            }
+            ViewData["CurrentFilter"] = search;
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "Name_desc" : "";
+            ViewData["EmailSortParm"] = sortOrder == "Email" ? "Email_desc" : "Email";
+
+            result = sortOrder switch
+            {
+                "Name_desc" => result.OrderByDescending(s => s.Name),
+                "Email" => result.OrderBy(s => s.Email),
+                "Email_desc" => result.OrderByDescending(s => s.Email),
+                _ => result.OrderBy(s => s.Name),
+            };
+
+            var paginatedResult = result.AsQueryable().GetPagination(page, 10);
+
+            uow.CourseRepository.SetAllCoursesEndDate();
+
+            return View(paginatedResult);
+        }
         // GET: Courses
         public async Task<IActionResult> Index(string search, string sortOrder, int page)
         {
@@ -53,19 +102,19 @@ namespace Lms.MVC.UI.Controllers
             if (showOnlyMyCourses == "true")
             {
                 courses = uow.CourseRepository.GetAllCoursesAsync(false, true).Result
-            .Where(c => (String.IsNullOrEmpty(search) || (c.Title.Contains(search))) && (c.Users != null && (c.Users.Contains(currentUser))));
+            .Where(c => (string.IsNullOrEmpty(search) || (c.Title.Contains(search))) && (c.Users != null && (c.Users.Contains(currentUser))));
             }
             else
             {
                 courses = uow.CourseRepository.GetAllCoursesAsync(false, true).Result
-                .Where(c => String.IsNullOrEmpty(search) || (c.Title.Contains(search)));
+                .Where(c => string.IsNullOrEmpty(search) || (c.Title.Contains(search)));
             }
 
             var result = mapper.Map<IEnumerable<ListCourseViewModel>>(courses);
 
             ViewData["CurrentFilter"] = search;
             ViewData["CurrentSort"] = sortOrder;
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Title_desc" : "";
+            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "Title_desc" : "";
             ViewData["DateSortParm"] = sortOrder == "StartDate" ? "StartDate_desc" : "StartDate";
             ViewData["EndDateSortParm"] = sortOrder == "EndDate" ? "EndDate_desc" : "EndDate";
 
@@ -340,19 +389,6 @@ namespace Lms.MVC.UI.Controllers
             return await uow.CourseRepository.CourseExists(id);
         }
 
-        public ActionResult ShowMyClassMates(int courseId, string id)
-        {
-            var userEmail = User.FindFirstValue(ClaimTypes.Email);
 
-            id = uow.UserRepository.GetAllUsersAsync().Result.Where(u => u.Email == userEmail).FirstOrDefault().Id;
-
-            courseId = uow.UserRepository.FindAsync(id, true).Result.Courses.FirstOrDefault().Id;
-
-            var coursesStudents = uow.CourseRepository.GetAllCoursesAsync(false, true).Result.FirstOrDefault(c => c.Id == courseId).Users.Where(u => u.Role == RoleHelper.Student);
-
-            var model = mapper.Map<IEnumerable<ListApplicationUsersViewModel>>(coursesStudents);
-
-            return View(model);
-        }
     }
 }

@@ -283,3 +283,26 @@ input:focus {
 .checkbox-menu li.active label:focus {
     background-color: #b8b8ff;
 }
+
+
+.navbar-light {
+    background-color: transparent !important;
+    border-bottom: none !important;
+    box-shadow: rgba(0,0,0, 10) 0px 0px 10px 0px inset;
+padding-bottom:0em !important;
+        display:flex !important;
+}
+
+    .navbar-light a {
+        color: #9c9cd1 !important;
+    }
+
+    .navbar-light button {
+        color: #9c9cd1 !important;
+    }
+
+
+.logo {
+height: 5rem;
+width:  6rem;
+}
