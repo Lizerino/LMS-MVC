@@ -29,5 +29,7 @@ namespace Lms.MVC.UI.Models.ViewModels.ModuleViewModels
         public int CourseId { get; set; }
 
         public string CourseTitle { get; set; }
+
+        public ICollection<Document> Documents { get; set; }
     }
 }
