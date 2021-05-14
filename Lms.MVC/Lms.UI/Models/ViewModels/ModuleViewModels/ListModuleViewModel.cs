@@ -30,6 +30,6 @@ namespace Lms.MVC.UI.Models.ViewModels.ModuleViewModels
 
         public string CourseTitle { get; set; }
 
-        public ICollection<Document> Documents { get; set; }
+        
     }
 }
