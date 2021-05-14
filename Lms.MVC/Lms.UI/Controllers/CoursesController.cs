@@ -36,16 +36,8 @@ namespace Lms.MVC.UI.Controllers
             this.mapper = mapper;
             this.userManager = userManager;
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="courseId"></param>
-        /// <param name="id"></param>
-        /// <param name="search"></param>
-        /// <param name="sortOrder"></param>
-        /// <param name="page"></param>
-        /// <returns></returns>
-        public  ActionResult ShowMyClassMates(int courseId, string id, string search, string sortOrder, int page)
+
+        public ActionResult ShowMyClassMates(int courseId, string id, string search, string sortOrder, int page)
         {  
             if (search != null)
             {
@@ -56,7 +48,7 @@ namespace Lms.MVC.UI.Controllers
 
             id = uow.UserRepository.GetAllUsersAsync().Result.Where(u => u.Email == userEmail).FirstOrDefault().Id;
 
-            courseId = uow.UserRepository.FindAsync(id, true).Result.Courses.FirstOrDefault().Id;
+            courseId = uow.UserRepository.GetUserByIdAsync(id, true).Result.Courses.FirstOrDefault().Id;
 
             var coursesStudents = uow.CourseRepository.GetAllCoursesAsync(false, true).Result.FirstOrDefault(c => c.Id == courseId).Users.Where(u => u.Role == RoleHelper.Student);
 

@@ -78,23 +78,6 @@ namespace Lms.MVC.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DbFile",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Content = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    UntrustedName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Size = table.Column<long>(type: "bigint", nullable: false),
-                    UploadDT = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DbFile", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -278,44 +261,44 @@ namespace Lms.MVC.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Documents",
+                name: "ApplicationFile",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Content = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    UntrustedName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Path = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CourseId = table.Column<int>(type: "int", nullable: true),
-                    ModuleId = table.Column<int>(type: "int", nullable: true),
+                    Size = table.Column<long>(type: "bigint", nullable: false),
+                    UploadDT = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ActivityId = table.Column<int>(type: "int", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    CourseId = table.Column<int>(type: "int", nullable: true),
+                    ModuleId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Documents", x => x.Id);
+                    table.PrimaryKey("PK_ApplicationFile", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Documents_Activities_ActivityId",
+                        name: "FK_ApplicationFile_Activities_ActivityId",
                         column: x => x.ActivityId,
                         principalTable: "Activities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Documents_AspNetUsers_ApplicationUserId",
+                        name: "FK_ApplicationFile_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Documents_Courses_CourseId",
+                        name: "FK_ApplicationFile_Courses_CourseId",
                         column: x => x.CourseId,
                         principalTable: "Courses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Documents_Modules_ModuleId",
+                        name: "FK_ApplicationFile_Modules_ModuleId",
                         column: x => x.ModuleId,
                         principalTable: "Modules",
                         principalColumn: "Id",
@@ -330,6 +313,26 @@ namespace Lms.MVC.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Activities_ModuleId",
                 table: "Activities",
+                column: "ModuleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationFile_ActivityId",
+                table: "ApplicationFile",
+                column: "ActivityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationFile_ApplicationUserId",
+                table: "ApplicationFile",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationFile_CourseId",
+                table: "ApplicationFile",
+                column: "CourseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationFile_ModuleId",
+                table: "ApplicationFile",
                 column: "ModuleId");
 
             migrationBuilder.CreateIndex(
@@ -377,26 +380,6 @@ namespace Lms.MVC.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Documents_ActivityId",
-                table: "Documents",
-                column: "ActivityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Documents_ApplicationUserId",
-                table: "Documents",
-                column: "ApplicationUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Documents_CourseId",
-                table: "Documents",
-                column: "CourseId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Documents_ModuleId",
-                table: "Documents",
-                column: "ModuleId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Modules_CourseId",
                 table: "Modules",
                 column: "CourseId");
@@ -404,6 +387,9 @@ namespace Lms.MVC.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ApplicationFile");
+
             migrationBuilder.DropTable(
                 name: "ApplicationUserCourse");
 
@@ -423,16 +409,10 @@ namespace Lms.MVC.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "DbFile");
-
-            migrationBuilder.DropTable(
-                name: "Documents");
+                name: "Activities");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "Activities");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
