@@ -33,8 +33,7 @@ namespace Lms.MVC.Test
 
         [Fact]
         public void ActivitiesControllerReturnsAViewIfIdIsNotNull()
-        {
-            const int id = 1;
+        {            
             var mockModule = new Mock<Module>();
             mockModule.Object.Title="TestTitlee";
             MockUow.Setup(m => m.ModuleRepository.GetModuleAsync(It.IsAny<int>())).Returns(Task.FromResult(mockModule.Object));
