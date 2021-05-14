@@ -102,6 +102,7 @@ namespace Lms.MVC.Data.Data
 
             module.Title = fake.Name.JobTitle() + " Module";
             module.StartDate = fake.Date.Soon();
+            module.EndDate = module.StartDate.AddDays(fake.Random.Int(4, 30));
 
             module.Activities = new List<Activity>();
             for (int i = 0; i < NumberOfActivititesPerModule; i++)
@@ -121,7 +122,7 @@ namespace Lms.MVC.Data.Data
 
             activity.Title = fake.Name.JobTitle() + " Activity";
             activity.StartDate = fake.Date.Soon();
-            activity.EndDate = activity.StartDate.AddHours(fake.Random.Int(1, 8));
+            activity.EndDate = activity.StartDate.AddHours(fake.Random.Int(5, 36));
             activity.Description = fake.Lorem.Sentence();
             activity.ActivityType = GetActivityType(ran, db);
 
@@ -133,9 +134,12 @@ namespace Lms.MVC.Data.Data
             var fake = new Faker("sv");
 
             var teacher = new ApplicationUser();
+            var name = fake.Name.FirstName();
+            var lastName = fake.Name.LastName();
 
-            teacher.Name = fake.Name.FullName();
-            teacher.Email = fake.Internet.Email();
+            //teacher.Name = fake.Name.FullName();
+            teacher.Name = name + " " + lastName;
+            teacher.Email = fake.Internet.Email(name,lastName); 
             teacher.UserName = teacher.Email;
             teacher.Role = "Teacher";
             teacher.EmailConfirmed = true;
@@ -151,9 +155,11 @@ namespace Lms.MVC.Data.Data
             var fake = new Faker("sv");
 
             var student = new ApplicationUser();
+            var name = fake.Name.FirstName();
+            var lastName = fake.Name.LastName();
 
-            student.Name = fake.Name.FullName();
-            student.Email = fake.Internet.Email();
+            student.Name = name + " " + lastName;
+            student.Email = fake.Internet.Email(name, lastName);
             student.UserName = student.Email;
             student.Role = "Student";
             student.EmailConfirmed = true;
