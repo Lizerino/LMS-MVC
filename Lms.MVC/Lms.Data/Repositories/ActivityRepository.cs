@@ -27,7 +27,7 @@ namespace Lms.MVC.Data.Repositories
 
         public async Task<IEnumerable<Activity>> GetAllActivitiesAsync() => await db.Activities.ToListAsync();
 
-        public async Task<Activity> GetActivityAsync(int? id) => await db.Activities.FirstOrDefaultAsync(c => c.Id == id);
+        public async Task<Activity> GetActivityAsync(int? id) => await db.Activities.Include(a=>a.ActivityType).FirstOrDefaultAsync(c => c.Id == id);
 
         public async Task<bool> SaveAsync() => (await db.SaveChangesAsync()) >= 0;
 
@@ -42,5 +42,11 @@ namespace Lms.MVC.Data.Repositories
             var activity = await db.Activities.Where(c => c.Id == id).Include(c => c.Files).FirstOrDefaultAsync();
             return activity.Files;
         }
+
+        public async Task<List<Activity>> GetAllActivitiesByModuleIdAsync(int id)
+        {
+            return await db.Activities.Where(a => a.ModuleId == id).ToListAsync();
+        }
+
     }
 }
