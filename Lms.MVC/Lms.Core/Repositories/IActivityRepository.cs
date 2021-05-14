@@ -24,5 +24,6 @@ namespace Lms.MVC.Core.Repositories
 
         Task<IEnumerable<ActivityType>> GetAllActivityTypesAsync();
         Task<ICollection<ApplicationFile>> GetAllFilesByActivityId(int id);
+        Task<List<Activity>> GetAllActivitiesByModuleIdAsync(int id);
     }
 }

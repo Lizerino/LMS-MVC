@@ -1,6 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
 
+using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.UI.Models;
 using Lms.MVC.UI.Models.ViewModels.Admin;
@@ -26,21 +27,49 @@ namespace Lms.MVC.UI.Controllers
             }
             else if (User.IsInRole("Admin"))
             {
-                var allUsers = uow.UserRepository.GetAllUsersAsync().Result;
                 var adminOverviewViewModel = new AdminOverviewViewModel();
-                adminOverviewViewModel.NumberOfCourses = uow.CourseRepository.GetAllCoursesAsync(false).Result.Count();
-                adminOverviewViewModel.NumberOfModules = uow.ModuleRepository.GetAllModulesAsync(false).Result.Count();
-                adminOverviewViewModel.NumberOfActivities = uow.ActivityRepository.GetAllActivitiesAsync().Result.Count();
-                adminOverviewViewModel.NumberOfAdmins = allUsers.Where(u => u.Role == "Admin").Count();
-                adminOverviewViewModel.NumberOfStudents = allUsers.Where(u => u.Role == "Student").Count();
-                adminOverviewViewModel.NumberOfTeachers = allUsers.Where(u => u.Role == "Teacher").Count();
-                adminOverviewViewModel.NumberOfUsers = allUsers.Count();
+
+                // Todo: refactor this and add getalladmins etc to the repository                
+                adminOverviewViewModel.NumberOfCourses = GetNumberOfCourses();
+                adminOverviewViewModel.NumberOfModules = GetNumberOfModules();
+                adminOverviewViewModel.NumberOfActivities = GetNumberOfActivities();
+                adminOverviewViewModel.NumberOfAdmins = GetNumberOfUsersWithTheRole( "Admin");
+                adminOverviewViewModel.NumberOfStudents = GetNumberOfUsersWithTheRole( "Student");
+                adminOverviewViewModel.NumberOfTeachers = GetNumberOfUsersWithTheRole( "Teacher");
+                adminOverviewViewModel.NumberOfUsers = GetNumberOfUsers();
+
                 return View("~/Views/AdminLanding/AdminOverview.cshtml", adminOverviewViewModel);
             }
             else if (User.IsInRole("Student"))
             {
                 return RedirectToAction("Index", "Modules");
             }
+            return null;
+        }
+
+        private int GetNumberOfUsers()
+        {
+            return uow.UserRepository.GetAllUsersAsync().Result.Count();
+        }
+
+        private int GetNumberOfUsersWithTheRole(string role)
+        {
+            return uow.UserRepository.GetAllUsersAsync().Result.Where(u => u.Role == role).Count();
+        }
+
+        private int GetNumberOfActivities()
+        {
+            return uow.ActivityRepository.GetAllActivitiesAsync().Result.Count();
+        }
+
+        private int GetNumberOfModules()
+        {
+            return uow.ModuleRepository.GetAllModulesAsync(false).Result.Count();
+        }
+
+        private int GetNumberOfCourses()
+        {
+            return uow.CourseRepository.GetAllCoursesAsync(false).Result.Count();
         }
 
         public IActionResult Privacy()
@@ -50,8 +79,8 @@ namespace Lms.MVC.UI.Controllers
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        {            
+            return View(new ErrorViewModel { RequestId = System.Diagnostics.Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
