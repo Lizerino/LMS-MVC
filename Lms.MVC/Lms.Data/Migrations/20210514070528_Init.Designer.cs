@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lms.MVC.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210512121250_init")]
-    partial class init
+    [Migration("20210514070528_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -83,6 +83,53 @@ namespace Lms.MVC.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ActivityTypes");
+                });
+
+            modelBuilder.Entity("Lms.MVC.Core.Entities.ApplicationFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ActivityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<byte[]>("Content")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<int?>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ModuleId")
+                        .HasColumnType("int");
+
+                    b.Property<long>("Size")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("UntrustedName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UploadDT")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActivityId");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("ModuleId");
+
+                    b.ToTable("ApplicationFile");
                 });
 
             modelBuilder.Entity("Lms.MVC.Core.Entities.ApplicationUser", b =>
@@ -178,80 +225,6 @@ namespace Lms.MVC.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Courses");
-                });
-
-            modelBuilder.Entity("Lms.MVC.Core.Entities.DbFile", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<byte[]>("Content")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("Size")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("UntrustedName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UploadDT")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DbFile");
-                });
-
-            modelBuilder.Entity("Lms.MVC.Core.Entities.Document", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("ActivityId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("CourseId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ModuleId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Path")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ActivityId");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("CourseId");
-
-                    b.HasIndex("ModuleId");
-
-                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("Lms.MVC.Core.Entities.Module", b =>
@@ -450,22 +423,22 @@ namespace Lms.MVC.Data.Migrations
                     b.Navigation("ActivityType");
                 });
 
-            modelBuilder.Entity("Lms.MVC.Core.Entities.Document", b =>
+            modelBuilder.Entity("Lms.MVC.Core.Entities.ApplicationFile", b =>
                 {
                     b.HasOne("Lms.MVC.Core.Entities.Activity", null)
-                        .WithMany("Documents")
+                        .WithMany("Files")
                         .HasForeignKey("ActivityId");
 
                     b.HasOne("Lms.MVC.Core.Entities.ApplicationUser", null)
-                        .WithMany("Documents")
+                        .WithMany("Files")
                         .HasForeignKey("ApplicationUserId");
 
                     b.HasOne("Lms.MVC.Core.Entities.Course", null)
-                        .WithMany("Documents")
+                        .WithMany("Files")
                         .HasForeignKey("CourseId");
 
                     b.HasOne("Lms.MVC.Core.Entities.Module", null)
-                        .WithMany("Documents")
+                        .WithMany("Files")
                         .HasForeignKey("ModuleId");
                 });
 
@@ -531,17 +504,17 @@ namespace Lms.MVC.Data.Migrations
 
             modelBuilder.Entity("Lms.MVC.Core.Entities.Activity", b =>
                 {
-                    b.Navigation("Documents");
+                    b.Navigation("Files");
                 });
 
             modelBuilder.Entity("Lms.MVC.Core.Entities.ApplicationUser", b =>
                 {
-                    b.Navigation("Documents");
+                    b.Navigation("Files");
                 });
 
             modelBuilder.Entity("Lms.MVC.Core.Entities.Course", b =>
                 {
-                    b.Navigation("Documents");
+                    b.Navigation("Files");
 
                     b.Navigation("Modules");
                 });
@@ -550,7 +523,7 @@ namespace Lms.MVC.Data.Migrations
                 {
                     b.Navigation("Activities");
 
-                    b.Navigation("Documents");
+                    b.Navigation("Files");
                 });
 #pragma warning restore 612, 618
         }

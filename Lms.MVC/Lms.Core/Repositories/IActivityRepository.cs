@@ -13,6 +13,7 @@ namespace Lms.MVC.Core.Repositories
 
         Task<IEnumerable<Activity>> GetAllActivitiesAsync();
 
+        Task<Activity> GetActivityWithFilesAsync(int? id);
         Task<Activity> GetActivityAsync(int? id);
 
         Task<bool> SaveAsync();
@@ -22,5 +23,6 @@ namespace Lms.MVC.Core.Repositories
         void Update(Activity activity);
 
         Task<IEnumerable<ActivityType>> GetAllActivityTypesAsync();
+        Task<ICollection<ApplicationFile>> GetAllFilesByActivityId(int id);
     }
 }

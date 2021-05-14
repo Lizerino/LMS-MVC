@@ -180,7 +180,7 @@ namespace Lms.MVC.UI.Controllers
 
         private void ValidateDates(CreateModuleViewModel moduleViewModel, Course currentCourse, IEnumerable<Module> modulesInCurrentCourse)
         {
-            TimePeriodCollection activitiesTimeperiod = new TimePeriodCollection();
+            TimePeriodCollection activitiesTimeperiod = new();
             TimeRange activityTimeRange = new TimeRange(moduleViewModel.StartDate, moduleViewModel.EndDate);
 
             if (modulesInCurrentCourse.Count() > 0)
@@ -254,6 +254,7 @@ namespace Lms.MVC.UI.Controllers
 
         [HttpGet]
         [Route("delete")]
+        [Authorize(Roles = "Teacher, Admin")]
         public ActionResult Delete(int id)
         {
             var module = uow.ModuleRepository.GetModuleAsync(id);
@@ -268,6 +269,7 @@ namespace Lms.MVC.UI.Controllers
 
         [Route("delete")]
         [HttpPost]
+        [Authorize(Roles = "Teacher, Admin")]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, ListModuleViewModel module)
         {
@@ -314,22 +316,8 @@ namespace Lms.MVC.UI.Controllers
                 }
             }
 
-            return activities;
-        }
+                return activities;
+            }        
 
-        public ActionResult ShowMyClassMates(int courseId, string id)
-        {
-            var userEmail = User.FindFirstValue(ClaimTypes.Email);
-
-            id = uow.UserRepository.GetAllUsersAsync().Result.Where(u => u.Email == userEmail).FirstOrDefault().Id;
-
-            courseId = uow.UserRepository.FindAsync(id, true).Result.Courses.FirstOrDefault().Id;
-
-            var coursesStudents = uow.CourseRepository.GetAllCoursesAsync(false, true).Result.FirstOrDefault(c => c.Id == courseId).Users.Where(u => u.Role == RoleHelper.Student);
-
-            var model = mapper.Map<IEnumerable<ListApplicationUsersViewModel>>(coursesStudents);
-
-            return View(model);
-        }
     }
 }

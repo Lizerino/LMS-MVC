@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Lms.MVC.UI.Controllers
 {
-    [Authorize(Roles = "Teacher,Admin")]
+    [Authorize(Roles = "Teacher,Admin,Student")]
     public class ApplicationUsersController : Controller
     {
         private readonly ILogger<ApplicationUsersController> _logger;
@@ -39,6 +39,7 @@ namespace Lms.MVC.UI.Controllers
         }
 
         // GET: ApplicationUsersController
+        [Authorize(Roles = "Teacher,Admin")]
         public async Task<IActionResult> Index(string search, string sortOrder, int page)
         {
             if (search != null)
@@ -51,51 +52,33 @@ namespace Lms.MVC.UI.Controllers
             var model = mapper.Map<IEnumerable<ListApplicationUsersViewModel>>(users);
 
             // Add to get the search to work
-            if (!String.IsNullOrWhiteSpace(search))
+            if (!string.IsNullOrWhiteSpace(search))
             {
                 model = model.Where(u => u.Name.ToLower().StartsWith(search.ToLower()) || u.Email.ToLower().Contains(search.ToLower()) || u.Role.ToLower().Trim() == search.ToLower());
             }
 
             ViewData["CurrentFilter"] = search;
             ViewData["CurrentSort"] = sortOrder;
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Name_desc" : "";
+            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "Name_desc" : "";
             ViewData["EmailSortParm"] = sortOrder == "Email" ? "Email_desc" : "Email";
             ViewData["RoleSortParm"] = sortOrder == "Email" ? "Role_desc" : "Role";
 
-            switch (sortOrder)
+            model = sortOrder switch
             {
-                case "Name_desc":
-                    model = model.OrderByDescending(s => s.Name);
-                    break;
-
-                case "Email":
-                    model = model.OrderBy(s => s.Email);
-                    break;
-
-                case "Email_desc":
-                    model = model.OrderByDescending(s => s.Email);
-                    break;
-
-                case "Role":
-                    model = model.OrderBy(s => s.Role);
-                    break;
-
-                case "Role_desc":
-                    model = model.OrderByDescending(s => s.Role);
-                    break;
-
-                default:
-                    model = model.OrderBy(s => s.Name);
-                    break;
-            }
-
+                "Name_desc" => model.OrderByDescending(s => s.Name),
+                "Email" => model.OrderBy(s => s.Email),
+                "Email_desc" => model.OrderByDescending(s => s.Email),
+                "Role" => model.OrderBy(s => s.Role),
+                "Role_desc" => model.OrderByDescending(s => s.Role),
+                _ => model.OrderBy(s => s.Name),
+            };
             var paginatedResult = model.AsQueryable().GetPagination(page, 10);
 
             return View(paginatedResult);
         }
 
         // GET: ApplicationUsersController/Details/5
-
+        [Authorize(Roles = "Teacher, Admin, Student")]
         [ModelNotNull]
         public async Task<IActionResult> Details(string id)
         {
@@ -103,13 +86,14 @@ namespace Lms.MVC.UI.Controllers
             {
                 return NotFound();
             }
-            var user = await uoW.UserRepository.FindAsync(id, true);
+            var user = await uoW.UserRepository.GetUserByIdAsync(id, true);
 
             var model = mapper.Map<DetailsApplicationUserViewModel>(user);
 
             return View(model);
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         [ModelNotNull]
         public async Task<IActionResult> Edit(string id)
         {
@@ -117,7 +101,7 @@ namespace Lms.MVC.UI.Controllers
             {
                 return NotFound();
             }
-            var user = await uoW.UserRepository.FindAsync(id, true);
+            var user = await uoW.UserRepository.GetUserByIdAsync(id, true);
 
             var model = mapper.Map<EditApplicationUserViewModel>(user);
 
@@ -129,6 +113,7 @@ namespace Lms.MVC.UI.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPost(string id, EditApplicationUserViewModel viewmodel)
@@ -137,7 +122,7 @@ namespace Lms.MVC.UI.Controllers
             {
                 return NotFound();
             }
-            var user = await uoW.UserRepository.FindAsync(id, true);
+            var user = await uoW.UserRepository.GetUserByIdAsync(id, true);
             viewmodel.Courses = user.Courses;
             if (user.Email.ToLower().Contains("admin@lms.se"))
             {
@@ -192,6 +177,7 @@ namespace Lms.MVC.UI.Controllers
             return uoW.UserRepository.Any(id);
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         [ModelNotNull]
         public async Task<IActionResult> Remove(string id)
         {
@@ -200,13 +186,14 @@ namespace Lms.MVC.UI.Controllers
                 return NotFound();
             }
 
-            var userToBeRemoved = await uoW.UserRepository.FindAsync(id, true);
+            var userToBeRemoved = await uoW.UserRepository.GetUserByIdAsync(id, true);
 
             var model = mapper.Map<DeleteApplicationUserViewModel>(userToBeRemoved);
 
             return View(model);
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         [HttpPost, ActionName("Remove")]
         [ValidateAntiForgeryToken]
         [ModelNotNull]
@@ -217,13 +204,14 @@ namespace Lms.MVC.UI.Controllers
                 return NotFound();
             }
 
-            var userToBeRemoved = await uoW.UserRepository.FindAsync(id, true);
+            var userToBeRemoved = await uoW.UserRepository.GetUserByIdAsync(id, true);
 
             uoW.UserRepository.Remove(userToBeRemoved);
             await uoW.CompleteAsync();
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         [AcceptVerbs("GET", "POST")]
         public async Task<IActionResult> EmailExistsEdit(string email, string id)
         {
@@ -235,6 +223,7 @@ namespace Lms.MVC.UI.Controllers
             return Json(true);
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         public async Task<IActionResult> EmailExistsCreate([Bind(Prefix = "Input.Email")] string email)
         {
             var users = await uoW.UserRepository.GetAllUsersAsync();

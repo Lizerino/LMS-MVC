@@ -24,6 +24,6 @@ namespace Lms.MVC.UI.Models.ViewModels.CourseViewModels
 
         public ICollection<Module> Modules { get; set; }
 
-        public ICollection<Document> Documents { get; set; }
+        public ICollection<ApplicationFile> Files { get; set; }
     }
 }

@@ -9,9 +9,9 @@ using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;
 using Lms.MVC.Data.Repositories.Helpers;
-
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Lms.MVC.Data.Repositories
 {
@@ -25,9 +25,12 @@ namespace Lms.MVC.Data.Repositories
         {
             this.db = db;
             this.userManager = userManager;
+            
         }
 
-        public async Task<ApplicationUser> FindAsync(string id, bool includeCourses = false)
+        public async Task<ApplicationUser> GetUserWithFilesByIdAsync(string id) => await db.Users.Include(u=>u.Files).Where(u=>u.Id==id).FirstOrDefaultAsync();
+
+        public async Task<ApplicationUser> GetUserByIdAsync(string id, bool includeCourses = false)
         {
             if (includeCourses)
             {
@@ -99,6 +102,12 @@ namespace Lms.MVC.Data.Repositories
                 await userManager.RemoveFromRoleAsync(user, RoleHelper.Admin);
                 await userManager.AddToRoleAsync(user, RoleHelper.Student);
             }
+        }
+
+        public async Task<ICollection<ApplicationFile>> GetAllFilesByUserId(string id)
+        {
+            var user = await db.Users.Include(u=>u.Files).Where(u=>u.Id==id).FirstOrDefaultAsync();
+            return user.Files;
         }
     }
 }

@@ -15,20 +15,11 @@ namespace Lms.MVC.Data.Repositories
     {
         private readonly ApplicationDbContext db;
 
-        public CourseRepository(ApplicationDbContext db)
-        {
-            this.db = db;
-        }
+        public CourseRepository(ApplicationDbContext db) => this.db = db;
+        
+        public async Task AddAsync(Course added) => await db.AddAsync(added);
 
-        public async Task AddAsync(Course added)
-        {
-            await db.AddAsync(added);
-        }
-
-        public void Remove(Course removed)
-        {
-            db.Remove(removed);
-        }
+        public void Remove(Course removed) => db.Remove(removed);       
 
         public async Task<IEnumerable<Course>> GetAllCoursesAsync(bool includeModules = false, bool includeUsers = false)
         {
@@ -52,6 +43,8 @@ namespace Lms.MVC.Data.Repositories
                          await db.Courses
                         .ToListAsync();
         }
+
+        public async Task<Course> GetCourseWithFilesAsync(int? id) => await db.Courses.Include(c => c.Files).Where(c => c.Id == id).FirstOrDefaultAsync();
 
         public async Task<Course> GetCourseAsync(int? id, bool includeModules = false, bool includeUsers = false)
         {
@@ -78,24 +71,15 @@ namespace Lms.MVC.Data.Repositories
         //    return await query.Include(c => c.Modules).FirstOrDefaultAsync(c => c.Title == title);
         //}
 
-        public async Task<bool> SaveAsync()
-        {
-            return (await db.SaveChangesAsync()) >= 0;
-        }
-
-        public async Task<bool> CourseExists(int id)
-        {
-            return await db.Courses.AnyAsync(c => c.Id == id);
-        }
-
-        public void Update(Course course)
-        {
-            db.Update(course);
-        }
+        public async Task<bool> SaveAsync() => (await db.SaveChangesAsync()) >= 0;
+        
+        public async Task<bool> CourseExists(int id) => await db.Courses.AnyAsync(c => c.Id == id);
+        
+        public void Update(Course course) => db.Update(course);        
 
         public async Task<DateTime> CalculateEndDateAsync(int id)
         {
-            if (GetCourseAsync(id, true, false).Result.Modules.Count() > 0)
+            if (GetCourseAsync(id, true, false).Result.Modules.Count > 0)
             {
                 var modulesEndDates = (await GetCourseAsync(id, true, false)).Modules.Select(m => m.EndDate).ToList();
                 var endDate = modulesEndDates.Last();
@@ -135,6 +119,12 @@ namespace Lms.MVC.Data.Repositories
             course.EndDate = await CalculateEndDateAsync(id);
 
             return course;
+        }
+
+        public async Task<ICollection<ApplicationFile>> GetAllFilesByCourseId(int id)
+        {
+            var course = await db.Courses.Where(c => c.Id == id).Include(c => c.Files).FirstOrDefaultAsync();
+            return course.Files;
         }
     }
 }
