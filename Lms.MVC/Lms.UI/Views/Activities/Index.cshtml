@@ -1,3 +1,5 @@
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> userManager
 @model ListActivityViewModel
 
     <h1>@Model.ModuleTitle</h1>
@@ -8,24 +10,51 @@
             <a asp-controller="Modules" asp-action="Edit" asp-route-id="@Model.ModuleId" class="btn btn-primary">Edit Module</a>
         </p>
     }
-
-@if (Model.ActivityList.Count() != 0)
-{
-    <div class="card-deck">
-        @foreach (var activity in Model.ActivityList)
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-9">
+            @if (Model.ActivityList.Count() != 0)
+            {
+                <div class="card-deck">
+                    @foreach (var activity in Model.ActivityList)
+                    {
+                        <div class="card">
+                            <a asp-controller="Activities" asp-action="Details" asp-route-id="@activity.Id">
+                                <h5 class="card-title">@activity.Title</h5>
+                                <p class="card-body">@activity.Description</p>
+                                <div class="card-footer">Start Date: @activity.StartDate</div>
+                                <div class="card-footer">End Date: @activity.EndDate</div>
+                            </a>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p>No activities in this module</p>
+            }
+        </div>
+        @if (User.IsInRole("Teacher") || User.IsInRole("Admin"))
         {
-            <div class="card">
-                <a asp-controller="Activities" asp-action="Details" asp-route-id="@activity.Id">
-                    <h5 class="card-title">@activity.Title</h5>
-                    <p class="card-body">@activity.Description</p>
-                    <div class="card-footer">Start Date: @activity.StartDate</div>
-                    <div class="card-footer">End Date: @activity.EndDate</div>
-                </a>
+            <div class="col-3">
+
+                <div class="card">
+                    <div class="card-header">
+                        Files Submitted to @Model.ModuleTitle
+                    </div>
+                    <div class="card-body">
+                        @await Component.InvokeAsync("ListFiles", new { CMAType = "module", id = Model.ModuleId.ToString() })
+                    </div>
+                </div>
+                <div class="card">
+
+                    <div class="card-header">Upload New Document or File</div>
+                    <div class="card-body">
+                        @await Component.InvokeAsync("UploadFile", new { userId = userManager.GetUserAsync(User).Result.Id, Id = Model.ModuleId, CMAType = "Module" })
+                    </div>
+                </div>
             </div>
         }
+
     </div>
-}
-else
-{
-        <p>No activities in this module</p>
-}
+</div>

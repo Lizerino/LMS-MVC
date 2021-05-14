@@ -68,8 +68,10 @@
                 </div>
                 <div class="card">
         
-                    <p>Upload New Document or File</p>
-                    @await Component.InvokeAsync("UploadFile", new { userId = userManager.GetUserAsync(User).Result.Id, Id = Model.CourseId, CMAType="Course" })
+                    <div class="card-header">Upload New Document or File</div>
+                    <div class="card-body">
+                        @await Component.InvokeAsync("UploadFile", new { userId = userManager.GetUserAsync(User).Result.Id, Id = Model.CourseId, CMAType="Course" })
+                    </div>
                 </div>
             </div>
             
