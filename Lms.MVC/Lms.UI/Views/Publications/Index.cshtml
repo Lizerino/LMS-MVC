@@ -64,9 +64,12 @@
             <td>
                 <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
             </td>
+            @if (!User.IsInRole("Student"))
+                {
             <td>
                 <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
+                }
         </tr>
         }
     </tbody>
