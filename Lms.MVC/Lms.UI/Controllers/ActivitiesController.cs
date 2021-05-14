@@ -22,15 +22,12 @@ namespace Lms.MVC.UI.Controllers
 {
     public class ActivitiesController : Controller
     {
-        private readonly ApplicationDbContext db;
-
         private readonly IUoW uow;
 
         private readonly IMapper mapper;
 
-        public ActivitiesController(ApplicationDbContext db, IMapper mapper, IUoW uow)
-        {
-            this.db = db;
+        public ActivitiesController(IMapper mapper, IUoW uow)
+        {            
             this.mapper = mapper;
             this.uow = uow;
         }
@@ -41,32 +38,27 @@ namespace Lms.MVC.UI.Controllers
             if (Id != null)
             {
                 var moduleTitle = uow.ModuleRepository.GetModuleAsync((int)Id).Result.Title;
-
-                //var moduleTitle = uow.ModuleRepository.GetModuleAsync((int)Id).Result.Title;
-
-                //var moduleTitle = db.Modules.Where(m => m.Id == Id).FirstOrDefault().Title;
+                
                 var activityViewModel = new ListActivityViewModel();
-                activityViewModel.ActivityList = await db.Activities.Where(a => a.ModuleId == Id).ToListAsync();
 
+                activityViewModel.ActivityList = await uow.ActivityRepository.GetAllActivitiesByModuleIdAsync((int)Id);
                 activityViewModel.ModuleId = (int)Id;
                 activityViewModel.ModuleTitle = moduleTitle;
 
                 return View(activityViewModel);
             }
-            else
+            else if (User.IsInRole("Student"))
             {
-                if (User.IsInRole("Student")) return RedirectToAction("Index", "Modules");
-                return RedirectToAction("Index");//, "Courses");
-            }
+                return RedirectToAction("Index", "Modules");
+            }            
+                return RedirectToAction("Index","Courses");
         }
 
         // GET: Activities/Details/5
         [ModelValid]
         public async Task<IActionResult> Details(int? id)
         {
-            var activity = await db.Activities
-                .Include(a => a.ActivityType)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var activity = await uow.ActivityRepository.GetActivityAsync(id);
             var activityViewModel = mapper.Map<DetailActivityViewModel>(activity);
             return View(activityViewModel);
         }
@@ -104,7 +96,7 @@ namespace Lms.MVC.UI.Controllers
                 //Add activity to module
                 currentModule.Activities.Add(activity);
 
-                if (await db.SaveChangesAsync() == 1)
+                if (await uow.ActivityRepository.SaveAsync())
                 {
                     // Send user back to list of activities for that module
                     return RedirectToAction("Index", "Activities", new { id = activityViewModel.ModuleId });
@@ -154,14 +146,10 @@ namespace Lms.MVC.UI.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             //find activity in database
-            var activity = await db.Activities.FindAsync(id);
+            var activity = await uow.ActivityRepository.GetActivityAsync(id);
 
             //create viewModel
-
-            var model = mapper.Map<EditActivityViewModel>(activity);
-            model.ActivityTypes = new SelectList(db.ActivityTypes, nameof(ActivityType.Id), nameof(ActivityType.Name));
-
-            ViewData["ActivityTypeId"] = new SelectList(db.ActivityTypes, "Id", "Id", activity.ActivityTypeId);
+            var model = mapper.Map<EditActivityViewModel>(activity);           
             return View(model);
         }
 
@@ -171,15 +159,15 @@ namespace Lms.MVC.UI.Controllers
         [ModelValid]
         public async Task<IActionResult> Edit(int id, EditActivityViewModel activityModel)
         {
-            var activity = await db.Activities.FindAsync(id);
+            var activity = await uow.ActivityRepository.GetActivityAsync(id);
 
             //activityModel.ModuleId = activity.ModuleId;
             mapper.Map(activityModel, activity);
 
             try
             {
-                db.Activities.Update(activity);
-                await db.SaveChangesAsync();
+                uow.ActivityRepository.Update(activity);
+                await uow.ActivityRepository.SaveAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -194,10 +182,7 @@ namespace Lms.MVC.UI.Controllers
         [ModelNotNull, ModelValid]
         public async Task<IActionResult> Delete(int? id)
         {
-            var activity = await db.Activities
-                .Include(a => a.ActivityType)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
+            var activity = await uow.ActivityRepository.GetActivityAsync(id);
             return View(activity);
         }
 
@@ -206,15 +191,15 @@ namespace Lms.MVC.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var activity = await db.Activities.FindAsync(id);
-            db.Activities.Remove(activity);
-            await db.SaveChangesAsync();
+            var activity = await uow.ActivityRepository.GetActivityAsync(id);
+            uow.ActivityRepository.Remove(activity);
+            await uow.CompleteAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ActivityExists(int id)
         {
-            return db.Activities.Any(e => e.Id == id);
+            return uow.ActivityRepository.ActivityExists(id).Result;
         }
     }
 }
