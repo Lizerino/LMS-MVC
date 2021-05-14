@@ -23,7 +23,7 @@ namespace Lms.MVC.UI.Views.Shared.Components.UploadFile
     {
         public int Id { get; set; }
         public string userId { get; set; }
-        public string CMAType { get; set; }
+        public string CMAType { get; set; }       
     }
     public class UploadFileViewComponent : ViewComponent
     {        
@@ -38,6 +38,7 @@ namespace Lms.MVC.UI.Views.Shared.Components.UploadFile
         {
             // userId is for the uploader
             // Id is for the course, module or activity where the file is uploaded
+            // CMAType is the type so user, course , module or activity            
             FileInfo fileInfo = new FileInfo { Id=Id, userId=userId , CMAType=CMAType};           
 
             return View("UploadFile",fileInfo);

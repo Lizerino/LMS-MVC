@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
@@ -13,16 +14,16 @@ using Microsoft.AspNetCore.Mvc;
 //@using Microsoft.AspNetCore.Identity
 //@inject UserManager<ApplicationUser> userManager
 //
-// You put the line below where you want the component to go
+// You put the line below where you want the component to go - the bool indicates if the intended view is a teacher.
 //
-//@await Component.InvokeAsync("ListFiles", new { CMAType = "course", id = Model.CourseId.ToString() })
-
+//@await Component.InvokeAsync("ListFiles", new { CMAType = "course", id = Model.CourseId.ToString() , userIsTeacher=true})
 
 namespace Lms.MVC.UI.Views.Shared.Components.ListFiles
 {
     public class ListFiles
     {
         public ICollection<ApplicationFile> FileList { get; set; }
+
         public string CMAType { get; set; }
     }
 
@@ -35,7 +36,7 @@ namespace Lms.MVC.UI.Views.Shared.Components.ListFiles
             this.uow = uow;
         }
 
-        public IViewComponentResult Invoke(string CMAType, string id)
+        public IViewComponentResult Invoke(string CMAType, string id, bool userIsTeacher)
         {
             ListFiles files = new ListFiles();
             if (CMAType.ToLower() == "user")
@@ -44,15 +45,38 @@ namespace Lms.MVC.UI.Views.Shared.Components.ListFiles
             }
             if (CMAType.ToLower() == "course")
             {
-                files.FileList = uow.CourseRepository.GetAllFilesByCourseId(Int32.Parse(id)).Result;
+                if (userIsTeacher)
+                {
+                    files.FileList = uow.CourseRepository.GetAllFilesByCourseId(Int32.Parse(id)).Result;
+                }
+                else
+                {
+                    files.FileList = uow.CourseRepository.GetAllFilesByCourseId(Int32.Parse(id)).Result.Where(f => f.Assignment == false).ToList();
+                }
             }
             if (CMAType.ToLower() == "module")
             {
-                files.FileList = uow.ModuleRepository.GetAllFilesByModuleId(Int32.Parse(id)).Result;
+                if (userIsTeacher)
+                {
+                    files.FileList = uow.ModuleRepository.GetAllFilesByModuleId(Int32.Parse(id)).Result;
+                }
+                else
+                {
+                files.FileList = uow.ModuleRepository.GetAllFilesByModuleId(Int32.Parse(id)).Result.Where(f => f.Assignment == false).ToList();
+
+                }
             }
             if (CMAType.ToLower() == "activity")
             {
-                files.FileList = uow.ActivityRepository.GetAllFilesByActivityId(Int32.Parse(id)).Result;
+                if (userIsTeacher)
+                {
+                    files.FileList = uow.ActivityRepository.GetAllFilesByActivityId(Int32.Parse(id)).Result;
+                }
+                else
+                {
+                files.FileList = uow.ActivityRepository.GetAllFilesByActivityId(Int32.Parse(id)).Result.Where(f => f.Assignment == false).ToList();
+
+                }
             }
             files.CMAType = CMAType.ToLower();
 

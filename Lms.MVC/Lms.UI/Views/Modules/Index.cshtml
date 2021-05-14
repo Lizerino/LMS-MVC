@@ -63,8 +63,12 @@
                         Files Submitted to @Model.CourseTitle
                     </div>
                     <div class="card-body">
-                        @await Component.InvokeAsync("ListFiles", new { CMAType = "course", id = Model.CourseId.ToString() })
+                        @await Component.InvokeAsync("ListFiles", new { CMAType = "course", id = Model.CourseId.ToString(), userIsTeacher = false })
                     </div>
+                    is teacher
+                    <div class="card-body">
+                    @await Component.InvokeAsync("ListFiles", new { CMAType = "course", id = Model.CourseId.ToString(), userIsTeacher = true })
+                </div>
                 </div>
                 <div class="card">
         

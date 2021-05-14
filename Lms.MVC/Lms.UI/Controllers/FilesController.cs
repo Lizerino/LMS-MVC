@@ -236,7 +236,8 @@ namespace Lms.MVC.UI.Controllers
                 UntrustedName = untrustedFileNameForStorage,
                 Description = formData.Description,
                 Size = streamedFileContent.Length,
-                UploadDT = DateTime.UtcNow
+                UploadDT = DateTime.UtcNow,
+                Assignment = formData.Assignment
             };
 
             // This needs to be updated for other types.. should be able to be done in a way that
@@ -290,5 +291,7 @@ namespace Lms.MVC.UI.Controllers
         public string UserId { get; set; }
 
         public string CMAType { get; set; }
+
+        public bool Assignment { get; set; }
     }
 }
