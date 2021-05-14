@@ -1,4 +1,5 @@
 ﻿//TODO GitFix
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;
-
+using Lms.MVC.Data.Repositories.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lms.MVC.Data.Repositories
@@ -51,11 +52,43 @@ namespace Lms.MVC.Data.Repositories
             return await query.FirstOrDefaultAsync(m => m.Id == moduleId && m.CourseId == id);
         }
 
-        //public async Task<Module> GetModuleAsync(int moduleId)
-        //{
-        //    var query = db.Modules.AsQueryable().Include(a => a.Activities);
-        //    return await query.FirstOrDefaultAsync(m => m.Id == moduleId);
-        //}
+        public string GetCurrentModule() 
+        {
+
+            var result = db.Modules.FirstOrDefault(m => m.StartDate <= DateTime.Now && m.EndDate > DateTime.Now);
+            if (result is null)
+            {
+                return "No current module";
+            }
+                
+                
+                var title = result.Title;
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                return "No current module";
+            }
+            return title;
+        }
+
+
+        public string GetNextModule()
+        {
+
+            var currentModule= db.Modules.FirstOrDefault(m => m.StartDate <= DateTime.Now && m.EndDate > DateTime.Now);
+            if (currentModule is null)
+            {
+                return "No next module";
+            }
+            else
+            {
+            var currentModuleEndDate = currentModule.EndDate;
+            return db.Modules.OrderBy(m => m.StartDate).FirstOrDefault(m => m.StartDate > currentModuleEndDate).Title;
+            }
+        }
+
+       
+
+
 
         public async Task<Module> GetModuleByTitleAsync(int id, string title)
         {
@@ -83,5 +116,7 @@ namespace Lms.MVC.Data.Repositories
             var module = await db.Modules.Where(c => c.Id == id).Include(c => c.Files).FirstOrDefaultAsync();
             return module.Files;
         }
+
+       
     }
 }

@@ -29,6 +29,9 @@
 
 }
 
+<div>
+@await Component.InvokeAsync("StudentStatisticsBar", new { CMAType ="course", courseId = (int) Model.CourseId, moduleId = (int) Model.Id })
+</div>
 
 
 @if (Model.ModuleList.Count() != 0)

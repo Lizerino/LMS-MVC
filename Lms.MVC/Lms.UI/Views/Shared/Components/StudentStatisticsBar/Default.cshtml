@@ -1,0 +1,56 @@
+﻿@model StudentStatisticsBar
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <p>Late Assignments : @Model.LateAssignments.Count()</p>
+        </div>
+    </div>
+    <div class="row">
+        @foreach (var lateAssignment in Model.LateAssignments)
+        {
+            <div class="col">
+            <p> @lateAssignment,  </p>
+            </div>
+        }
+    </div>
+
+    <div class="row">
+        <div class="col"><span>Teachers :</span> </div>
+
+    </div>
+    <div class="row">
+        @foreach (var teacher in Model.Teachers)
+        {
+            <p>@teacher</p>
+        }
+    </div>
+
+
+    <div class="row">
+        <div class="col"><span>Next due assignment :</span> </div>
+
+    </div>
+    <div class="row">
+        <p>@Model.NextDueAssignment</p>
+    </div>
+
+
+    <div class="row">
+        <div class="col"><span>Current module :</span> </div>
+
+    </div>
+    <div class="row">
+        <p>@Model.CurrentMoudle</p>
+    </div>
+
+    <div class="row">
+        <div class="col"><span>Next module:</span> </div>
+
+    </div>
+    <div class="row">
+        <p>@Model.NextModule</p>
+    </div>
+
+
+</div>

@@ -17,12 +17,14 @@ namespace Lms.MVC.Core.Repositories
         Task<Module> GetModuleAsync(int id, int moduleId);
 
         Task<Module> GetModuleByTitleAsync(int id, string title);
-
+        string GetCurrentModule();
+        string GetNextModule();
         void Remove(Module removed);
 
         void Update(Module module);
 
         Task<bool> SaveAsync();
         Task<ICollection<ApplicationFile>> GetAllFilesByModuleId(int id);
+       
     }
 }

@@ -8,7 +8,9 @@
             <a asp-controller="Modules" asp-action="Edit" asp-route-id="@Model.ModuleId" class="btn btn-primary">Edit Module</a>
         </p>
     }
-
+<div>
+    @await Component.InvokeAsync("StudentStatisticsBar", new { CMAType = "module", moduleId = (int)Model.ModuleId })
+</div>
 @if (Model.ActivityList.Count() != 0)
 {
     <div class="card-deck">
