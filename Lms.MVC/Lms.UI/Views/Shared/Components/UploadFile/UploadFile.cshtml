@@ -1,10 +1,5 @@
-﻿@page
-@model Lms.MVC.UI.Areas.Files.StreamedSingleFileUploadDbModel
-@{
-    ViewData["Title"] = "Streamed Single File Upload with AJAX (Db)";
-}
-
-<h1>Stream a file with AJAX to a database with a controller endpoint</h1>
+﻿@using Lms.MVC.UI.Views.Shared.Components.UploadFile
+@model FileInfo
 
 <form id="uploadForm" asp-action="UploadDatabase" asp-controller="Files" method="post"
       enctype="multipart/form-data" onsubmit="AJAXSubmit(this);return false;">
@@ -27,10 +22,9 @@
     <div style="margin-top:15px">
         <output form="uploadForm" name="result"></output>
     </div>
+    <input type="hidden" name="CMAType" value="@Model.CMAType" />
+    <input type="hidden" name="CMAId" value="@Model.Id" />
+    <input type="hidden" name="UserId" value="@Model.userId" />
 </form>
-<li><a asp-page="/StreamedSingleFileUploadDb">Stream a file with AJAX to a controller endpoint</a></li>
 
-@section Scripts {
-
-
-}
+<script src="~/Components/UploadFile/js/site.js"></script>

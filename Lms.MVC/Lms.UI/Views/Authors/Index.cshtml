@@ -15,19 +15,7 @@
     <input type="hidden" name="Search" value="" />
 </form>
 
-<form class="form-group">
 
-<div class="btn-group">
-    <a type="submit" class="btn btn-outline-primary" asp-action="Index" asp-route-sortBy="FName">Sort By First Name</a>
-    <button type="button" class="btn btn-primary dropdown-toggle-split" asp-action="Index" asp-route-sortBy="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span class="sr-only">Toggle Dropright</span>
-    </button>
-    <div class="dropdown-menu">
-        <a class="dropdown-item" asp-action="Index" asp-route-sortBy="FNAgeD">Age Desc</a>
-        <a class="dropdown-item" asp-action="Index" asp-route-sortBy="FNAgeA">Age Asc</a>
-    </div>
-</div>
-</form>
 
 <table class="table table-dark table-striped text-info">
     <thead>
@@ -36,14 +24,14 @@
                 <form class="form-group">
 
                     <div class="btn-group">
-                        <a type="submit" class="btn btn-outline-primary" asp-action="Index" asp-route-sortBy="FName">Sort By First Name</a>
+                        <a class="btn btn-outline-primary" asp-action="Index" asp-route-sort="@ViewData["FNameSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Sort By First Name </a>
                         <button type="button" class="btn btn-primary dropdown-toggle-split" asp-action="Index" asp-route-sortBy="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="sr-only">Toggle Dropright</span>
                             +
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" asp-action="Index" asp-route-sortBy="FNAgeD">Oldest First</a>
-                            <a class="dropdown-item" asp-action="Index" asp-route-sortBy="FNAgeA">Youngest First</a>
+                            <a class="dropdown-item" asp-action="Index" asp-route-sort="@ViewData["FNameAge"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Then By Age</a>
+                            <a class="dropdown-item" asp-action="Index" asp-route-sort="@ViewData["FNameLName"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Then By Last Name</a>
                         </div>
                     </div>
                 </form>
@@ -53,14 +41,14 @@
                 <form class="form-group">
 
                     <div class="btn-group">
-                        <a type="submit" class="btn btn-outline-primary" asp-action="Index" asp-route-sortBy="LName">Sort By Last Name</a>
+                        <a class="btn btn-outline-primary" asp-action="Index" asp-route-sort="@ViewData["LNameSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Sort By Last Name</a>
                         <button type="button" class="btn btn-primary dropdown-toggle-split" asp-action="Index" asp-route-sortBy="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="sr-only">Toggle Dropright</span>
                             +
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" asp-action="Index" asp-route-sortBy="LNAgeD">Oldest First</a>
-                            <a class="dropdown-item" asp-action="Index" asp-route-sortBy="LNAgeA">Youngest First</a>
+                            <a class="dropdown-item" asp-action="Index" asp-route-sort="@ViewData["LNameAge"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Then By Age</a>
+                            <a class="dropdown-item" asp-action="Index" asp-route-sort="@ViewData["LNameFName"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Then By First Name</a>
                         </div>
                     </div>
                 </form>
@@ -69,14 +57,14 @@
                 <form class="form-group">
 
                     <div class="btn-group">
-                        <a type="submit" class="btn btn-outline-primary" asp-action="Index" asp-route-sortBy="Age">Sort By Age</a>
+                        <a class="btn btn-outline-primary" asp-action="Index" asp-route-sort="@ViewData["AgeSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Sort By Age</a>
                         <button type="button" class="btn btn-primary dropdown-toggle-split" asp-action="Index" asp-route-sortBy="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="sr-only">Toggle Dropright</span>
                             +
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" asp-action="Index" asp-route-sortBy="AFName">First Name A-Z</a>
-                            <a class="dropdown-item" asp-action="Index" asp-route-sortBy="ALName">Last Name A-Z</a>
+                            <a class="dropdown-item" asp-action="Index" asp-route-sort="@ViewData["AgeFName"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Then By First Name</a>
+                            <a class="dropdown-item" asp-action="Index" asp-route-sort="@ViewData["AgeLName"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Then By Last Name</a>
                         </div>
                     </div>
                 </form>

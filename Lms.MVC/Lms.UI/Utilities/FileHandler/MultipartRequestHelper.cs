@@ -49,7 +49,7 @@ namespace Lms.MVC.UI.Utilities.FileHandler
             return contentDisposition != null
                 && contentDisposition.DispositionType.Equals("form-data")
                 && (!string.IsNullOrEmpty(contentDisposition.FileName.Value)
-                    || !string.IsNullOrEmpty(contentDisposition.FileNameStar.Value));
+                || !string.IsNullOrEmpty(contentDisposition.FileNameStar.Value));
         }
     }
 }

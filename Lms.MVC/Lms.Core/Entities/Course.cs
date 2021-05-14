@@ -22,6 +22,6 @@ namespace Lms.MVC.Core.Entities
 
         public ICollection<Module> Modules { get; set; }
 
-        public ICollection<Document> Documents { get; set; }
+        public ICollection<ApplicationFile> Files { get; set; }
     }
 }

@@ -12,6 +12,7 @@ namespace Lms.MVC.Core.Repositories
 
         Task<IEnumerable<Course>> GetAllCoursesAsync(bool includeModules = false, bool includeUsers = false);
 
+        Task<Course> GetCourseWithFilesAsync(int? id);
         Task<Course> GetCourseAsync(int? id, bool includeModules = false, bool includeUsers = false);
 
         void Remove(Course removed);
@@ -27,5 +28,6 @@ namespace Lms.MVC.Core.Repositories
         void SetAllCoursesEndDate();
 
         Task<Course> SetCourseEndDateAsync(int id);
+        Task<ICollection<ApplicationFile>> GetAllFilesByCourseId(int id);
     }
 }
