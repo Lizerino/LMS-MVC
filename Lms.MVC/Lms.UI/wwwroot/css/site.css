@@ -74,7 +74,7 @@ html {
 }
 
 body {
-    background-image: url('../Assets/background2.png');
+    background-image: url('../Assets/PotentialBackground.jpg');
     color: var(--text-color);
     background-size: cover;
     background-repeat: no-repeat;
@@ -326,10 +326,116 @@ width:  6rem;
     background-color: rgba(256,256,256,0.5);
     overflow-x: hidden;
     padding-top: 20px;
-   text-align: center;
-    vertical-align:middle;
+    text-align: center;
+    vertical-align: middle;
+    margin-right: 200px;
+    margin: 0;
+    padding: 0;
+  margin-top: 7rem;
+   
 }
     .sidenav div p {
       
         margin-left: 1rem;
     }
+@media screen and (max-width: 700px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+        .sidebar a {
+            float: left;
+        }
+
+    div.content {
+        margin-left: 0;
+    }
+}
+@media screen and (max-width: 400px) {
+    .sidebar a {
+        text-align: center;
+        float: none;
+    }
+}
+
+div.content {
+    margin-left: 200px;
+    padding: 1px 16px;
+    height: 1000px;
+}
+.navbar-dark {
+    background-color: transparent !important;
+    border-bottom: none !important;
+    box-shadow: rgba(0,0,0, 10) 0px 0px 10px 0px inset;
+    padding-bottom: 0em !important;
+    display: flex !important;
+}
+
+
+
+    .navbar-dark a {
+        color: #9c9cd1 !important;
+    }
+
+    .navbar-dark button {
+        color: #9c9cd1 !important;
+    }
+
+
+.card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.card__wrap--outer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.card__wrap--inner {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+@media (min-width: 480px) {
+
+    .card__wrap--inner {
+        width: 50%
+    }
+}
+
+@media (min-width: 1024px) {
+
+    .card__wrap--inner {
+        width: 33.33%
+    }
+}
+
+.flexible {
+    flex-grow: 1;
+}
+
+
+.card {
+    border-radius: 15px 50px 30px !important;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+    margin: 1rem;
+    padding: 1.5rem;
+    background-color: rgba(256, 256, 256, 0.5) !important;
+}
+
+.card-login {
+    border-radius: 15px 50px 30px !important;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+    height: auto;
+    margin-top: auto;
+    margin-bottom: 5rem;
+    width: 400px;
+    background-color: rgba(256, 256, 256, 0.5) !important;
+}

@@ -2,86 +2,76 @@
 @inject UserManager<ApplicationUser> userManager
 @model ListModuleViewModel
 
+
+
 @{
     ViewData["CourseId"] = Model.CourseId;
 }
 
-
-
-<h1>@Model.CourseTitle</h1>
-@if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
-{
-    <p>
-        <a asp-action="Create" asp-route-id=@Model.CourseId class="btn btn-primary mr-3">Create New Module</a>
-        @if (!User.IsInRole("Admin"))
-        {
-            <a asp-area="Identity" asp-page="/Account/Register" asp-route-CourseId="@Model.CourseId" class="btn btn-primary mr-3">Add a student to this course</a> }
-        else
-        {
-            <a asp-area="Identity" asp-page="/Account/Register" asp-route-CourseId="@Model.CourseId" class="btn btn-primary mr-3">Add a user to this course</a>
-        }
-
-        <a asp-controller="Courses" asp-action="Edit" asp-route-id="@Model.CourseId" class="btn btn-primary">Edit Course</a>
-    </p>
-
-}
-
-<div class="sidenav">
+@*<div class="sidenav">
     @await Component.InvokeAsync("StudentStatisticsBar", new { CMAType = "course", courseId = (int)Model.CourseId, moduleId = (int)Model.Id })
-</div>
+</div>*@
 
-    <div class="container-fluid">
-        <div class="row">
 
-            @if (Model.ModuleList.Count() != 0)
+@*<div class="content">*@
+
+<div class="container-fluid">
+
+
+
+    <h1>@Model.CourseTitle</h1>
+    @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
+    {
+        <p>
+            <a asp-action="Create" asp-route-id=@Model.CourseId class="btn btn-primary mr-3">Create New Module</a>
+            @if (!User.IsInRole("Admin"))
             {
-                <div class="col-9">
-
-                    <div class="card-deck">
-                        @foreach (var module in Model.ModuleList)
-                        {
-                            <div class="card">
-                                <a asp-controller="Activities" asp-action="Index" asp-route-id="@module.Id">
-                                    <h5 class="card-title">@module.Title</h5>
-                                    <p class="card-body">@module.Description</p>
-                                    <div class="card-footer">Start Date: @module.StartDate</div>
-                                    <div class="card-footer">End Date: @module.EndDate</div>
-                                </a>
-                            </div>
-                        }
-                    </div>
-                </div>
-            }
+                <a asp-area="Identity" asp-page="/Account/Register" asp-route-CourseId="@Model.CourseId" class="btn btn-primary mr-3">Add a student to this course</a> }
             else
             {
-                <p>No modules in this course</p>
+                <a asp-area="Identity" asp-page="/Account/Register" asp-route-CourseId="@Model.CourseId" class="btn btn-primary mr-3">Add a user to this course</a>
             }
 
-            @if (User.IsInRole("Teacher") || User.IsInRole("Admin"))
-            {
-                <div class="col-3">
 
-                    <div class="card">
-                        <div class="card-header">
-                            Files Submitted to @Model.CourseTitle
-                        </div>
-                        <div class="card-body">
-                            @await Component.InvokeAsync("ListFiles", new { CMAType = "course", id = Model.CourseId.ToString(), userIsTeacher = false })
-                        </div>
-                        is teacher
-                        <div class="card-body">
-                            @await Component.InvokeAsync("ListFiles", new { CMAType = "course", id = Model.CourseId.ToString(), userIsTeacher = true })
+
+            <a asp-controller="Courses" asp-action="Edit" asp-route-id="@Model.CourseId" class="btn btn-primary">Edit Course</a>
+        </p>
+    }
+</div>
+
+
+
+<div class="container-fluid">
+    <div class="row">
+        @if (Model.ModuleList.Count() != 0)
+        {
+            <div class="card__wrap--outer">
+                @foreach (var module in Model.ModuleList)
+                {
+                    <div class="card__wrap--inner">
+                        <div class="card">
+                            <a asp-controller="Activities" asp-action="Index" asp-route-id="@module.Id">
+                                <div class="card__item">
+                                    <h2>@module.Title</h2>
+                                </div>
+                                <div class="card__item flexible">
+                                    <small>@module.Description</small>
+                                </div>
+                                <div class="card__item">
+                                    <small>@module.StartDate.Date.ToLocalTime() - @module.EndDate.Date.ToLocalTime()</small>
+                                </div>
+                            </a>
                         </div>
                     </div>
-                    <div class="card">
+                }
+            </div>
 
-                        <div class="card-header">Upload New Document or File</div>
-                        <div class="card-body">
-                            @await Component.InvokeAsync("UploadFile", new { userId = userManager.GetUserAsync(User).Result.Id, Id = Model.CourseId, CMAType = "Course" })
-                        </div>
-                    </div>
-                </div>
-
-            }
-        </div>
+        }
+        else
+        {
+            <p>No modules in this course</p>
+        }
     </div>
+</div>
+
+@*</div>*@
