@@ -1,4 +1,5 @@
-﻿@model EditActivityViewModel
+﻿@inject Lms.MVC.UI.Services.IActivityTypeSelectService service
+@model EditActivityViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -35,7 +36,7 @@
 
             <div class="form-group">
                 <label asp-for="ActivityType" class="control-label"></label>
-                <select asp-for="ActivityTypeId" class="form-control" asp-items=@Model.ActivityTypes>
+                <select asp-for="ActivityTypeId" class="form-control" asp-items=@service.GetTypeAsync()>
                     <option value="">Choose an activity type</option>
                 </select>
             </div>

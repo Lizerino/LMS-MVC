@@ -96,6 +96,9 @@ namespace Lms.MVC.Data.Migrations
                     b.Property<string>("ApplicationUserId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<bool>("Assignment")
+                        .HasColumnType("bit");
+
                     b.Property<byte[]>("Content")
                         .HasColumnType("varbinary(max)");
 

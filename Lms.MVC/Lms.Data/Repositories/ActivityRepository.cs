@@ -111,6 +111,12 @@ namespace Lms.MVC.Data.Repositories
             return activity.Files;
         }
 
+        public async Task<List<Activity>> GetAllActivitiesByModuleIdAsync(int id)
+        {
+            return await db.Activities.Where(a => a.ModuleId == id).ToListAsync();
+        }
+
+
         public string GetNextDueAssignment() => db.Activities.Where(a => a.ActivityType.Name.ToLower() == "assignment")
                 .FirstOrDefaultAsync(a => a.StartDate <= DateTime.Now && a.EndDate > DateTime.Now).Result.Title;
 

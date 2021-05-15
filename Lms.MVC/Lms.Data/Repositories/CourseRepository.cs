@@ -15,20 +15,11 @@ namespace Lms.MVC.Data.Repositories
     {
         private readonly ApplicationDbContext db;
 
-        public CourseRepository(ApplicationDbContext db)
-        {
-            this.db = db;
-        }
+        public CourseRepository(ApplicationDbContext db) => this.db = db;
+        
+        public async Task AddAsync(Course added) => await db.AddAsync(added);
 
-        public async Task AddAsync(Course added)
-        {
-            await db.AddAsync(added);
-        }
-
-        public void Remove(Course removed)
-        {
-            db.Remove(removed);
-        }
+        public void Remove(Course removed) => db.Remove(removed);       
 
         public async Task<IEnumerable<Course>> GetAllCoursesAsync(bool includeModules = false, bool includeUsers = false)
         {
@@ -80,20 +71,11 @@ namespace Lms.MVC.Data.Repositories
         //    return await query.Include(c => c.Modules).FirstOrDefaultAsync(c => c.Title == title);
         //}
 
-        public async Task<bool> SaveAsync()
-        {
-            return (await db.SaveChangesAsync()) >= 0;
-        }
-
-        public async Task<bool> CourseExists(int id)
-        {
-            return await db.Courses.AnyAsync(c => c.Id == id);
-        }
-
-        public void Update(Course course)
-        {
-            db.Update(course);
-        }
+        public async Task<bool> SaveAsync() => (await db.SaveChangesAsync()) >= 0;
+        
+        public async Task<bool> CourseExists(int id) => await db.Courses.AnyAsync(c => c.Id == id);
+        
+        public void Update(Course course) => db.Update(course);        
 
         public async Task<DateTime> CalculateEndDateAsync(int id)
         {

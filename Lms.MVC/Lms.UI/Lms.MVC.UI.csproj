@@ -33,8 +33,4 @@
     <ProjectReference Include="..\Lms.Data\Lms.MVC.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\Files\" />
-  </ItemGroup>
-
 </Project>

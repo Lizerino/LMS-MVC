@@ -10,7 +10,6 @@ using AutoMapper;
 
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
-using Lms.MVC.Data.Repositories;
 using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Utilities.FileHandler;
 
@@ -34,7 +33,7 @@ namespace Lms.MVC.UI.Controllers
 
         private readonly IUoW uoW;
 
-        private readonly long fileSizeLimit;        
+        private readonly long fileSizeLimit;
 
         private readonly ILogger<FilesController> logger;
 
@@ -63,8 +62,7 @@ namespace Lms.MVC.UI.Controllers
             if (requestFile == null)
             {
                 return View();
-            }
-
+            }            
             // Don't display the untrusted file name in the UI. HTML-encode the value.
             return File(requestFile.Content, MediaTypeNames.Application.Octet, WebUtility.HtmlEncode(requestFile.UntrustedName));
         }
@@ -74,7 +72,7 @@ namespace Lms.MVC.UI.Controllers
         {
             if (id == null)
             {
-                return RedirectToAction("Index",CMAType+"s");                
+                return RedirectToAction("Index", CMAType + "s");
             }
 
             var RemoveFile = await uoW.FileRepository.GetFileByIdAsync((int)id);
@@ -238,12 +236,14 @@ namespace Lms.MVC.UI.Controllers
                 UntrustedName = untrustedFileNameForStorage,
                 Description = formData.Description,
                 Size = streamedFileContent.Length,
-                UploadDT = DateTime.UtcNow
+                UploadDT = DateTime.UtcNow,
+                Assignment = formData.Assignment
             };
-            
-            // This needs to be updated for other types.. should be able to be done in a way that the program knows that type it comes from 
-            var cmaType =formData.CMAType.ToLower();
-            if (cmaType=="course")
+
+            // This needs to be updated for other types.. should be able to be done in a way that
+            // the program knows that type it comes from
+            var cmaType = formData.CMAType.ToLower();
+            if (cmaType == "course")
             {
                 var course = uoW.CourseRepository.GetCourseWithFilesAsync(formData.CMAId).Result;
                 course.Files.Add(file);
@@ -285,8 +285,13 @@ namespace Lms.MVC.UI.Controllers
     public class FormData
     {
         public string Description { get; set; }
+
         public int CMAId { get; set; }
+
         public string UserId { get; set; }
+
         public string CMAType { get; set; }
+
+        public bool Assignment { get; set; }
     }
 }
