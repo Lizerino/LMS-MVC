@@ -46,10 +46,10 @@ namespace Lms.MVC.UI.Controllers
             {
                 page = 1;
             }
-
             var users = await uoW.UserRepository.GetAllUsersAsync();
+            var userListWithoutSuperAdmin = users.Where(u => u.NormalizedEmail != "ADMIN@LMS.SE");
 
-            var model = mapper.Map<IEnumerable<ListApplicationUsersViewModel>>(users);
+            var model = mapper.Map<IEnumerable<ListApplicationUsersViewModel>>(userListWithoutSuperAdmin);
 
             // Add to get the search to work
             if (!string.IsNullOrWhiteSpace(search))
@@ -93,7 +93,7 @@ namespace Lms.MVC.UI.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Teacher,Admin")]
+        [Authorize(Roles = "Admin")]
         [ModelNotNull]
         public async Task<IActionResult> Edit(string id)
         {
@@ -113,7 +113,7 @@ namespace Lms.MVC.UI.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Teacher,Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPost(string id, EditApplicationUserViewModel viewmodel)
@@ -177,7 +177,7 @@ namespace Lms.MVC.UI.Controllers
             return uoW.UserRepository.Any(id);
         }
 
-        [Authorize(Roles = "Teacher,Admin")]
+        [Authorize(Roles = "Admin")]
         [ModelNotNull]
         public async Task<IActionResult> Remove(string id)
         {
@@ -193,7 +193,7 @@ namespace Lms.MVC.UI.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Teacher,Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Remove")]
         [ValidateAntiForgeryToken]
         [ModelNotNull]

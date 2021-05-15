@@ -101,6 +101,7 @@ namespace Lms.MVC.Data.Data
             var module = new Module();
 
             module.Title = fake.Name.JobTitle() + " Module";
+            module.Description = fake.Lorem.Sentence(10, 5);
             module.StartDate = fake.Date.Soon();
             module.EndDate = module.StartDate.AddDays(fake.Random.Int(4, 30));
 

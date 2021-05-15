@@ -73,8 +73,8 @@ html {
     min-height: 100%;
 }
 
-body {
-    background-image: url('../Assets/background2.png');
+body {    
+    background-image: url('../Assets/PotentialBackground.jpg');
     color: var(--text-color);
     background-size: cover;
     background-repeat: no-repeat;
@@ -90,6 +90,10 @@ a:hover {
 
 a {
     color: var(--a-color);
+}
+
+.table-dark {
+    background-color: rgb(10, 10, 40, 0.75);
 }
 
 table {
@@ -126,8 +130,8 @@ tbody {
     /*box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;*/
     /*box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;*/
     box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
-    height: auto;
-    margin-top: auto;
+/*    height: auto;
+*/    margin-top: auto;
     margin-bottom: 5rem;
     width: 400px;
     background-color: rgba(256, 256, 256, 0.5) !important;

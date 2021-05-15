@@ -13,6 +13,8 @@
   <ItemGroup>
     <Compile Include="Migrations\20210514085703_init.cs" />
     <Compile Include="Migrations\20210514085703_init.Designer.cs" />
+    <Compile Include="Migrations\20210514130654_init3.cs" />
+    <Compile Include="Migrations\20210514130654_init3.Designer.cs" />
     <Compile Include="Migrations\LmsAPIContextModelSnapshot.cs" />
   </ItemGroup>
 

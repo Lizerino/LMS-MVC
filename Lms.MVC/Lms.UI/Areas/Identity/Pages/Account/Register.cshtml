@@ -79,9 +79,7 @@
                                             <input type="radio" id="@item.Text.Replace(' ', '-')" name="courses" value="@item.Value" />
                                             <label class="" for="@item.Text.Replace(' ', '-')">@item.Text</label>
                                                </div>
-                                            @*<label>
-                                                <input type="radio" name="courses" value="@item.Value"> @item.Text
-                                            </label>*@
+                                            
                                         </li>
                                     }
                                 </ul>
@@ -98,8 +96,7 @@
                             <div>
                                 <div>
                                     <label asp-for="Input.Role"></label>
-                                </div>
-                                <br />
+                                </div>                                
                                 <input type="radio" value="Student" asp-for="Input.Role" checked />
                                 <label for="Student">Student</label>
                                 <input type="radio" value="Teacher" asp-for="Input.Role" />
@@ -125,8 +122,3 @@
     <partial name="_ValidationScriptsPartial" />
     <script src="~/js/Register.js"></script>
 }
-@*@section scripts{
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <partial name="_ValidationScriptsPartial" />
-    <script src="~/lib/jquery-ajax-unobtrusive/dist/jquery.unobtrusive-ajax.min.js"></script>
-}*@
