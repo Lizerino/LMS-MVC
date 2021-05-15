@@ -5,55 +5,55 @@
 @{
     ViewData["CourseId"] = Model.CourseId;
 }
-
-<h1>@Model.CourseTitle</h1>
-@if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
-{
-    <p>
-        <a asp-action="Create" asp-route-id=@Model.CourseId class="btn btn-primary mr-3">Create New Module</a>
-        @if (!User.IsInRole("Admin"))
-        {
-            <a asp-area="Identity" asp-page="/Account/Register" asp-route-CourseId="@Model.CourseId" class="btn btn-primary mr-3">Add a student to this course</a> }
-        else
-        {
-            <a asp-area="Identity" asp-page="/Account/Register" asp-route-CourseId="@Model.CourseId" class="btn btn-primary mr-3">Add a user to this course</a>
-        }
-
-        <a asp-controller="Courses" asp-action="Edit" asp-route-id="@Model.CourseId" class="btn btn-primary">Edit Course</a>
-    </p>
-
-}
-
 <div class="container-fluid">
-    <div class="row">
-        @if (Model.ModuleList.Count() != 0)
-        {
-            <div class="container">
-                <div class="card__wrap--outer">
-                    @foreach (var module in Model.ModuleList)
-                    {
+
+    <h1>@Model.CourseTitle</h1>
+    @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
+    {
+        <p>
+            <a asp-action="Create" asp-route-id=@Model.CourseId class="btn btn-primary mr-3">Create New Module</a>
+            @if (!User.IsInRole("Admin"))
+            {
+                <a asp-area="Identity" asp-page="/Account/Register" asp-route-CourseId="@Model.CourseId" class="btn btn-primary mr-3">Add a student to this course</a> }
+            else
+            {
+                <a asp-area="Identity" asp-page="/Account/Register" asp-route-CourseId="@Model.CourseId" class="btn btn-primary mr-3">Add a user to this course</a>
+            }
+
+            <a asp-controller="Courses" asp-action="Edit" asp-route-id="@Model.CourseId" class="btn btn-primary">Edit Course</a>
+        </p>
+    }
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            @if (Model.ModuleList.Count() != 0)
+            {               
+                    <div class="card__wrap--outer">
+                        @foreach (var module in Model.ModuleList)
+                        {
                             <div class="card__wrap--inner">
                                 <div class="card">
-                        <a asp-controller="Activities" asp-action="Index" asp-route-id="@module.Id">
-                                    <div class="card__item">
-                                        <h2>@module.Title</h2>
-                                    </div>
-                                    <div class="card__item flexible">
-                                        <small>@module.Description</small>
-                                    </div>
-                                    <div class="card__item">
-                                        <small>@module.StartDate.Date - @module.EndDate.Date</small>
-                                    </div>
-                        </a>
+                                    <a asp-controller="Activities" asp-action="Index" asp-route-id="@module.Id">
+                                        <div class="card__item">
+                                            <h2>@module.Title</h2>
+                                        </div>
+                                        <div class="card__item flexible">
+                                            <small>@module.Description</small>
+                                        </div>
+                                        <div class="card__item">
+                                            <small>@module.StartDate.Date.ToLocalTime() - @module.EndDate.Date.ToLocalTime()</small>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
-                    }
-                </div>
-            </div>
-        }
-        else
-        {
-            <p>No modules in this course</p>
-        }
+                        }
+                    </div>
+                
+            }
+            else
+            {
+                <p>No modules in this course</p>
+            }
+        </div>
     </div>
-</div>

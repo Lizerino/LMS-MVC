@@ -7,6 +7,11 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\FileHandlerController.cs" />
+    <Compile Remove="Models\calendarEvent.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Models\ViewModels\CalendarEvent.cs" />
   </ItemGroup>
 
   <ItemGroup>
