@@ -306,3 +306,30 @@ padding-bottom:0em !important;
 height: 5rem;
 width:  6rem;
 }
+
+.aside-block {
+    width: 30%;
+    padding-left: 15px;
+    margin-left: 15px;
+    float: inline-end;
+    font-style: italic;
+    background-color: rgba(256,256,256,0.5);
+}
+
+.sidenav {
+    height: 100%;
+    width: 200px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: rgba(256,256,256,0.5);
+    overflow-x: hidden;
+    padding-top: 20px;
+   text-align: center;
+    vertical-align:middle;
+}
+    .sidenav div p {
+      
+        margin-left: 1rem;
+    }

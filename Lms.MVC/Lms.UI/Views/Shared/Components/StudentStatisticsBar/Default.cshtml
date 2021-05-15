@@ -1,11 +1,15 @@
 ﻿@model StudentStatisticsBar
 
+
+
 <div class="container">
     <div class="row">
         <div class="col">
             <p>Late Assignments : @Model.LateAssignments.Count()</p>
         </div>
     </div>
+    @if (!(Model.LateAssignments.Count() == 0))
+	{
     <div class="row">
         @foreach (var lateAssignment in Model.LateAssignments)
         {
@@ -14,6 +18,8 @@
             </div>
         }
     </div>
+
+	}
 
     <div class="row">
         <div class="col"><span>Teachers :</span> </div>
@@ -26,7 +32,8 @@
         }
     </div>
 
-
+    @if (!(Model.NextDueAssignment.ToLower() == "no next assignments"))
+    {
     <div class="row">
         <div class="col"><span>Next due assignment :</span> </div>
 
@@ -34,6 +41,7 @@
     <div class="row">
         <p>@Model.NextDueAssignment</p>
     </div>
+    }
 
 
     <div class="row">

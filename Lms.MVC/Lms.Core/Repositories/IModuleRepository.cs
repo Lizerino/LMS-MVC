@@ -17,8 +17,8 @@ namespace Lms.MVC.Core.Repositories
         Task<Module> GetModuleAsync(int id, int moduleId);
 
         Task<Module> GetModuleByTitleAsync(int id, string title);
-        string GetCurrentModule();
-        string GetNextModule();
+        string GetCurrentModule(int? courseId, int? moduleId);
+        string GetNextModule(int? courseId, int? moduleId);
         void Remove(Module removed);
 
         void Update(Module module);

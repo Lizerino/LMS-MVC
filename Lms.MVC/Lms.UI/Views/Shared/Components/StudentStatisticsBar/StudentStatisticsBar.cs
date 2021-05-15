@@ -39,18 +39,18 @@ namespace Lms.MVC.UI.Views.Shared.Components.StudentStatisticsBar
 
                 case "module" :
                     bar.LateAssignments = uoW.ActivityRepository.GetAllLateAssignmentsFromModuleAsync((int)moduleId).Result;
-                    bar.CurrentMoudle = uoW.ModuleRepository.GetCurrentModule();
-                    bar.NextModule = uoW.ModuleRepository.GetNextModule();
-                    bar.NextDueAssignment = uoW.ActivityRepository.GetNextDueAssignment();
+                    bar.CurrentMoudle = uoW.ModuleRepository.GetCurrentModule(courseId, moduleId);
+                    bar.NextModule = uoW.ModuleRepository.GetNextModule(courseId, moduleId);
+                    bar.NextDueAssignment = uoW.ActivityRepository.GetNextDueAssignment(courseId,moduleId);
                     bar.Teachers = uoW.CourseRepository.GetTeachersByModule(moduleId);
 
                     break;
 
                 case "course":
                     bar.LateAssignments = uoW.ActivityRepository.GetAllLateAssignmentsFromCourseAsync((int)courseId);
-                    bar.CurrentMoudle = uoW.ModuleRepository.GetCurrentModule();
-                    bar.NextModule = uoW.ModuleRepository.GetNextModule();
-                    bar.NextDueAssignment = uoW.ActivityRepository.GetNextDueAssignment();
+                    bar.CurrentMoudle = uoW.ModuleRepository.GetCurrentModule(courseId, moduleId);
+                    bar.NextModule = uoW.ModuleRepository.GetNextModule(courseId, moduleId);
+                    bar.NextDueAssignment = uoW.ActivityRepository.GetNextDueAssignment(courseId, moduleId);
                     bar.Teachers = uoW.CourseRepository.GetTeachers(courseId);
                     break;
               
