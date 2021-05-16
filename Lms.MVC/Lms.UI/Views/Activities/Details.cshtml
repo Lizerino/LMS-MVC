@@ -27,14 +27,16 @@
             </ol>
         </div>
     </div>
-<div>
-    @if (User.IsInRole("Teacher") || User.IsInRole("Admin"))
-    {
-        <a asp-action="Edit" asp-route-id="@Model.Id">Edit Activity</a>
-    }    
-    <a asp-action="Index" asp-route-Id="@Model.ModuleId">Back to the schedule</a>
-    <br />
-</div>
+    <div>
+        @if (User.IsInRole("Teacher") || User.IsInRole("Admin"))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id">Edit Activity&nbsp;&nbsp;</a>
+        }
+        <a class="btn btn-info" asp-action="Index" asp-route-Id="@Model.ModuleId">Back to the schedule</a>
+        <br />
+        <br />
+        <br />
+    </div>
     <div class="row">
         <div class="col">
             <div class="row">
@@ -46,14 +48,16 @@
             </div>
             <br />
             <div class="row">
-                <div class="col">Files:<br />@await Component.InvokeAsync("ListFiles", new { CMAType = "activity", id = Model.Id.ToString() })</div>
+                <div class="col">Files:<br />@await Component.InvokeAsync("ListFiles", new { CMAType = "activity", id = Model.Id.ToString(), userId = userManager.GetUserAsync(User).Result.Id })</div>
             </div>            
             @if (Model.ActivityType.Name == "Assignment" || User.IsInRole("Teacher"))
             {   
             @await Component.InvokeAsync("UploadFile", new { userId = userManager.GetUserAsync(User).Result.Id, Id = Model.Id, CMAType = "activity" })
             }
         </div>
-        <div class="col-xl-4"></div>
+        <div class="col-xl-4">
+            @await Component.InvokeAsync("StudentStatisticsBar", new { CMAType = "course", courseId = (int)Model.CourseId, moduleId = (int)Model.Id, userId = userManager.GetUserId(User) })
+        </div>
     </div>
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>

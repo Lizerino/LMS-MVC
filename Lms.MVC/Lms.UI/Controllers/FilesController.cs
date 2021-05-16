@@ -68,7 +68,7 @@ namespace Lms.MVC.UI.Controllers
         }
 
         // Add confirmation
-        public async Task<IActionResult> DeleteFile(int? id, string CMAType, string originUrl)
+        public async Task<IActionResult> DeleteFile(int? id, string CMAType, string originUrl, string userId)
         {
                 if (CMAType == "activity") CMAType = "Activitie";               
             if (id == null)
@@ -78,7 +78,7 @@ namespace Lms.MVC.UI.Controllers
 
             var RemoveFile = await uoW.FileRepository.GetFileByIdAsync((int)id);
 
-            if (RemoveFile != null)
+            if (RemoveFile != null && uoW.UserRepository.GetAllFilesByUserId(userId).Result.Contains(RemoveFile))
             {
                 uoW.FileRepository.Remove(RemoveFile);
                 await uoW.CompleteAsync();

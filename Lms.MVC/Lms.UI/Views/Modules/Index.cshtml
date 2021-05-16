@@ -47,37 +47,44 @@
     }
     </div>
 
-    <div class="container">
-        <div class="row">
-            @if (Model.ModuleList.Count() != 0)
-            {               
-                    <div class="card__wrap--outer">
-                        @foreach (var module in Model.ModuleList)
-                        {
-                            <div class="card__wrap--inner">
-                                <div class="card">
-                                    <a asp-controller="Activities" asp-action="Index" asp-route-id="@module.Id">
-                                        <div class="card__item">
-                                            <h2>@module.Title</h2>
-                                        </div>
-                                        <div class="card__item flexible">
-                                            <small>@module.Description</small>
-                                        </div>
-                                        <div class="card__item">
-                                            <small>@module.StartDate.Date.ToLocalTime() - @module.EndDate.Date.ToLocalTime()</small>
-                                        </div>
-                                    </a>
+<div class="container">
+    <div class="row">
+        @if (Model.ModuleList.Count() != 0)
+        {
+            <div class="card__wrap--outer">
+                @foreach (var module in Model.ModuleList)
+                {
+                    <div class="card__wrap--inner">
+                        <div class="card">
+                            <a asp-controller="Activities" asp-action="Index" asp-route-id="@module.Id">
+                                <div class="card__item">
+                                    <h2>@module.Title</h2>
                                 </div>
-                            </div>
-                        }
+                                <div class="card__item flexible">
+                                    <small>@module.Description</small>
+                                </div>
+                                <div class="card__item">
+                                    <small>@module.StartDate.Date.ToLocalTime() - @module.EndDate.Date.ToLocalTime()</small>
+                                </div>
+                            </a>
+                        </div>
                     </div>
-                
-            }
-            else
-            {
-                <p>No modules in this course</p>
-            }
-        </div>
+                }
+            </div>
+
+        }
+        else
+        {
+            <p>No modules in this course</p>
+        }
+    </div>
+    <div class="row">
+        <div class="col">Files:<br />@await Component.InvokeAsync("ListFiles", new { CMAType = "course", id = Model.CourseId.ToString(), userId = userManager.GetUserAsync(User).Result.Id })</div>
+    </div>
+
+    @await Component.InvokeAsync("UploadFile", new { userId = userManager.GetUserAsync(User).Result.Id, Id = Model.CourseId, CMAType = "course" })
+
+</div>
     </div>
     </div>
    
