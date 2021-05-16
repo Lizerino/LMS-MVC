@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,7 +28,108 @@ namespace Lms.MVC.Data.Repositories
 
         public async Task<IEnumerable<Activity>> GetAllActivitiesAsync() => await db.Activities.ToListAsync();
 
-        public async Task<Activity> GetActivityAsync(int? id) => await db.Activities.Include(a=>a.ActivityType).FirstOrDefaultAsync(c => c.Id == id);
+        public async Task<IEnumerable<Activity>> GetAllActivitiesFromModuleAsync(int id) => await db.Activities.Where(a => a.ModuleId == id).ToListAsync();
+
+        public async Task<IEnumerable<int>> GetAllLateAssignmentsFromModuleAsync(int id, string userId)
+        {
+            // Get all assignments for current module
+            var allLateAssignments = await db.Activities.Where(a => a.ModuleId == id).Where(a => a.EndDate < DateTime.Now)
+            .Where(m => m.ActivityType.Name == "Assignment").ToListAsync();
+
+            var currentUserFiles = await db.Users.Include(i => i.Files).Where(u => u.Id == userId).SelectMany(f => f.Files).ToListAsync();
+
+            var lateAssignments = new List<int>();
+            if (currentUserFiles is null || allLateAssignments is null)
+            {
+                return null;
+            }
+            if (currentUserFiles.Count == 0)
+            {
+                return allLateAssignments.Select(f => f.Id);
+            }
+            foreach (var assignment in allLateAssignments)
+            {
+                if (assignment.Files == null)
+                {
+                    lateAssignments.Add(assignment.Id);
+                }
+                else
+                {
+                    bool Late = true;
+                    foreach (var file in currentUserFiles)
+                    {
+                        if (assignment.Files.Contains(file))
+                        {
+                            Late = false;
+                            break;
+                        }
+                    }
+                    if (Late)
+                    {
+                        lateAssignments.Add(assignment.Id);
+                    }
+                }
+            }
+            return lateAssignments.Distinct();
+        }
+
+        public async Task<IEnumerable<int>> GetAllLateAssignmentsFromCourseAsync(int courseId, string userId)
+        {
+            var allLateAssignments = db.Courses
+                .Include(c => c.Modules).ThenInclude(m => m.Activities).ThenInclude(a => a.ActivityType)
+                .FirstOrDefault(c => c.Id == courseId).Modules
+                .SelectMany(m => m.Activities)
+                .Where(a => a.EndDate < DateTime.Now && a.ActivityType.Name.ToLower() == "assignment");
+
+            var currentUserFiles = await db.Users.Include(i => i.Files).Where(u => u.Id == userId).SelectMany(f => f.Files).ToListAsync();
+
+            var lateAssignments = new List<int>();
+            if (currentUserFiles is null || allLateAssignments is null)
+            {
+                return null;
+            }
+            if (currentUserFiles.Count == 0)
+            {
+                return allLateAssignments.Select(f => f.Id);
+            }
+
+            foreach (var assignment in allLateAssignments)
+            {
+                if (assignment.Files == null)
+                {
+                    lateAssignments.Add(assignment.Id);
+                }
+                else
+                {
+                    bool Late = true;
+                    foreach (var file in currentUserFiles)
+                    {
+                        if (assignment.Files.Contains(file))
+                        {
+                            Late = false;
+                            break;
+                        }
+                    }
+                    if (Late)
+                    {
+                        lateAssignments.Add(assignment.Id);
+                    }
+                }
+            }
+            return lateAssignments.Distinct();
+        }
+
+        public async Task<Activity> GetActivityAsync(int? id, bool includeActivityType)
+        {
+            if (includeActivityType)
+            {
+                return await db.Activities.Include(f => f.ActivityType).FirstOrDefaultAsync(c => c.Id == id);
+            }
+            else
+            {
+                return await db.Activities.FirstOrDefaultAsync(c => c.Id == id);
+            }
+        }
 
         public async Task<bool> SaveAsync() => (await db.SaveChangesAsync()) >= 0;
 
@@ -48,5 +150,40 @@ namespace Lms.MVC.Data.Repositories
             return await db.Activities.Where(a => a.ModuleId == id).ToListAsync();
         }
 
+        public string GetNextDueAssignment(int? courseId, int? moduleId)
+        {
+            if (!(moduleId == null))
+            {
+                var assignment = db.Activities
+
+                    // .Include(a=>a.ActivityType)
+                    .Where(a => a.ModuleId == (int)moduleId && a.ActivityType.Name.ToLower() == "assignment")
+                    .FirstOrDefault(a => a.StartDate <= DateTime.Now && a.EndDate > DateTime.Now);
+                if (assignment is null)
+                {
+                    return "No next assignments";
+                }
+                else return assignment.Title;
+            }
+            else if (!(courseId == null))
+            {
+                var assignment = db.Courses
+
+                    // .Include(c=>c.Modules).ThenInclude(m=>m.Activities).ThenInclude(a=>a.ActivityType)
+                    .FirstOrDefault(c => c.Id == (int)courseId).Modules.SelectMany(m => m.Activities)
+                    .Where(a => a.ActivityType.Name.ToLower() == "assignment")
+                    .FirstOrDefault(a => a.StartDate <= DateTime.Now && a.EndDate > DateTime.Now);
+
+                if (assignment is null)
+                {
+                    return "No next assignments";
+                }
+                else return assignment.Title;
+            }
+            else
+            {
+                return "something went wrong";
+            }
+        }
     }
 }

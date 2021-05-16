@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;
-
+using Lms.MVC.Data.Repositories.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lms.MVC.Data.Repositories
@@ -125,6 +125,22 @@ namespace Lms.MVC.Data.Repositories
         {
             var course = await db.Courses.Where(c => c.Id == id).Include(c => c.Files).FirstOrDefaultAsync();
             return course.Files;
+        }
+
+        public IEnumerable<string> GetTeachers(int? courseId) => GetCourseAsync(courseId ,false, true).Result.Users.Where(u => u.Role == RoleHelper.Admin || u.Role == RoleHelper.Teacher).Select(t => t.Name);
+
+
+        public IEnumerable<string> GetTeachersByModule(int? moduleId)
+        {
+            var module = db.Modules.FirstOrDefault(m => m.Id == moduleId);
+            var teachers = GetCourseAsync(module.CourseId,false, true).Result.Users.Where(u => u.Role == RoleHelper.Teacher || u.Role == RoleHelper.Admin)
+                .Select(u=>u.Name);
+            return teachers;
+            
+
+
+                //db.Users.Where(u=>u.Role == RoleHelper.Teacher)
+                //.SelectMany(u=>u.Courses.)
         }
     }
 }

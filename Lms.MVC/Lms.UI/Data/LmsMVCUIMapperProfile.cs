@@ -3,6 +3,7 @@
 using Lms.API.Core.Entities;
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
+using Lms.MVC.UI.Models.ViewModels;
 using Lms.MVC.UI.Models.ViewModels.ActivityViewModels;
 using Lms.MVC.UI.Models.ViewModels.ApplicationUserViewModels;
 using Lms.MVC.UI.Models.ViewModels.CourseViewModels;
@@ -34,6 +35,14 @@ namespace Lms.MVC.UI
             CreateMap<Activity, EditActivityViewModel>().ReverseMap()
                 .ForMember(a => a.ModuleId,
                 opt => opt.Ignore());
+
+            // activity calendar
+            CreateMap<Activity, SchedulerEvent>()
+                .ForMember(dest => dest.start_date, opt => opt.MapFrom(src => src.StartDate))
+                    .ForMember(dest => dest.end_date, opt => opt.MapFrom(src => src.EndDate))
+                    .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+                    .ForMember(dest => dest.text, opt => opt.MapFrom(src => src.Description));
 
             CreateMap<ApplicationUser, DetailsApplicationUserViewModel>();
             CreateMap<ApplicationUser, DeleteApplicationUserViewModel>().ReverseMap();

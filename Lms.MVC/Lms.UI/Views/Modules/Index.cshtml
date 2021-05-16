@@ -2,10 +2,26 @@
 @inject UserManager<ApplicationUser> userManager
 @model ListModuleViewModel
 
-@{
+
+@{ 
+    Layout = "ModuleActivityLayout";
     ViewData["CourseId"] = Model.CourseId;
+    ViewData["Title"] = Model.CourseTitle;
+
 }
-<div class="container-fluid">
+
+@if (User.IsInRole("Student"))
+	{
+<div class="sidebar">
+    @await Component.InvokeAsync("StudentStatisticsBar", new { CMAType = "course", courseId = (int)Model.CourseId, moduleId = (int)Model.Id, userId=userManager.GetUserId(User) })
+</div>
+	}
+
+<div class="content">
+
+<div class="container">
+
+
 
     <h1>@Model.CourseTitle</h1>
     @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
@@ -25,7 +41,7 @@
     }
     </div>
 
-    <div class="container-fluid">
+    <div class="container">
         <div class="row">
             @if (Model.ModuleList.Count() != 0)
             {               
@@ -57,3 +73,5 @@
             }
         </div>
     </div>
+    </div>
+   

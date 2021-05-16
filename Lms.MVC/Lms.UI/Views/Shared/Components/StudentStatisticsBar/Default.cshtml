@@ -1,0 +1,71 @@
+﻿@using Lms.MVC.Core.Repositories
+@inject IUoW uow 
+@model StudentStatisticsBar
+
+@if (!(Model.LateAssignments.Count() == 0))
+{
+<div>
+
+    @if (Model.CMAType.ToLower() == "course")
+	{
+    <p class="late">Late assignments in the course : @Model.LateAssignments.Count()</p>
+	}
+
+    @if (Model.CMAType.ToLower() == "module")
+    {
+<p class="late">Late assignments in this module : @Model.LateAssignments.Count()</p>
+    }
+
+    @if (Model.LateAssignments is not null)
+    {
+    @foreach (var lateAssignment in Model.LateAssignments)
+    {
+        <p class="late"> @uow.ActivityRepository.GetActivityAsync(lateAssignment,false).Result.Title</p>
+    }
+    }
+</div>
+}
+
+
+
+
+<div>
+<p>Teachers :</p>
+
+@foreach (var teacher in Model.Teachers)
+{
+    <p>@teacher</p>
+}
+
+</div>
+
+
+@if (!(Model.NextDueAssignment.ToLower() == "no next assignments"))
+{
+<div>
+
+    <p>Next due assignment :</p>
+
+
+    <p>@Model.NextDueAssignment</p>
+</div>
+
+}
+
+
+<div>
+<p>Current module :</p>
+
+
+
+<p>@Model.CurrentMoudle</p>
+</div>
+
+
+<div>
+<p>Next module:</p>
+
+
+
+<p>@Model.NextModule</p>
+</div>
