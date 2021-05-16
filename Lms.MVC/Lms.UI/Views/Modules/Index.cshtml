@@ -15,7 +15,7 @@
     </div>
 </div>
 <div class="row">
-    <h1>@Model.CourseTitle</h1>
+    <div class="mr-3"><h1>@Model.CourseTitle</h1></div>
     <br />
     @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
     {
@@ -23,13 +23,13 @@
             <a asp-action="Create" asp-route-id=@Model.CourseId class="btn btn-primary mr-3">Create New Module</a>
             @if (!User.IsInRole("Admin"))
             {
-                <a asp-area="Identity" asp-page="/Account/Register" asp-route-CourseId="@Model.CourseId" class="btn btn-primary mr-3">Add a student to this course</a> }
+                <a asp-area="Identity" asp-page="/Account/Register" asp-route-CourseId="@Model.CourseId" class="btn btn-info mr-3">Add a student to this course</a> }
             else
             {
-                <a asp-area="Identity" asp-page="/Account/Register" asp-route-CourseId="@Model.CourseId" class="btn btn-primary mr-3">Add a user to this course</a>
+                <a asp-area="Identity" asp-page="/Account/Register" asp-route-CourseId="@Model.CourseId" class="btn btn-info mr-3">Add a user to this course</a>
             }
 
-            <a asp-controller="Courses" asp-action="Edit" asp-route-id="@Model.CourseId" class="btn btn-primary">Edit Course</a>
+            <a asp-controller="Courses" asp-action="Edit" asp-route-id="@Model.CourseId" class="btn btn-info">Edit Course</a>
         </p>
     }
 </div>
@@ -51,7 +51,8 @@
                                     <small>@module.Description</small>
                                 </div>
                                 <div class="card__item">
-                                    <small>@module.StartDate.Date.ToLocalTime() - @module.EndDate.Date.ToLocalTime()</small>
+                                    <small>Starts: @module.StartDate.Date.ToLocalTime()</small><br />
+                                    <small>Ends: @module.EndDate.Date.ToLocalTime()</small>
                                 </div>
                             </a>
                         </div>

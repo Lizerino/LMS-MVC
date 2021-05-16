@@ -30,7 +30,7 @@
     <div>
         @if (User.IsInRole("Teacher") || User.IsInRole("Admin"))
         {
-            <a asp-action="Edit" asp-route-id="@Model.Id">Edit Activity&nbsp;&nbsp;</a>
+            <a class="btn btn-info" asp-action="Edit" asp-route-id="@Model.Id">Edit Activity&nbsp;&nbsp;</a>
         }
         <a class="btn btn-info" asp-action="Index" asp-route-Id="@Model.ModuleId">Back to the schedule</a>
         <br />
