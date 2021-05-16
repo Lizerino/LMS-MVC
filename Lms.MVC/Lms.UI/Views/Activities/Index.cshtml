@@ -30,16 +30,8 @@
     <div class="content">
 
 </div>
-<h1>@Model.ModuleTitle</h1>
-@if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
-{
-    <p>
-        <a asp-action="Create" asp-route-id="@Model.ModuleId" class="btn btn-primary mr-3">Create New Activity</a>
-        <a asp-controller="Modules" asp-action="Edit" asp-route-id="@Model.ModuleId" class="btn btn-primary">Edit Module</a>
-    </p>
-}
 
-<div class="container-fluid">
+<div class="container">
     <h1>@Model.ModuleTitle</h1>
     @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
     {
@@ -49,7 +41,7 @@
         </p>
     }
 </div>
-<div class="container-fluid">
+<div class="container">
     @* TODO move this into css *@
     <div class="row" style="background:white">
         <div style="color: green;background: white;">&#9632; = Lecture&emsp;</div> 

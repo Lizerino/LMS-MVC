@@ -39,7 +39,7 @@ a {
 -------------------------------------------------- */
 html {
     font-size: 14px;
-    overflow:hidden;
+    overflow-x:hidden;
 }
 
 @media (min-width: 768px) {
