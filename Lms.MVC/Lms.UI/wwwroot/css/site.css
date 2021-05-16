@@ -35,6 +35,7 @@ a {
 -------------------------------------------------- */
 html {
     font-size: 14px;
+    overflow:hidden;
 }
 
 @media (min-width: 768px) {
@@ -316,28 +317,7 @@ width:  6rem;
     background-color: rgba(256,256,256,0.5);
 }
 
-.sidenav {
-    height: 100%;
-    width: 200px;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: rgba(256,256,256,0.5);
-    overflow-x: hidden;
-    padding-top: 20px;
-    text-align: center;
-    vertical-align: middle;
-    margin-right: 200px;
-    margin: 0;
-    padding: 0;
-  margin-top: 7rem;
-   
-}
-    .sidenav div p {
-      
-        margin-left: 1rem;
-    }
+/*
 @media screen and (max-width: 700px) {
     .sidebar {
         width: 100%;
@@ -358,7 +338,7 @@ width:  6rem;
         text-align: center;
         float: none;
     }
-}
+}*/
 
 div.content {
     margin-left: 200px;
@@ -439,3 +419,88 @@ div.content {
     width: 400px;
     background-color: rgba(256, 256, 256, 0.5) !important;
 }
+
+
+
+
+
+
+
+
+
+.sidebar {
+    margin: 0;
+    margin-bottom: 2rem;
+    padding: 0;
+    width: 200px;
+    background-color: rgba(256, 256, 256, 0.5);
+   /* position: fixed;*/
+   position:fixed;
+    height: 100%;
+    overflow: auto;
+   
+}
+
+    .sidebar div {
+        display: block;
+        color: black;
+        padding: 0.7rem;
+        text-decoration: none;
+       
+    }
+
+        .sidebar p.late {
+            background-color: red;
+            color: white;
+        }
+
+    .sidebar div:hover:not(.active) {
+        background-color: #555;
+        color: white;
+    }
+
+div.content {
+    margin-left: 200px;
+    padding: 1px 16px;
+    height: 100%;
+}
+
+@media screen and (max-width: 700px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    @media screen and (min-width: 700px) {
+        .sidebar {
+            width: 100%;
+            height: 50%;
+            position: relative;
+        }
+        }
+
+            .sidebar div {
+                float: left;
+            }
+
+        div.content {
+            margin-left: 0;
+        }
+    }
+
+@media screen and (max-width: 400px) {
+    .sidebar div {
+        text-align: center;
+        float: none;
+    }
+}
+@media screen and (min-width: 700px){
+    .course-module {
+        text-align: end;
+        margin-left: 200px;
+    }
+}
+
+
+

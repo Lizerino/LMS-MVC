@@ -2,17 +2,32 @@
 @inject UserManager<ApplicationUser> userManager
 @model ListActivityViewModel
 
-    <h1>@Model.ModuleTitle</h1>
-    @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
-    {
-        <p>
-            <a asp-action="Create" asp-route-id="@Model.ModuleId" class="btn btn-primary mr-3">Create New Activity</a>
-            <a asp-controller="Modules" asp-action="Edit" asp-route-id="@Model.ModuleId" class="btn btn-primary">Edit Module</a>
-        </p>
-    }
-<div>
+
+@{
+    Layout = "ModuleActivityLayout";
+}
+
+@if (User.IsInRole("Student"))
+ { 
+<div class="sidebar">
     @await Component.InvokeAsync("StudentStatisticsBar", new { CMAType = "module", moduleId = (int)Model.ModuleId })
 </div>
+ } 
+
+
+<div class="container">
+    <div class="content">
+
+</div>
+<h1>@Model.ModuleTitle</h1>
+@if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
+{
+    <p>
+        <a asp-action="Create" asp-route-id="@Model.ModuleId" class="btn btn-primary mr-3">Create New Activity</a>
+        <a asp-controller="Modules" asp-action="Edit" asp-route-id="@Model.ModuleId" class="btn btn-primary">Edit Module</a>
+    </p>
+}
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-9">
@@ -59,5 +74,6 @@
             </div>
         }
 
+    </div>
     </div>
 </div>

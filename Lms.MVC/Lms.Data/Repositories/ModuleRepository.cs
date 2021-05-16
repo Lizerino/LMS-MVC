@@ -180,6 +180,7 @@ namespace Lms.MVC.Data.Repositories
 
         public async Task<ICollection<ApplicationFile>> GetAllFilesByModuleId(int id)
         {
+
             var module = await db.Modules.Where(c => c.Id == id).Include(c => c.Files).FirstOrDefaultAsync();
             return module.Files;
         }

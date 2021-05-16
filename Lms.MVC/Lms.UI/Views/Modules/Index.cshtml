@@ -3,17 +3,27 @@
 @model ListModuleViewModel
 
 
+@{ 
+    Layout = "ModuleActivityLayout";
+}
 
 @{
     ViewData["CourseId"] = Model.CourseId;
+    ViewData["Title"] = Model.CourseTitle;
+
 }
 
-@*<div class="sidenav">
+
+@if (User.IsInRole("Student"))
+	{
+<div class="sidebar">
     @await Component.InvokeAsync("StudentStatisticsBar", new { CMAType = "course", courseId = (int)Model.CourseId, moduleId = (int)Model.Id })
-</div>*@
+</div>
+	}
 
+<div calss="container">
 
-@*<div class="content">*@
+<div class="content">
 
 <div class="container-fluid">
 
@@ -74,4 +84,5 @@
     </div>
 </div>
 
-@*</div>*@
+</div>
+</div>
