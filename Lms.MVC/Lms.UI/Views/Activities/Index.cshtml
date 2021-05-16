@@ -17,7 +17,14 @@
     <link href="https://cdn.dhtmlx.com/scheduler/edge/dhtmlxscheduler_material.css"
           rel="stylesheet" type="text/css" charset="utf-8">
 </head>
-
+<div class="row">
+    <div class="col">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Modules" asp-route-Id="@Model.CourseId"><span>@Model.CourseTitle</span></a></li>
+            <li class="breadcrumb-item active" aria-current="page"><span>@Model.ModuleTitle</span></li>            
+        </ol>
+    </div>
+</div>
 @if (User.IsInRole("Student"))
  { 
 <div class="sidebar">
@@ -29,7 +36,7 @@
 <div class="container">
     <div class="content">
 
-</div>
+    </div>
 
 <div class="container">
     <h1>@Model.ModuleTitle</h1>
