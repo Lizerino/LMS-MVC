@@ -20,7 +20,7 @@
     {
     @foreach (var lateAssignment in Model.LateAssignments)
     {
-        <p class="late"> @uow.ActivityRepository.GetActivityAsync(lateAssignment,false).Result.Title</p>
+        <a asp-controller="Activities" asp-action="Details" asp-route-id="@lateAssignment" class="btn btn-outline-danger"> @uow.ActivityRepository.GetActivityAsync(lateAssignment,false).Result.Title</a>
     }
     }
 </div>

@@ -77,7 +77,7 @@ namespace Lms.MVC.UI.Views.Shared.Components.ListFiles
                 }
                 else
                 {
-                files.FileList = uow.ActivityRepository.GetAllFilesByActivityId(Int32.Parse(id)).Result.Where(f => f.Assignment == false).ToList();
+                    files.FileList = uow.ActivityRepository.GetAllFilesByActivityId(Int32.Parse(id)).Result.Where(f => f.Assignment == false).ToList();
 
                 }
             }
