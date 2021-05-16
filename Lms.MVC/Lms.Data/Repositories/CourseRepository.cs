@@ -127,14 +127,13 @@ namespace Lms.MVC.Data.Repositories
             return course.Files;
         }
 
-        public IEnumerable<string> GetTeachers(int? courseId) => GetCourseAsync(courseId ,false, true).Result.Users.Where(u => u.Role == RoleHelper.Admin || u.Role == RoleHelper.Teacher).Select(t => t.Name);
+        public IEnumerable<ApplicationUser> GetTeachers(int? courseId) => GetCourseAsync(courseId ,false, true).Result.Users.Where(u => u.Role == RoleHelper.Admin || u.Role == RoleHelper.Teacher);
 
 
-        public IEnumerable<string> GetTeachersByModule(int? moduleId)
+        public IEnumerable<ApplicationUser> GetTeachersByModule(int? moduleId)
         {
             var module = db.Modules.FirstOrDefault(m => m.Id == moduleId);
-            var teachers = GetCourseAsync(module.CourseId,false, true).Result.Users.Where(u => u.Role == RoleHelper.Teacher || u.Role == RoleHelper.Admin)
-                .Select(u=>u.Name);
+            var teachers = GetCourseAsync(module.CourseId, false, true).Result.Users.Where(u => u.Role == RoleHelper.Teacher || u.Role == RoleHelper.Admin);                
             return teachers;
             
 

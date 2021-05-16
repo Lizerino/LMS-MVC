@@ -1,13 +1,10 @@
-﻿using Lms.MVC.Core.Entities;
+﻿using System.Collections.Generic;
+
+using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Lms.MVC.UI.Views.Shared.Components.StudentStatisticsBar
 {
@@ -15,20 +12,24 @@ namespace Lms.MVC.UI.Views.Shared.Components.StudentStatisticsBar
 
     {
         public IEnumerable<int> LateAssignments { get; set; }
-        public string NextDueAssignment { get; set; }
-        public string CurrentMoudle { get; set; }
-        public string NextModule { get; set; }
-        public IEnumerable<string> Teachers { get; set; }
+
+        public int NextDueAssignment { get; set; }
+
+        public int CurrentModule { get; set; }
+
+        public int NextModule { get; set; }
+
+        public IEnumerable<ApplicationUser> Teachers { get; set; }
+
         public string CMAType { get; set; }
-
-
-
     }
 
     public class StudentStatisticsBarViewComponent : ViewComponent
     {
         private readonly IUoW uoW;
+
         private readonly UserManager<ApplicationUser> userManager;
+
         public StudentStatisticsBarViewComponent(IUoW uoW, UserManager<ApplicationUser> userManager)
         {
             this.uoW = uoW;
@@ -41,28 +42,26 @@ namespace Lms.MVC.UI.Views.Shared.Components.StudentStatisticsBar
 
             switch (cmaType.ToLower())
             {
-
-                case "module" :
+                case "module":
                     bar.LateAssignments = uoW.ActivityRepository.GetAllLateAssignmentsFromModuleAsync((int)moduleId, userId).Result;
-                    bar.CurrentMoudle = uoW.ModuleRepository.GetCurrentModule(courseId, moduleId);
+                    bar.CurrentModule = uoW.ModuleRepository.GetCurrentModule(courseId, moduleId);
                     bar.NextModule = uoW.ModuleRepository.GetNextModule(courseId, moduleId);
-                    bar.NextDueAssignment = uoW.ActivityRepository.GetNextDueAssignment(courseId,moduleId);
+                    bar.NextDueAssignment = uoW.ActivityRepository.GetNextDueAssignment(courseId, moduleId);
                     bar.Teachers = uoW.CourseRepository.GetTeachersByModule(moduleId);
 
                     break;
 
                 case "course":
                     bar.LateAssignments = uoW.ActivityRepository.GetAllLateAssignmentsFromCourseAsync((int)courseId, userId).Result;
-                    bar.CurrentMoudle = uoW.ModuleRepository.GetCurrentModule(courseId, moduleId);
+                    bar.CurrentModule = uoW.ModuleRepository.GetCurrentModule(courseId, moduleId);
                     bar.NextModule = uoW.ModuleRepository.GetNextModule(courseId, moduleId);
                     bar.NextDueAssignment = uoW.ActivityRepository.GetNextDueAssignment(courseId, moduleId);
                     bar.Teachers = uoW.CourseRepository.GetTeachers(courseId);
                     break;
-              
+
                 default:
-                     ModelState.AddModelError("", "Something went wrong");
+                    ModelState.AddModelError("", "Something went wrong");
                     break;
-                    
             }
             bar.CMAType = cmaType;
 

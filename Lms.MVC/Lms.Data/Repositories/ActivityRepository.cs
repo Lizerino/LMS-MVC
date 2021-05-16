@@ -150,7 +150,7 @@ namespace Lms.MVC.Data.Repositories
             return await db.Activities.Where(a => a.ModuleId == id).ToListAsync();
         }
 
-        public string GetNextDueAssignment(int? courseId, int? moduleId)
+        public int GetNextDueAssignment(int? courseId, int? moduleId)
         {
             if (!(moduleId == null))
             {
@@ -161,9 +161,9 @@ namespace Lms.MVC.Data.Repositories
                     .FirstOrDefault(a => a.StartDate <= DateTime.Now && a.EndDate > DateTime.Now);
                 if (assignment is null)
                 {
-                    return "No next assignments";
+                    return -1;
                 }
-                else return assignment.Title;
+                else return assignment.Id;
             }
             else if (!(courseId == null))
             {
@@ -176,13 +176,13 @@ namespace Lms.MVC.Data.Repositories
 
                 if (assignment is null)
                 {
-                    return "No next assignments";
+                    return -1;
                 }
-                else return assignment.Title;
+                else return assignment.Id;
             }
             else
             {
-                return "something went wrong";
+                return -1;
             }
         }
     }

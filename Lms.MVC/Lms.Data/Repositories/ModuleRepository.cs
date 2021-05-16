@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;
-using Lms.MVC.Data.Repositories.Helpers;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Lms.MVC.Data.Repositories
@@ -52,25 +52,25 @@ namespace Lms.MVC.Data.Repositories
             return await query.FirstOrDefaultAsync(m => m.Id == moduleId && m.CourseId == id);
         }
 
-        public string GetCurrentModule(int? courseId, int? moduleId)
+        public int GetCurrentModule(int? courseId, int? moduleId)
 
         {
             if (courseId is not null)
             {
-            var result = db.Modules
-                .Where(m=>m.CourseId == courseId)
-                .FirstOrDefault(m => m.StartDate <= DateTime.Now && m.EndDate > DateTime.Now);
-            if (result is null)
-            {
-                return "No current module";
-            }
+                var result = db.Modules
+                    .Where(m => m.CourseId == courseId)
+                    .FirstOrDefault(m => m.StartDate <= DateTime.Now && m.EndDate > DateTime.Now);
+                if (result is null)
+                {
+                    // return -1 for no current module
+                    return -1;
+                }
                 else
                 {
-                return result.Title;
+                    return result.Id;
                 }
-
             }
-            else if(moduleId is not null)
+            else if (moduleId is not null)
             {
                 var moduleFromUI = GetModuleAsync((int)moduleId).Result;
                 var currentCourse = db.Courses.FirstOrDefault(c => c.Modules.Contains(moduleFromUI));
@@ -80,31 +80,27 @@ namespace Lms.MVC.Data.Repositories
                .FirstOrDefault(m => m.StartDate <= DateTime.Now && m.EndDate > DateTime.Now);
                 if (result is null)
                 {
-                    return "No current module";
+                    // return -1 for no current module
+                    return -1;
                 }
                 else
                 {
-                    return result.Title;
+                    return result.Id;
                 }
-
             }
-            else return "Something went wrong";
-
+            return -1;
         }
 
-
-        public string GetNextModule(int? courseId, int? moduleId)
+        public int GetNextModule(int? courseId, int? moduleId)
         {
-
             if (courseId is not null)
             {
-
                 var currentModule = db.Modules
                     .Where(m => m.CourseId == courseId)
                     .FirstOrDefault(m => m.StartDate <= DateTime.Now && m.EndDate > DateTime.Now);
                 if (currentModule is null)
                 {
-                    return "No next module";
+                    return -1;
                 }
                 else
                 {
@@ -116,9 +112,9 @@ namespace Lms.MVC.Data.Repositories
                         .FirstOrDefault(m => m.StartDate > currentModuleEndDate);
                     if (nextModule is null)
                     {
-                        return $"{currentModule.Title} : is the last module";
+                        return -1;
                     }
-                    else return nextModule.Title;
+                    else return nextModule.Id;
                 }
             }
             else if (moduleId is not null)
@@ -131,7 +127,7 @@ namespace Lms.MVC.Data.Repositories
                     .FirstOrDefault(m => m.StartDate <= DateTime.Now && m.EndDate > DateTime.Now);
                 if (currentModule is null)
                 {
-                    return "No next module";
+                    return -1;
                 }
                 else
                 {
@@ -143,19 +139,13 @@ namespace Lms.MVC.Data.Repositories
                         .FirstOrDefault(m => m.StartDate > currentModuleEndDate);
                     if (nextModule is null)
                     {
-                        return "This is the last module";
+                        return -1;
                     }
-                    else return nextModule.Title;
+                    else return nextModule.Id;
                 }
             }
-            else return "Something went wrong";
-
-            
+            else return -1;
         }
-
-
-
-
 
         public async Task<Module> GetModuleByTitleAsync(int id, string title)
         {
@@ -180,11 +170,8 @@ namespace Lms.MVC.Data.Repositories
 
         public async Task<ICollection<ApplicationFile>> GetAllFilesByModuleId(int id)
         {
-
             var module = await db.Modules.Where(c => c.Id == id).Include(c => c.Files).FirstOrDefaultAsync();
             return module.Files;
         }
-
-
     }
 }

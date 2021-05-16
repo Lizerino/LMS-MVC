@@ -55,7 +55,7 @@
             @await Component.InvokeAsync("UploadFile", new { userId = userManager.GetUserAsync(User).Result.Id, Id = Model.Id, CMAType = "activity" })
             }
         </div>
-        <div class="col-xl-4">
+        <div class="col-xl-5">
             @await Component.InvokeAsync("StudentStatisticsBar", new { CMAType = "course", courseId = (int)Model.CourseId, moduleId = (int)Model.Id, userId = userManager.GetUserId(User) })
         </div>
     </div>

@@ -1,5 +1,6 @@
 ﻿@using Lms.MVC.UI.Views.Shared.Components.ListFiles
 @using Lms.MVC.Core.Repositories
+@using System.Net 
 @inject IUoW uow
 @model ListFiles
 
@@ -8,7 +9,7 @@
     foreach (var file in Model.FileList)
     {
 
-        <b>@file.UntrustedName</b><br/>
+<b>@WebUtility.HtmlDecode(file.UntrustedName)</b><br/>
 
         <span><b>Upload date:</b> @file.UploadDT -</span>
 

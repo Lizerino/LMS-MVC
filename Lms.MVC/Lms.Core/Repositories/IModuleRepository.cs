@@ -18,8 +18,8 @@ namespace Lms.MVC.Core.Repositories
         Task<IEnumerable<Module>> GetAllModulesByCourseIdAsync(int id);
 
         Task<Module> GetModuleByTitleAsync(int id, string title);
-        string GetCurrentModule(int? courseId, int? moduleId);
-        string GetNextModule(int? courseId, int? moduleId);
+        int GetCurrentModule(int? courseId, int? moduleId);
+        int GetNextModule(int? courseId, int? moduleId);
         void Remove(Module removed);
 
         void Update(Module module);

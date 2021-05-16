@@ -2,12 +2,9 @@
 @inject UserManager<ApplicationUser> userManager
 @model ListModuleViewModel
 
-
-@{ 
-    Layout = "ModuleActivityLayout";
+@{
     ViewData["CourseId"] = Model.CourseId;
     ViewData["Title"] = Model.CourseTitle;
-
 }
 
 <div class="row">
@@ -17,19 +14,9 @@
         </ol>
     </div>
 </div>
-@if (User.IsInRole("Student"))
-	{
-<div class="sidebar">
-    @await Component.InvokeAsync("StudentStatisticsBar", new { CMAType = "course", courseId = (int)Model.CourseId, moduleId = (int)Model.Id, userId=userManager.GetUserId(User) })
-</div>
-	}
-<div class="content">
-
-<div class="container">
-
-
-
+<div class="row">
     <h1>@Model.CourseTitle</h1>
+    <br />
     @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
     {
         <p>
@@ -45,10 +32,10 @@
             <a asp-controller="Courses" asp-action="Edit" asp-route-id="@Model.CourseId" class="btn btn-primary">Edit Course</a>
         </p>
     }
-    </div>
+</div>
 
-<div class="container">
-    <div class="row">
+<div class="row">
+    <div class="col">
         @if (Model.ModuleList.Count() != 0)
         {
             <div class="card__wrap--outer">
@@ -58,7 +45,7 @@
                         <div class="card">
                             <a asp-controller="Activities" asp-action="Index" asp-route-id="@module.Id">
                                 <div class="card__item">
-                                    <h2>@module.Title</h2>
+                                    <h4><b>@module.Title</b></h4>
                                 </div>
                                 <div class="card__item flexible">
                                     <small>@module.Description</small>
@@ -78,13 +65,17 @@
             <p>No modules in this course</p>
         }
     </div>
-    <div class="row">
-        <div class="col">Files:<br />@await Component.InvokeAsync("ListFiles", new { CMAType = "course", id = Model.CourseId.ToString(), userId = userManager.GetUserAsync(User).Result.Id })</div>
+
+    <div class="col-x-5">
+        @if (User.IsInRole("Student"))
+        {            
+                @await Component.InvokeAsync("StudentStatisticsBar", new { CMAType = "course", courseId = (int)Model.CourseId, moduleId = (int)Model.Id, userId = userManager.GetUserId(User) })            
+            <br />
+        }
+        Files:
+        <br />
+        @await Component.InvokeAsync("ListFiles", new { CMAType = "course", id = Model.CourseId.ToString(), userId = userManager.GetUserAsync(User).Result.Id })
+        <br />
+        @await Component.InvokeAsync("UploadFile", new { userId = userManager.GetUserAsync(User).Result.Id, Id = Model.CourseId, CMAType = "course" })
     </div>
-
-    @await Component.InvokeAsync("UploadFile", new { userId = userManager.GetUserAsync(User).Result.Id, Id = Model.CourseId, CMAType = "course" })
-
 </div>
-    </div>
-
-   
