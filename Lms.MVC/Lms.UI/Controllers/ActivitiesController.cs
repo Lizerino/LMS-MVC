@@ -9,14 +9,12 @@ using Itenso.TimePeriod;
 
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
-using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Models.ViewModels;
 using Lms.MVC.UI.Models.ViewModels.ActivityViewModels;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 using Newtonsoft.Json;
@@ -30,7 +28,7 @@ namespace Lms.MVC.UI.Controllers
         private readonly IMapper mapper;
 
         public ActivitiesController(IMapper mapper, IUoW uow)
-        {            
+        {
             this.mapper = mapper;
             this.uow = uow;
         }
@@ -40,19 +38,19 @@ namespace Lms.MVC.UI.Controllers
         {
             if (Id != null)
             {
-                var module = await uow.ModuleRepository.GetModuleAsync((int)Id);                
+                var module = await uow.ModuleRepository.GetModuleAsync((int)Id);
 
                 var result = new ListActivityViewModel();
                 result.ModuleId = (int)Id;
-                result.ModuleTitle = module.Title;               
+                result.ModuleTitle = module.Title;
 
                 return View(result);
             }
             else if (User.IsInRole("Student"))
             {
                 return RedirectToAction("Index", "Modules");
-            }            
-                return RedirectToAction("Index","Courses");
+            }
+            return RedirectToAction("Index", "Courses");
         }
 
         // GET: Activities/Details/5
@@ -151,7 +149,7 @@ namespace Lms.MVC.UI.Controllers
             var activity = await uow.ActivityRepository.GetActivityAsync(id);
 
             //create viewModel
-            var model = mapper.Map<EditActivityViewModel>(activity);           
+            var model = mapper.Map<EditActivityViewModel>(activity);
             return View(model);
         }
 
@@ -210,7 +208,7 @@ namespace Lms.MVC.UI.Controllers
             var activities = await uow.ActivityRepository.GetAllActivitiesByModuleIdAsync(Id);
             var events = new List<SchedulerEvent>();
             foreach (var act in activities)
-            {        
+            {
                 var calevent = new SchedulerEvent();
                 calevent.Id = act.Id;
                 calevent.realId = act.Id.ToString();
@@ -218,6 +216,32 @@ namespace Lms.MVC.UI.Controllers
                 calevent.text = act.Description;
                 calevent.start_date = act.StartDate;
                 calevent.end_date = act.EndDate;
+                switch (act.ActivityTypeId)
+                {
+                    case 1:
+                        calevent.color = "red";
+                        break;
+
+                    case 2:
+                        calevent.color = "green";
+                        break;
+
+                    case 3:
+                        calevent.color = "yellow";
+                        break;
+
+                    case 4:
+                        calevent.color = "white";
+                        break;
+
+                    case 5:
+                        calevent.color = "black";
+                        break;
+
+                    default:
+                        calevent.color = "blue";
+                        break;
+                }
                 events.Add(calevent);
             }
             var response = JsonConvert.SerializeObject(events);
