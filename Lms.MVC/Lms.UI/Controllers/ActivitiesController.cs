@@ -57,9 +57,10 @@ namespace Lms.MVC.UI.Controllers
 
         // GET: Activities/Details/5
         [ModelValid]
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string id)
         {
-            var activity = await uow.ActivityRepository.GetActivityAsync(id);
+            var Id = Int32.Parse(id);
+            var activity = await uow.ActivityRepository.GetActivityAsync(Id);
             var activityViewModel = mapper.Map<DetailActivityViewModel>(activity);
             return View(activityViewModel);
         }
@@ -212,6 +213,7 @@ namespace Lms.MVC.UI.Controllers
             {        
                 var calevent = new SchedulerEvent();
                 calevent.Id = act.Id;
+                calevent.realId = act.Id.ToString();
                 calevent.Title = act.Title;
                 calevent.text = act.Description;
                 calevent.start_date = act.StartDate;

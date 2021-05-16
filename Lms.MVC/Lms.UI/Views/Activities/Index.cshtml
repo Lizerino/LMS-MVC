@@ -4,7 +4,7 @@
 @model ListActivityViewModel
 
 <head>
-    <script src="https://cdn.dhtmlx.com/scheduler/edge/dhtmlxscheduler.js"></script>
+    <script src="~/js/dhtmlxscheduler.js"></script>
     <script src="~/js/dhtmlxscheduler_agenda_view.js"></script>
     <script src="~/js/dhtmlxscheduler_readonly.js"></script>
     <link href="https://cdn.dhtmlx.com/scheduler/edge/dhtmlxscheduler_material.css"
@@ -40,18 +40,35 @@
 </div>
 @section Scripts {
     @*This is the dhtmlx scheduler*@
-    <script>
-        scheduler.config.readonly_form = true;  
+<script>
+        scheduler.config.readonly_form = true;
+
         scheduler.attachEvent("onTemplatesReady", function () {
             scheduler.templates.event_header = function (start, end, ev)
-            {               
-                return (ev.Title + " " + scheduler.templates.event_date(start) + " - " + scheduler.templates.event_date(end))     
+            {
+                return (ev.Title + " " + scheduler.templates.event_date(start) + " - " + scheduler.templates.event_date(end))
             };
-        }); 
-        var url = "/Activities/GetEvents/@Html.Raw(Model.ModuleId)";
+            scheduler.templates.event_bar_text = function (start, end, event) {
+                return event.Title;
+            };
+            scheduler.templates.agenda_text = function (start, end, ev) {
+                return ev.Title;
+            };
+        });
+
+        scheduler.attachEvent("onClick", function (id, e) {
+            var eventObj = scheduler.getEvent(id);
+            window.location.href = "/Activities/Details/" + eventObj.realId;            
+        });
+
+        scheduler.config.dblclick_create = false; scheduler.config.drag_create = false;
+
         var d = new Date();
         scheduler.init('scheduler_here', d.now, "month");
-        scheduler.load(url, "json")
-    </script>
+
+        // load data from backend
+        var url = "/Activities/GetEvents/@Html.Raw(Model.ModuleId)";
+        scheduler.load(url, "json");
+</script>
     
 }
