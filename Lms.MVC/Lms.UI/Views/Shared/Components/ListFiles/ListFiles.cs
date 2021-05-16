@@ -38,13 +38,13 @@ namespace Lms.MVC.UI.Views.Shared.Components.ListFiles
             this.uow = uow;
         }
 
-        public IViewComponentResult Invoke(string CMAType, string id, bool userIsTeacher)
+        public IViewComponentResult Invoke(string CMAType, string id, bool userIsTeacher, string userId)
         {
             ListFiles files = new ListFiles();
+                files.userId = userId;
             if (CMAType.ToLower() == "user")
             {
                 files.FileList = uow.UserRepository.GetAllFilesByUserId(id).Result;
-                files.userId = id;
             }
             if (CMAType.ToLower() == "course")
             {

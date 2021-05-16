@@ -29,42 +29,49 @@
 <div class="container">
     <div class="content">
 
-</div>
+    </div>
 
-<div class="container">
-    <h1>@Model.ModuleTitle</h1>
-    @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
-    {
-        <p>
-            <a asp-action="Create" asp-route-id="@Model.ModuleId" class="btn btn-primary mr-3">Create New Activity</a>
-            <a asp-controller="Modules" asp-action="Edit" asp-route-id="@Model.ModuleId" class="btn btn-primary">Edit Module</a>
-        </p>
-    }
-</div>
-<div class="container">
-    @* TODO move this into css *@
-    <div class="row" style="background:white">
-        <div style="color: green;background: white;">&#9632; = Lecture&emsp;</div> 
-        <div style="color: magenta;background: white">&#9632; = ELearning&emsp;</div> 
-        <div style="color: blue;background: white">&#9632; = Practise&emsp;</div> 
-        <div style="color: red;background: white">&#9632; = Assignment&emsp;</div> 
-        <div style="color: black;background: white">&#9632; = Other</div>
+    <div class="container">
+        <h1>@Model.ModuleTitle</h1>
+        @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
+        {
+            <p>
+                <a asp-action="Create" asp-route-id="@Model.ModuleId" class="btn btn-primary mr-3">Create New Activity</a>
+                <a asp-controller="Modules" asp-action="Edit" asp-route-id="@Model.ModuleId" class="btn btn-primary">Edit Module</a>
+            </p>
+        }
+    </div>
+    <div class="container">
+        @* TODO move this into css *@
+        <div class="row" style="background:white">
+            <div style="color: green;background: white;">&#9632; = Lecture&emsp;</div>
+            <div style="color: magenta;background: white">&#9632; = ELearning&emsp;</div>
+            <div style="color: blue;background: white">&#9632; = Practise&emsp;</div>
+            <div style="color: red;background: white">&#9632; = Assignment&emsp;</div>
+            <div style="color: black;background: white">&#9632; = Other</div>
 
-        <div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100vh;'>
-            <div class="dhx_cal_navline">
-                <div class="dhx_cal_prev_button">&nbsp;</div>
-                <div class="dhx_cal_next_button">&nbsp;</div>
-                <div class="dhx_cal_today_button"></div>
-                <div class="dhx_cal_date"></div>
-                <div class="dhx_cal_tab" name="day_tab"></div>
-                <div class="dhx_cal_tab" name="week_tab"></div>
-                <div class="dhx_cal_tab" name="month_tab"></div>
-                <div class="dhx_cal_tab" name="agenda_tab" style="right:280px;"></div>
+            <div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100vh;'>
+                <div class="dhx_cal_navline">
+                    <div class="dhx_cal_prev_button">&nbsp;</div>
+                    <div class="dhx_cal_next_button">&nbsp;</div>
+                    <div class="dhx_cal_today_button"></div>
+                    <div class="dhx_cal_date"></div>
+                    <div class="dhx_cal_tab" name="day_tab"></div>
+                    <div class="dhx_cal_tab" name="week_tab"></div>
+                    <div class="dhx_cal_tab" name="month_tab"></div>
+                    <div class="dhx_cal_tab" name="agenda_tab" style="right:280px;"></div>
+                </div>
+                <div class="dhx_cal_header"></div>
+                <div class="dhx_cal_data"></div>
             </div>
-            <div class="dhx_cal_header"></div>
-            <div class="dhx_cal_data"></div>
         </div>
     </div>
+    <div class="row">
+        <div class="col">Files:<br />@await Component.InvokeAsync("ListFiles", new { CMAType = "module", id = Model.ModuleId.ToString(), userId = userManager.GetUserAsync(User).Result.Id })</div>
+    </div>
+    
+        @await Component.InvokeAsync("UploadFile", new { userId = userManager.GetUserAsync(User).Result.Id, Id = Model.ModuleId, CMAType = "module" })
+   
 </div>
     </div>
 @section Scripts {
