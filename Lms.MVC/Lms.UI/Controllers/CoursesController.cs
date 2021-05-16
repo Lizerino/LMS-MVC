@@ -79,6 +79,7 @@ namespace Lms.MVC.UI.Controllers
             return View(paginatedResult);
         }
         // GET: Courses
+        [Authorize(Roles ="Teacher,Admin")]
         public async Task<IActionResult> Index(string search, string sortOrder, int page)
         {
             if (search != null)

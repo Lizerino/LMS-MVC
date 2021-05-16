@@ -43,6 +43,8 @@ namespace Lms.MVC.UI.Controllers
                 var result = new ListActivityViewModel();
                 result.ModuleId = (int)Id;
                 result.ModuleTitle = module.Title;
+                result.CourseId = module.CourseId;
+                result.CourseTitle = uow.CourseRepository.GetCourseAsync(module.CourseId).Result.Title;
 
                 return View(result);
             }
@@ -59,7 +61,14 @@ namespace Lms.MVC.UI.Controllers
         {
             var Id = Int32.Parse(id);
             var activity = await uow.ActivityRepository.GetActivityAsync(Id, true);
+            var moduleTitle = uow.ModuleRepository.GetModuleAsync(activity.ModuleId).Result.Title;
+            var courseId = uow.ModuleRepository.GetModuleAsync(activity.ModuleId).Result.CourseId;
+            var courseTitle = uow.CourseRepository.GetCourseAsync(courseId).Result.Title;
             var activityViewModel = mapper.Map<DetailActivityViewModel>(activity);
+            activityViewModel.CourseId = courseId;
+            activityViewModel.CourseTitle = courseTitle;
+            activityViewModel.ModuleId = activity.ModuleId;
+            activityViewModel.ModuleTitle = moduleTitle;
             return View(activityViewModel);
         }
 

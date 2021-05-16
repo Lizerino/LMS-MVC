@@ -6,71 +6,56 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<!DOCTYPE html>
+<html lang="en">
 
-<h4>Activity</h4>
-<hr />
-<div class="row">
-    <div class="col-9">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ActivityType)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ActivityType.Name)
-        </dd>
-    </div>
-    <div class="col">
-        <div class="col-3">
-            <div class="card">
-                <div class="card-header">
-                    Files Submitted to @Model.Title
-                </div>
-                <div class="card-body">
-                    @await Component.InvokeAsync("ListFiles", new { CMAType = "activity", id = Model.Id.ToString() })
-                </div>
-            </div>
-            @if (Model.ActivityType.Name == "Assignment" || User.IsInRole("Teacher"))
-            {
-                <div class="card">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Untitled</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
 
-                    <div class="card-header">Upload New Document or File</div>
-                    <div class="card-body">
-                        @await Component.InvokeAsync("UploadFile", new { userId = userManager.GetUserAsync(User).Result.Id, Id = Model.Id, CMAType = "activity" })
-                    </div>
-                </div>
-            }
+<body>
+    <div class="row">
+        <div class="col">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Modules" asp-route-Id="@Model.CourseId"><span>@Model.CourseTitle</span></a></li>
+                <li class="breadcrumb-item"><a asp-action="Index" asp-route-Id="@Model.ModuleId"><span>@Model.ModuleTitle</span></a></li>
+                <li class="breadcrumb-item"><a href="#"><span>@Model.Title</span></a></li>
+            </ol>
         </div>
     </div>
-</div>
 <div>
     @if (User.IsInRole("Teacher") || User.IsInRole("Admin"))
     {
         <a asp-action="Edit" asp-route-id="@Model.Id">Edit Activity</a>
-    }
-    |
-    <a asp-action="Index">Back to List</a>
+    }    
+    <a asp-action="Index" asp-route-Id="@Model.ModuleId">Back to the schedule</a>
+    <br />
 </div>
+    <div class="row">
+        <div class="col">
+            <div class="row">
+                <div class="col"><h3>@Model.Title</h3></div>
+                <div class="col">End date: @Model.EndDate</div>
+            </div>
+            <div class="row">
+                <div class="col">@Model.Description</div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col">Files:<br />@await Component.InvokeAsync("ListFiles", new { CMAType = "activity", id = Model.Id.ToString() })</div>
+            </div>            
+            @if (Model.ActivityType.Name == "Assignment" || User.IsInRole("Teacher"))
+            {   
+            @await Component.InvokeAsync("UploadFile", new { userId = userManager.GetUserAsync(User).Result.Id, Id = Model.Id, CMAType = "activity" })
+            }
+        </div>
+        <div class="col-xl-4"></div>
+    </div>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

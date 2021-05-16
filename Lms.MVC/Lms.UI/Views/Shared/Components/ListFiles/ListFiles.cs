@@ -25,6 +25,8 @@ namespace Lms.MVC.UI.Views.Shared.Components.ListFiles
         public ICollection<ApplicationFile> FileList { get; set; }
 
         public string CMAType { get; set; }
+
+        public string userId { get; set; }
     }
 
     public class ListFilesViewComponent : ViewComponent
@@ -42,6 +44,7 @@ namespace Lms.MVC.UI.Views.Shared.Components.ListFiles
             if (CMAType.ToLower() == "user")
             {
                 files.FileList = uow.UserRepository.GetAllFilesByUserId(id).Result;
+                files.userId = id;
             }
             if (CMAType.ToLower() == "course")
             {

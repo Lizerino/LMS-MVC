@@ -28,8 +28,10 @@ async function AJAXSubmit(oFormElement) {
             body: formData
         });
 
-        oFormElement.elements.namedItem("result").value =
-            'Result: ' + response.status + ' ' + response.statusText;
+        //oFormElement.elements.namedItem("result").value =
+        //    'Result: ' + response.status + ' ' + response.statusText;
+        location.reload();
+
     } catch (error) {
         console.error('Error:', error);
     }

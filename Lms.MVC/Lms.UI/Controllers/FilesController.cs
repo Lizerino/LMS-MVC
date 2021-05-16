@@ -68,8 +68,9 @@ namespace Lms.MVC.UI.Controllers
         }
 
         // Add confirmation
-        public async Task<IActionResult> DeleteFile(int? id, string CMAType)
+        public async Task<IActionResult> DeleteFile(int? id, string CMAType, string originUrl)
         {
+                if (CMAType == "activity") CMAType = "Activitie";               
             if (id == null)
             {
                 return RedirectToAction("Index", CMAType + "s");
@@ -83,7 +84,8 @@ namespace Lms.MVC.UI.Controllers
                 await uoW.CompleteAsync();
             }
 
-            return RedirectToAction("Index", CMAType + "s");
+            return Redirect(originUrl);
+
         }
 
         // The following upload methods:

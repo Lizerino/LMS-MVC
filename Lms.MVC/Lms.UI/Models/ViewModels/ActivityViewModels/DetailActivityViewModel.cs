@@ -29,7 +29,8 @@ namespace Lms.MVC.UI.Models.ViewModels.ActivityViewModels
 
         [Display(Name = "Module Title")]
         public string ModuleTitle { get; set; }
-
+                public int CourseId { get; set; }
+        public string CourseTitle { get; set; }
         public List<Activity> ActivityList { get; set; }
 
         public Microsoft.AspNetCore.Mvc.Rendering.SelectList ActivityTypes { get; set; }

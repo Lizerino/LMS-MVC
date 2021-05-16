@@ -6,8 +6,15 @@
     foreach (var file in Model.FileList)
     {
         <tr>
+            @*@if (file.)
+            {
+
+            }*@
             <td>
-                <a asp-action="DeleteFile" asp-controller="Files" asp-route-id="@file.Id" asp-route-CMAType="@Model.CMAType">Delete</a>
+                <a asp-action="DeleteFile" asp-controller="Files" 
+                   asp-route-id="@file.Id" 
+                   asp-route-CMAType="@Model.CMAType" 
+                   asp-route-originUrl=@Context.Request.Path>Delete</a>
             </td>
             <td>
                 <b>@file.UntrustedName</b><br>
