@@ -33,7 +33,7 @@ namespace Lms.MVC.Data.Repositories
                         .ToListAsync();
         }
 
-        public async Task<IEnumerable<Module>> GetAllModulesAsync(int id)
+        public async Task<IEnumerable<Module>> GetAllModulesByCourseIdAsync(int id)
         {
             var query = db.Modules.AsQueryable().Where(m => m.CourseId == id);
 

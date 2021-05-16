@@ -24,7 +24,7 @@ namespace Lms.MVC.UI
 
             // Modules
             CreateMap<Module, CreateModuleViewModel>().ReverseMap();
-            CreateMap<Module, ListModuleViewModel>().ReverseMap();
+            CreateMap<ListModuleViewModel, Module>().ReverseMap();
             CreateMap<Module, EditModuleViewModel>().ReverseMap();
 
             // Activities

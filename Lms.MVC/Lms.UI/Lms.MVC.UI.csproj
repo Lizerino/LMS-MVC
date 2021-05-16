@@ -7,12 +7,18 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\FileHandlerController.cs" />
+    <Compile Remove="Models\calendarEvent.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Models\ViewModels\CalendarEvent.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="FluentEmail.Core" Version="3.0.0" />
     <PackageReference Include="FluentEmail.Smtp" Version="3.0.0" />
+    <PackageReference Include="jQuery.Fullcalendar" Version="3.9.0" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.4" />

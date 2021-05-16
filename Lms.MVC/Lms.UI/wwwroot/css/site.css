@@ -5,13 +5,17 @@ for details on configuring this project to bundle and minify static web assets. 
 :root {
     --text-color: whitesmoke;
     --a-color: whitesmoke;
-    --a-hover-color: #ffaf4d;
+    --a-hover-color: #E16541;
 }
 
 a.navbar-brand {
     white-space: normal;
     text-align: center;
     word-break: break-all;
+}
+
+.navbar-dark a:hover {
+    color: #E16541 !important;
 }
 
 /* Provide sufficient contrast against white background */
@@ -73,8 +77,8 @@ html {
     min-height: 100%;
 }
 
-body {
-    background-image: url('../Assets/background2.png');
+body {    
+    background-image: url('../Assets/PotentialBackground.jpg');
     color: var(--text-color);
     background-size: cover;
     background-repeat: no-repeat;
@@ -90,6 +94,10 @@ a:hover {
 
 a {
     color: var(--a-color);
+}
+
+.table-dark {
+    background-color: rgb(10, 10, 40, 0.75);
 }
 
 table {
@@ -121,10 +129,20 @@ tbody {
     align-content: center;
 }
 
+.card a:hover {
+    color: #E16541;
+}
+
 .card {
+    border-radius: 15px !important;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+    margin: 1rem;
+    padding: 1.5rem;
+    background-color: rgba(10, 10, 40, 0.75) !important;
+}
+
+.card-login {
     border-radius: 15px 50px 30px !important;
-    /*box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;*/
-    /*box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;*/
     box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
     height: auto;
     margin-top: auto;
@@ -285,19 +303,19 @@ input:focus {
 }
 
 
-.navbar-light {
+.navbar-dark {
     background-color: transparent !important;
     border-bottom: none !important;
     box-shadow: rgba(0,0,0, 10) 0px 0px 10px 0px inset;
-padding-bottom:0em !important;
-        display:flex !important;
+    padding-bottom: 0em !important;
+    display: flex !important;
 }
 
-    .navbar-light a {
+    .navbar-dark a {
         color: #9c9cd1 !important;
     }
 
-    .navbar-light button {
+    .navbar-dark button {
         color: #9c9cd1 !important;
     }
 
@@ -305,4 +323,43 @@ padding-bottom:0em !important;
 .logo {
 height: 5rem;
 width:  6rem;
+}
+
+/*Card Flex Code*/
+
+.card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.card__wrap--outer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.card__wrap--inner {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+@media (min-width: 480px) {
+
+    .card__wrap--inner {
+        width: 100%
+    }
+}
+
+@media (min-width: 1024px) {
+
+    .card__wrap--inner {
+        width: 33.33%
+    }
+}
+
+.flexible {
+    flex-grow: 1;
 }

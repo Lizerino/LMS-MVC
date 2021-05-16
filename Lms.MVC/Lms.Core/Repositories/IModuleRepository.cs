@@ -9,18 +9,20 @@ namespace Lms.MVC.Core.Repositories
     {
         Task AddAsync(Module added);
 
-        Task<IEnumerable<Module>> GetAllModulesAsync(bool includeActivities);
+        Task<IEnumerable<Module>> GetAllModulesAsync(bool includeActivities);        
 
         Task<Module> GetModuleAsync(int id);
 
         Task<Module> GetModuleWithFilesAsync(int? id);
         Task<Module> GetModuleAsync(int id, int moduleId);
+        Task<IEnumerable<Module>> GetAllModulesByCourseIdAsync(int id);
 
         Task<Module> GetModuleByTitleAsync(int id, string title);
 
         void Remove(Module removed);
 
         void Update(Module module);
+
 
         Task<bool> SaveAsync();
         Task<ICollection<ApplicationFile>> GetAllFilesByModuleId(int id);

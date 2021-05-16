@@ -43,11 +43,11 @@ namespace Lms.MVC.Data.Data
             // new Random(12345);
             Randomizer.Seed = new Random();
 
-            NumberOfCourses = 5;
-            NumberOfModulesPerCourse = 3;
-            NumberOfActivititesPerModule = 3;
-            NumberOfStudentsPerClass = 10;
-            NumberOfTeachersPerClass = 1;
+            NumberOfCourses = 11;
+            NumberOfModulesPerCourse = 11;
+            NumberOfActivititesPerModule = 11;
+            NumberOfStudentsPerClass = 11;
+            NumberOfTeachersPerClass = 2;
 
             NumberOfModules = NumberOfCourses * NumberOfModulesPerCourse;
             NumberOfActivities = NumberOfModules * NumberOfActivititesPerModule;
@@ -101,6 +101,7 @@ namespace Lms.MVC.Data.Data
             var module = new Module();
 
             module.Title = fake.Name.JobTitle() + " Module";
+            module.Description = fake.Lorem.Sentence(10, 5);
             module.StartDate = fake.Date.Soon();
             module.EndDate = module.StartDate.AddDays(fake.Random.Int(4, 30));
 
