@@ -11,7 +11,7 @@
 <h4>Activity</h4>
 <hr />
 <div class="row">
-    <div class="col-9">
+    <div class="col-8">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Title)
         </dt>
@@ -43,14 +43,14 @@
             @Html.DisplayFor(model => model.ActivityType.Name)
         </dd>
     </div>
-    <div class="col">
-        <div class="col-3">
+    
+        <div class="col-4">
             <div class="card">
                 <div class="card-header">
-                    Files Submitted to @Model.Title
+                Files Submitted to @Model.Title
                 </div>
                 <div class="card-body">
-                    @await Component.InvokeAsync("ListFiles", new { CMAType = "activity", id = Model.Id.ToString() })
+                @await Component.InvokeAsync("ListFiles", new { CMAType = "activity", id = Model.Id.ToString() })
                 </div>
             </div>
             @if (Model.ActivityType.Name == "Assignment" || User.IsInRole("Teacher"))
@@ -59,12 +59,12 @@
 
                     <div class="card-header">Upload New Document or File</div>
                     <div class="card-body">
-                        @await Component.InvokeAsync("UploadFile", new { userId = userManager.GetUserAsync(User).Result.Id, Id = Model.Id, CMAType = "activity" })
+                    @await Component.InvokeAsync("UploadFile", new { userId = userManager.GetUserAsync(User).Result.Id, Id = Model.Id, CMAType = "activity" })
                     </div>
                 </div>
             }
         </div>
-    </div>
+    
 </div>
 <div>
     @if (User.IsInRole("Teacher") || User.IsInRole("Admin"))
