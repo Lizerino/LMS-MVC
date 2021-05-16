@@ -15,8 +15,8 @@ namespace Lms.MVC.Core.Repositories
 
         Task<Activity> GetActivityWithFilesAsync(int? id);
         Task<Activity> GetActivityAsync(int? id);
-        Task<IEnumerable<string>> GetAllLateAssignmentsFromModuleAsync(int id);
-        IEnumerable<string> GetAllLateAssignmentsFromCourseAsync(int courseId);
+        Task<IEnumerable<int>> GetAllLateAssignmentsFromModuleAsync(int id, string userId);
+        Task<IEnumerable<int>> GetAllLateAssignmentsFromCourseAsync(int courseId, string userId);
         Task<bool> SaveAsync();
         Task<IEnumerable<Activity>> GetAllActivitiesFromModuleAsync(int id);
         string GetNextDueAssignment(int? courseId, int? moduleId);

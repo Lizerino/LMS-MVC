@@ -1,8 +1,12 @@
-﻿using Lms.MVC.Core.Repositories;
+﻿using Lms.MVC.Core.Entities;
+using Lms.MVC.Core.Repositories;
+
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Lms.MVC.UI.Views.Shared.Components.StudentStatisticsBar
@@ -10,7 +14,7 @@ namespace Lms.MVC.UI.Views.Shared.Components.StudentStatisticsBar
     public class StudentStatisticsBar
 
     {
-        public IEnumerable<string> LateAssignments { get; set; }
+        public IEnumerable<int> LateAssignments { get; set; }
         public string NextDueAssignment { get; set; }
         public string CurrentMoudle { get; set; }
         public string NextModule { get; set; }
@@ -24,13 +28,14 @@ namespace Lms.MVC.UI.Views.Shared.Components.StudentStatisticsBar
     public class StudentStatisticsBarViewComponent : ViewComponent
     {
         private readonly IUoW uoW;
-        public StudentStatisticsBarViewComponent(IUoW uoW)
+        private readonly UserManager<ApplicationUser> userManager;
+        public StudentStatisticsBarViewComponent(IUoW uoW, UserManager<ApplicationUser> userManager)
         {
             this.uoW = uoW;
-            
+            this.userManager = userManager;
         }
 
-        public IViewComponentResult Invoke(string cmaType, int? courseId, int? moduleId)
+        public IViewComponentResult Invoke(string cmaType, int? courseId, int? moduleId, string userId)
         {
             var bar = new StudentStatisticsBar();
 
@@ -38,7 +43,7 @@ namespace Lms.MVC.UI.Views.Shared.Components.StudentStatisticsBar
             {
 
                 case "module" :
-                    bar.LateAssignments = uoW.ActivityRepository.GetAllLateAssignmentsFromModuleAsync((int)moduleId).Result;
+                    bar.LateAssignments = uoW.ActivityRepository.GetAllLateAssignmentsFromModuleAsync((int)moduleId, userId).Result;
                     bar.CurrentMoudle = uoW.ModuleRepository.GetCurrentModule(courseId, moduleId);
                     bar.NextModule = uoW.ModuleRepository.GetNextModule(courseId, moduleId);
                     bar.NextDueAssignment = uoW.ActivityRepository.GetNextDueAssignment(courseId,moduleId);
@@ -47,7 +52,7 @@ namespace Lms.MVC.UI.Views.Shared.Components.StudentStatisticsBar
                     break;
 
                 case "course":
-                    bar.LateAssignments = uoW.ActivityRepository.GetAllLateAssignmentsFromCourseAsync((int)courseId);
+                    bar.LateAssignments = uoW.ActivityRepository.GetAllLateAssignmentsFromCourseAsync((int)courseId, userId).Result;
                     bar.CurrentMoudle = uoW.ModuleRepository.GetCurrentModule(courseId, moduleId);
                     bar.NextModule = uoW.ModuleRepository.GetNextModule(courseId, moduleId);
                     bar.NextDueAssignment = uoW.ActivityRepository.GetNextDueAssignment(courseId, moduleId);

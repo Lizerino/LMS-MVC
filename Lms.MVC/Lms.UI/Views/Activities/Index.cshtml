@@ -21,7 +21,7 @@
 @if (User.IsInRole("Student"))
  { 
 <div class="sidebar">
-    @await Component.InvokeAsync("StudentStatisticsBar", new { CMAType = "module", moduleId = (int)Model.ModuleId })
+    @await Component.InvokeAsync("StudentStatisticsBar", new { CMAType = "module", moduleId = (int)Model.ModuleId, userId = userManager.GetUserId(User) })
 </div>
  } 
 

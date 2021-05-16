@@ -11,7 +11,7 @@ namespace Lms.MVC.Data.Repositories
 {
     internal class ActivityRepository : IActivityRepository
     {
-        private readonly ApplicationDbContext db;
+        private readonly ApplicationDbContext db;        
 
         public ActivityRepository(ApplicationDbContext db)
         {
@@ -28,27 +28,58 @@ namespace Lms.MVC.Data.Repositories
 
         public async Task<IEnumerable<Activity>> GetAllActivitiesFromModuleAsync(int id) => await db.Activities.Where(a => a.ModuleId == id).ToListAsync();
 
-        public async Task<IEnumerable<string>> GetAllLateAssignmentsFromModuleAsync(int id) => await db.Activities.Where(a => a.ModuleId == id).Where(a => a.EndDate < DateTime.Now)
-
-            .Where(m => m.ActivityType.Name == "Assignment").Select(m => m.Title)
-            .ToListAsync();
-
-        public IEnumerable<string> GetAllLateAssignmentsFromCourseAsync(int courseId)
+        public async Task<IEnumerable<int>> GetAllLateAssignmentsFromModuleAsync(int id, string userId)
         {
-            var activities = db.Courses
+            // Get all assignments for current module
+            var allLateAssignments = await db.Activities.Where(a => a.ModuleId == id).Where(a => a.EndDate < DateTime.Now)
+            .Where(m => m.ActivityType.Name == "Assignment").ToListAsync();
+
+            var currentUserFiles = await db.Users.Include(i => i.Files).Where(u => u.Id == userId).SelectMany(f => f.Files).ToListAsync();
+            
+            var lateAssignments = new List<int>();
+            if (currentUserFiles is null || allLateAssignments is null)
+            {
+                return null;
+            }
+            foreach (var assignment in allLateAssignments)
+            {
+                foreach(var file in currentUserFiles)
+                {
+                    if (!assignment.Files.Contains(file))
+                    {
+                        lateAssignments.Add(assignment.Id);
+                    }
+                }
+            }
+            return lateAssignments.Distinct();
+        }
+
+        public async Task<IEnumerable<int>> GetAllLateAssignmentsFromCourseAsync(int courseId, string userId)
+        {
+            var allLateAssignments = db.Courses
                 .Include(c => c.Modules).ThenInclude(m => m.Activities).ThenInclude(a => a.ActivityType)
                 .FirstOrDefaultAsync(c => c.Id == courseId).Result.Modules
                 .SelectMany(m => m.Activities)
                 .Where(a => a.EndDate < DateTime.Now && a.ActivityType.Name.ToLower() == "assignment");
 
-            if (!(activities is null))
+            var currentUserFiles = await db.Users.Include(i => i.Files).Where(u => u.Id == userId).SelectMany(f => f.Files).ToListAsync();
+
+            var lateAssignments = new List<int>();
+            if (currentUserFiles is null || allLateAssignments is null)
             {
-                return activities.Select(a => a.Title);
+                return null;
             }
-            else
+            foreach (var assignment in allLateAssignments)
             {
-                return new List<string>();
+                foreach (var file in currentUserFiles)
+                {
+                    if (!assignment.Files.Contains(file))
+                    {
+                        lateAssignments.Add(assignment.Id);
+                    }
+                }
             }
+            return lateAssignments.Distinct();
 
         }
 
