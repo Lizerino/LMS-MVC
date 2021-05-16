@@ -405,3 +405,10 @@ width:  6rem;
         height: 5.5vw;
     }
 }
+
+.dhx_agenda_area span{
+    color: white !important;
+}
+.dhx_agenda_event_time {
+    color: white !important;
+}

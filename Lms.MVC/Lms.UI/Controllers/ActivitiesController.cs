@@ -218,29 +218,35 @@ namespace Lms.MVC.UI.Controllers
                 calevent.end_date = act.EndDate;
                 switch (act.ActivityTypeId)
                 {
+                    // 1: Lecture
                     case 1:
-                        calevent.color = "red";
-                        break;
-
-                    case 2:
                         calevent.color = "green";
+                        calevent.textColor = "white";
                         break;
 
+                    // 2: ELearning
+                    case 2:
+                        calevent.color = "magenta";
+                        calevent.textColor = "white";
+                        break;
+
+                    // 3: Practise
                     case 3:
-                        calevent.color = "yellow";
+                        calevent.color = "blue";
+                        calevent.textColor = "white";
                         break;
 
+                    // 4: Assignment
                     case 4:
-                        calevent.color = "white";
+                        calevent.color = "red";
+                        calevent.textColor = "white";
                         break;
 
+                    // 5: Other
                     case 5:
                         calevent.color = "black";
-                        break;
-
-                    default:
-                        calevent.color = "blue";
-                        break;
+                        calevent.textColor = "white";
+                        break;                   
                 }
                 events.Add(calevent);
             }
