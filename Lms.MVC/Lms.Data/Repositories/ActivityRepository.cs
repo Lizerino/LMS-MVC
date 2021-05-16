@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using Lms.MVC.Core.Entities;
+﻿using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;
-
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Lms.MVC.Data.Repositories
 {
@@ -27,7 +26,33 @@ namespace Lms.MVC.Data.Repositories
 
         public async Task<IEnumerable<Activity>> GetAllActivitiesAsync() => await db.Activities.ToListAsync();
 
-        public async Task<Activity> GetActivityAsync(int? id) => await db.Activities.Include(a=>a.ActivityType).FirstOrDefaultAsync(c => c.Id == id);
+        public async Task<IEnumerable<Activity>> GetAllActivitiesFromModuleAsync(int id) => await db.Activities.Where(a => a.ModuleId == id).ToListAsync();
+
+        public async Task<IEnumerable<string>> GetAllLateAssignmentsFromModuleAsync(int id) => await db.Activities.Where(a => a.ModuleId == id).Where(a => a.EndDate < DateTime.Now)
+
+            .Where(m => m.ActivityType.Name == "Assignment").Select(m => m.Title)
+            .ToListAsync();
+
+        public IEnumerable<string> GetAllLateAssignmentsFromCourseAsync(int courseId)
+        {
+            var activities = db.Courses
+                .Include(c => c.Modules).ThenInclude(m => m.Activities).ThenInclude(a => a.ActivityType)
+                .FirstOrDefaultAsync(c => c.Id == courseId).Result.Modules
+                .SelectMany(m => m.Activities)
+                .Where(a => a.EndDate < DateTime.Now && a.ActivityType.Name.ToLower() == "assignment");
+
+            if (!(activities is null))
+            {
+                return activities.Select(a => a.Title);
+            }
+            else
+            {
+                return new List<string>();
+            }
+
+        }
+
+        public async Task<Activity> GetActivityAsync(int? id) => await db.Activities.FirstOrDefaultAsync(c => c.Id == id);
 
         public async Task<bool> SaveAsync() => (await db.SaveChangesAsync()) >= 0;
 
@@ -46,6 +71,40 @@ namespace Lms.MVC.Data.Repositories
         public async Task<List<Activity>> GetAllActivitiesByModuleIdAsync(int id)
         {
             return await db.Activities.Where(a => a.ModuleId == id).ToListAsync();
+        }
+
+        public string GetNextDueAssignment(int? courseId, int? moduleId)
+        {
+            if (!(moduleId == null))
+            {
+                var assignment = db.Activities
+                 //   .Include(a=>a.ActivityType)
+                    .Where(a => a.ModuleId == (int)moduleId && a.ActivityType.Name.ToLower() == "assignment")
+                    .FirstOrDefault(a => a.StartDate <= DateTime.Now && a.EndDate > DateTime.Now);
+                if (assignment is null)
+                {
+                    return "No next assignments";
+                }
+                else return assignment.Title;
+            }
+            else if (!(courseId == null))
+            {
+                var assignment = db.Courses
+                  //  .Include(c=>c.Modules).ThenInclude(m=>m.Activities).ThenInclude(a=>a.ActivityType)
+                    .FirstOrDefault(c => c.Id == (int)courseId).Modules.SelectMany(m => m.Activities)
+                    .Where(a => a.ActivityType.Name.ToLower() == "assignment")
+                    .FirstOrDefault(a => a.StartDate <= DateTime.Now && a.EndDate > DateTime.Now);
+               
+                if (assignment is null)
+                {
+                    return "No next assignments";
+                }
+                else return assignment.Title;
+            }
+            else
+            {
+                return "something went wrong";
+            }
         }
 
     }

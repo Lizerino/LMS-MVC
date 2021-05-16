@@ -15,9 +15,11 @@ namespace Lms.MVC.Core.Repositories
 
         Task<Activity> GetActivityWithFilesAsync(int? id);
         Task<Activity> GetActivityAsync(int? id);
-
+        Task<IEnumerable<string>> GetAllLateAssignmentsFromModuleAsync(int id);
+        IEnumerable<string> GetAllLateAssignmentsFromCourseAsync(int courseId);
         Task<bool> SaveAsync();
-
+        Task<IEnumerable<Activity>> GetAllActivitiesFromModuleAsync(int id);
+        string GetNextDueAssignment(int? courseId, int? moduleId);
         Task<bool> ActivityExists(int id);
 
         void Update(Activity activity);

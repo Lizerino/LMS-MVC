@@ -39,6 +39,7 @@ a {
 -------------------------------------------------- */
 html {
     font-size: 14px;
+    overflow:hidden;
 }
 
 @media (min-width: 768px) {
@@ -325,83 +326,82 @@ height: 5rem;
 width:  6rem;
 }
 
-/*Card Flex Code*/
 
-.card {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
+
+
+
+
+
+
+.sidebar {
+    margin: 0;
+    margin-bottom: 2rem;
+    padding: 0;
+    width: 200px;
+    background-color: rgba(256, 256, 256, 0.5);
+   position:fixed;
+    height: 100%;
+    overflow: auto;
+   
 }
 
-.card__wrap--outer {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    width: 100%;
+    .sidebar div {
+        display: block;
+        color: black;
+        padding: 0.7rem;
+        text-decoration: none;
+       
+    }
+
+        .sidebar p.late {
+            background-color: red;
+            color: white;
+        }
+
+   
+
+div.content {
+    margin-left: 200px;
+    padding: 1px 16px;
+    height: 100%;
 }
 
-.card__wrap--inner {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
+@media screen and (max-width: 700px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    @media screen and (min-width: 700px) {
+        .sidebar {
+            width: 100%;
+            height: 50%;
+            position: relative;
+        }
+        }
+
+            .sidebar div {
+                float: left;
+            }
+
+        div.content {
+            margin-left: 0;
+        }
+    }
+
+@media screen and (max-width: 400px) {
+    .sidebar div {
+        text-align: center;
+        float: none;
+    }
 }
-
-@media (min-width: 480px) {
-
-    .card__wrap--inner {
-        width: 100%
+@media screen and (min-width: 700px){
+    .course-module {
+        text-align: end;
+        margin-left: 200px;
     }
 }
 
-@media (min-width: 1024px) {
 
-    .card__wrap--inner {
-        width: 33.33%
-    }
-}
 
-.flexible {
-    flex-grow: 1;
-}
-
-.calendar .display-4 {
-    font-size: 1.5rem;
-}
-
-@media (max-width:991px) {
-    .calendar .day h5 {
-        background-color: #f8f9fa;
-        padding: 3px 5px 5px;
-        margin: -8px -8px 8px -8px;
-    }
-
-    .calendar .date {
-        padding-left: 4px;
-    }
-}
-
-@media (min-width: 992px) {
-    .calendar h5 {
-        font-size: 0.9rem;
-    }
-
-    .calendar .day {
-        height: 8vw;
-    }
-
-    .calendar .event {
-        font-size: 0.67rem;
-    }
-}
-
-@media (min-width: 1440px) {
-    .calendar .day {
-        height: 7vw;
-    }
-}
-
-@media (min-width: 1920px) {
-    .calendar .day {
-        height: 5.5vw;
-    }
-}
