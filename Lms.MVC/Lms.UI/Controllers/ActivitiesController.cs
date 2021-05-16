@@ -58,7 +58,7 @@ namespace Lms.MVC.UI.Controllers
         public async Task<IActionResult> Details(string id)
         {
             var Id = Int32.Parse(id);
-            var activity = await uow.ActivityRepository.GetActivityAsync(Id);
+            var activity = await uow.ActivityRepository.GetActivityAsync(Id, true);
             var activityViewModel = mapper.Map<DetailActivityViewModel>(activity);
             return View(activityViewModel);
         }
@@ -146,7 +146,7 @@ namespace Lms.MVC.UI.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             //find activity in database
-            var activity = await uow.ActivityRepository.GetActivityAsync(id);
+            var activity = await uow.ActivityRepository.GetActivityAsync(id,false);
 
             //create viewModel
             var model = mapper.Map<EditActivityViewModel>(activity);
@@ -159,7 +159,7 @@ namespace Lms.MVC.UI.Controllers
         [ModelValid]
         public async Task<IActionResult> Edit(int id, EditActivityViewModel activityModel)
         {
-            var activity = await uow.ActivityRepository.GetActivityAsync(id);
+            var activity = await uow.ActivityRepository.GetActivityAsync(id,false);
 
             //activityModel.ModuleId = activity.ModuleId;
             mapper.Map(activityModel, activity);
@@ -182,7 +182,7 @@ namespace Lms.MVC.UI.Controllers
         [ModelNotNull, ModelValid]
         public async Task<IActionResult> Delete(int? id)
         {
-            var activity = await uow.ActivityRepository.GetActivityAsync(id);
+            var activity = await uow.ActivityRepository.GetActivityAsync(id,false);
             return View(activity);
         }
 
@@ -191,7 +191,7 @@ namespace Lms.MVC.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var activity = await uow.ActivityRepository.GetActivityAsync(id);
+            var activity = await uow.ActivityRepository.GetActivityAsync(id,false);
             uow.ActivityRepository.Remove(activity);
             await uow.CompleteAsync();
             return RedirectToAction(nameof(Index));

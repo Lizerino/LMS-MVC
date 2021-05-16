@@ -20,7 +20,7 @@
     {
     @foreach (var lateAssignment in Model.LateAssignments)
     {
-        <p class="late"> @uow.ActivityRepository.GetActivityAsync(lateAssignment).Result.Title</p>
+        <p class="late"> @uow.ActivityRepository.GetActivityAsync(lateAssignment,false).Result.Title</p>
     }
     }
 </div>

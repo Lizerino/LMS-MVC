@@ -10,62 +10,62 @@
 
 <h4>Activity</h4>
 <hr />
-    <div class="row">
-        <div class="col-9">
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Title)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Title)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Description)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Description)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.StartDate)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.StartDate)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.EndDate)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.EndDate)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.ActivityType)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.ActivityType.Name)
-            </dd>
-        </div>
-        <div class="col">
-            @if (User.IsInRole("Teacher") || User.IsInRole("Admin"))
+<div class="row">
+    <div class="col-9">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.StartDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StartDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EndDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EndDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ActivityType)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ActivityType.Name)
+        </dd>
+    </div>
+    <div class="col">
+        <div class="col-3">
+            <div class="card">
+                <div class="card-header">
+                    Files Submitted to @Model.Title
+                </div>
+                <div class="card-body">
+                    @await Component.InvokeAsync("ListFiles", new { CMAType = "activity", id = Model.Id.ToString() })
+                </div>
+            </div>
+            @if (Model.ActivityType.Name == "Assignment" || User.IsInRole("Teacher"))
             {
-                <div class="col-3">
-                    <div class="card">
-                        <div class="card-header">
-                            Files Submitted to @Model.Title
-                        </div>
-                        <div class="card-body">
-                            @await Component.InvokeAsync("ListFiles", new { CMAType = "activity", id = Model.Id.ToString() })
-                        </div>
-                    </div>
-                    <div class="card">
+                <div class="card">
 
-                        <div class="card-header">Upload New Document or File</div>
-                        <div class="card-body">
-                            @await Component.InvokeAsync("UploadFile", new { userId = userManager.GetUserAsync(User).Result.Id, Id = Model.Id, CMAType = "activity" })
-                        </div>
+                    <div class="card-header">Upload New Document or File</div>
+                    <div class="card-body">
+                        @await Component.InvokeAsync("UploadFile", new { userId = userManager.GetUserAsync(User).Result.Id, Id = Model.Id, CMAType = "activity" })
                     </div>
                 </div>
             }
         </div>
     </div>
+</div>
 <div>
     @if (User.IsInRole("Teacher") || User.IsInRole("Admin"))
     {
