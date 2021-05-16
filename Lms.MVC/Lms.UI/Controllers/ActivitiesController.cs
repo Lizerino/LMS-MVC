@@ -11,12 +11,15 @@ using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Filters;
+using Lms.MVC.UI.Models.ViewModels;
 using Lms.MVC.UI.Models.ViewModels.ActivityViewModels;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+
+using Newtonsoft.Json;
 
 namespace Lms.MVC.UI.Controllers
 {
@@ -37,15 +40,13 @@ namespace Lms.MVC.UI.Controllers
         {
             if (Id != null)
             {
-                var moduleTitle = uow.ModuleRepository.GetModuleAsync((int)Id).Result.Title;
-                
-                var activityViewModel = new ListActivityViewModel();
+                var module = await uow.ModuleRepository.GetModuleAsync((int)Id);                
 
-                activityViewModel.ActivityList = await uow.ActivityRepository.GetAllActivitiesByModuleIdAsync((int)Id);
-                activityViewModel.ModuleId = (int)Id;
-                activityViewModel.ModuleTitle = moduleTitle;
+                var result = new ListActivityViewModel();
+                result.ModuleId = (int)Id;
+                result.ModuleTitle = module.Title;               
 
-                return View(activityViewModel);
+                return View(result);
             }
             else if (User.IsInRole("Student"))
             {
@@ -200,6 +201,25 @@ namespace Lms.MVC.UI.Controllers
         private bool ActivityExists(int id)
         {
             return uow.ActivityRepository.ActivityExists(id).Result;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Activity>>> GetEvents(int Id)
+        {
+            var activities = await uow.ActivityRepository.GetAllActivitiesByModuleIdAsync(Id);
+            var events = new List<SchedulerEvent>();
+            foreach (var act in activities)
+            {        
+                var calevent = new SchedulerEvent();
+                calevent.Id = act.Id;
+                calevent.Title = act.Title;
+                calevent.text = act.Description;
+                calevent.start_date = act.StartDate;
+                calevent.end_date = act.EndDate;
+                events.Add(calevent);
+            }
+            var response = JsonConvert.SerializeObject(events);
+            return Ok(response);
         }
     }
 }
