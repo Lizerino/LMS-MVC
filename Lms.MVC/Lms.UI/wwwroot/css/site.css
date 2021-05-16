@@ -326,11 +326,32 @@ height: 5rem;
 width:  6rem;
 }
 
+/*Card Flex Code*/
 
+.card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
 
+.card__wrap--outer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+}
 
+.card__wrap--inner {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
 
-
+@media (min-width: 480px) {
+    .card__wrap--inner {
+        width: 100%
+    }
+}
 
 
 .sidebar {
@@ -352,7 +373,15 @@ width:  6rem;
         text-decoration: none;
        
     }
+@media (min-width: 1024px) {
 
+    .card__wrap--inner {
+        width: 33.33%
+    }
+}
+.flexible {
+    flex-grow: 1;
+}
         .sidebar p.late {
             background-color: red;
             color: white;
@@ -403,5 +432,52 @@ div.content {
     }
 }
 
+.calendar .display-4 {
+    font-size: 1.5rem;
+}
 
+@media (max-width:991px) {
+    .calendar .day h5 {
+        background-color: #f8f9fa;
+        padding: 3px 5px 5px;
+        margin: -8px -8px 8px -8px;
+    }
 
+    .calendar .date {
+        padding-left: 4px;
+    }
+}
+
+@media (min-width: 992px) {
+    .calendar h5 {
+        font-size: 0.9rem;
+    }
+
+    .calendar .day {
+        height: 8vw;
+    }
+
+    .calendar .event {
+        font-size: 0.67rem;
+    }
+}
+
+@media (min-width: 1440px) {
+    .calendar .day {
+        height: 7vw;
+    }
+}
+
+@media (min-width: 1920px) {
+    .calendar .day {
+        height: 5.5vw;
+    }
+}
+
+.dhx_agenda_area span {
+    color: white !important;
+}
+
+.dhx_agenda_event_time {
+    color: white !important;
+}

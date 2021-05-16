@@ -9,14 +9,12 @@ using Itenso.TimePeriod;
 
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
-using Lms.MVC.Data.Data;
 using Lms.MVC.UI.Filters;
 using Lms.MVC.UI.Models.ViewModels;
 using Lms.MVC.UI.Models.ViewModels.ActivityViewModels;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 using Newtonsoft.Json;
@@ -30,7 +28,7 @@ namespace Lms.MVC.UI.Controllers
         private readonly IMapper mapper;
 
         public ActivitiesController(IMapper mapper, IUoW uow)
-        {            
+        {
             this.mapper = mapper;
             this.uow = uow;
         }
@@ -40,26 +38,27 @@ namespace Lms.MVC.UI.Controllers
         {
             if (Id != null)
             {
-                var module = await uow.ModuleRepository.GetModuleAsync((int)Id);                
+                var module = await uow.ModuleRepository.GetModuleAsync((int)Id);
 
                 var result = new ListActivityViewModel();
                 result.ModuleId = (int)Id;
-                result.ModuleTitle = module.Title;               
+                result.ModuleTitle = module.Title;
 
                 return View(result);
             }
             else if (User.IsInRole("Student"))
             {
                 return RedirectToAction("Index", "Modules");
-            }            
-                return RedirectToAction("Index","Courses");
+            }
+            return RedirectToAction("Index", "Courses");
         }
 
         // GET: Activities/Details/5
         [ModelValid]
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string id)
         {
-            var activity = await uow.ActivityRepository.GetActivityAsync(id);
+            var Id = Int32.Parse(id);
+            var activity = await uow.ActivityRepository.GetActivityAsync(Id);
             var activityViewModel = mapper.Map<DetailActivityViewModel>(activity);
             return View(activityViewModel);
         }
@@ -150,7 +149,7 @@ namespace Lms.MVC.UI.Controllers
             var activity = await uow.ActivityRepository.GetActivityAsync(id);
 
             //create viewModel
-            var model = mapper.Map<EditActivityViewModel>(activity);           
+            var model = mapper.Map<EditActivityViewModel>(activity);
             return View(model);
         }
 
@@ -209,13 +208,46 @@ namespace Lms.MVC.UI.Controllers
             var activities = await uow.ActivityRepository.GetAllActivitiesByModuleIdAsync(Id);
             var events = new List<SchedulerEvent>();
             foreach (var act in activities)
-            {        
+            {
                 var calevent = new SchedulerEvent();
                 calevent.Id = act.Id;
+                calevent.realId = act.Id.ToString();
                 calevent.Title = act.Title;
                 calevent.text = act.Description;
                 calevent.start_date = act.StartDate;
                 calevent.end_date = act.EndDate;
+                switch (act.ActivityTypeId)
+                {
+                    // 1: Lecture
+                    case 1:
+                        calevent.color = "green";
+                        calevent.textColor = "white";
+                        break;
+
+                    // 2: ELearning
+                    case 2:
+                        calevent.color = "magenta";
+                        calevent.textColor = "white";
+                        break;
+
+                    // 3: Practise
+                    case 3:
+                        calevent.color = "blue";
+                        calevent.textColor = "white";
+                        break;
+
+                    // 4: Assignment
+                    case 4:
+                        calevent.color = "red";
+                        calevent.textColor = "white";
+                        break;
+
+                    // 5: Other
+                    case 5:
+                        calevent.color = "black";
+                        calevent.textColor = "white";
+                        break;                   
+                }
                 events.Add(calevent);
             }
             var response = JsonConvert.SerializeObject(events);
