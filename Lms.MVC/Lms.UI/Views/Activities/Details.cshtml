@@ -48,7 +48,17 @@
             </div>
             <br />
             <div class="row">
-                <div class="col">Files:<br />@await Component.InvokeAsync("ListFiles", new { CMAType = "activity", id = Model.Id.ToString(), userId = userManager.GetUserAsync(User).Result.Id })</div>
+                <div class="col">
+                    Files:<br />
+                    @if (User.IsInRole("Teacher"))
+                    {
+                        @await Component.InvokeAsync("ListFiles", new { CMAType = "activity", id = Model.Id.ToString(), userId = userManager.GetUserAsync(User).Result.Id, userIsTeacher = true })
+                    }
+                    else
+                    {
+                        @await Component.InvokeAsync("ListFiles", new { CMAType = "activity", id = Model.Id.ToString(), userId = userManager.GetUserAsync(User).Result.Id, userIsTeacher = false })
+                    }
+                </div>
             </div>            
             @if (Model.ActivityType.Name == "Assignment" || User.IsInRole("Teacher"))
             {   
