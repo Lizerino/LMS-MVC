@@ -79,7 +79,7 @@ namespace Lms.MVC.UI.Views.Shared.Components.ListFiles
                 {
                     var activityFiles = uow.ActivityRepository.GetAllFilesByActivityId(Int32.Parse(id)).Result.Where(f => f.Assignment == false).ToList();
                     var userFiles = uow.UserRepository.GetAllFilesByUserId(userId).Result;
-                    activityFiles.AddRange(userFiles);
+                    activityFiles.AddRange(userFiles.Where(f=>f.Assignment==true));
                     files.FileList = activityFiles.Distinct().ToList();
                 }
             }
