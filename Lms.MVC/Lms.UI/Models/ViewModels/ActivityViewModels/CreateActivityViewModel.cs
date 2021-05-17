@@ -22,7 +22,7 @@ namespace Lms.MVC.UI.Models.ViewModels.ActivityViewModels
         public DateTime StartDate { get; set; }
 
         [DataType(DataType.DateTime), Required]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd, HH:mm}", ApplyFormatInEditMode = true)]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd, HH:mm}", ApplyFormatInEditMode = true)]
         [Display(Name = "EndDate")]
         public DateTime EndDate { get; set; }
 
