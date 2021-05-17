@@ -159,6 +159,9 @@ namespace Lms.MVC.UI.Controllers
 
             //create viewModel
             var model = mapper.Map<EditActivityViewModel>(activity);
+            model.Id = (int)id;
+            model.StartDate = activity.StartDate;
+            model.EndDate = activity.EndDate;
             return View(model);
         }
 
@@ -183,7 +186,7 @@ namespace Lms.MVC.UI.Controllers
                 if (!ActivityExists(activity.Id)) return NotFound();
                 else throw;
             }
-            return RedirectToAction("Index", "Activities");
+            return RedirectToAction("Details", "Activities",new { Id=id});
         }
 
         [Authorize(Roles = "Teacher,Admin")]

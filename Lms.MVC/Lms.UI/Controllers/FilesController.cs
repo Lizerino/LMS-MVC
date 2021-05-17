@@ -62,7 +62,8 @@ namespace Lms.MVC.UI.Controllers
             if (requestFile == null)
             {
                 return View();
-            }            
+            }
+
             // Don't display the untrusted file name in the UI. HTML-encode the value.
             return File(requestFile.Content, MediaTypeNames.Application.Octet, WebUtility.HtmlEncode(requestFile.UntrustedName));
         }
@@ -70,7 +71,7 @@ namespace Lms.MVC.UI.Controllers
         // Add confirmation
         public async Task<IActionResult> DeleteFile(int? id, string CMAType, string originUrl, string userId)
         {
-                if (CMAType == "activity") CMAType = "Activitie";               
+            if (CMAType == "activity") CMAType = "Activitie";
             if (id == null)
             {
                 return RedirectToAction("Index", CMAType + "s");
@@ -85,7 +86,6 @@ namespace Lms.MVC.UI.Controllers
             }
 
             return Redirect(originUrl);
-
         }
 
         // The following upload methods:
@@ -238,9 +238,16 @@ namespace Lms.MVC.UI.Controllers
                 UntrustedName = untrustedFileNameForStorage,
                 Description = formData.Description,
                 Size = streamedFileContent.Length,
-                UploadDT = DateTime.UtcNow,
-                Assignment = formData.Assignment
+                UploadDT = DateTime.UtcNow
             };
+            if (User.IsInRole("Student") && formData.CMAType=="activity")
+            {
+                file.Assignment = true;
+            }
+            else
+            {
+                file.Assignment = false;
+            }
 
             // This needs to be updated for other types.. should be able to be done in a way that
             // the program knows that type it comes from

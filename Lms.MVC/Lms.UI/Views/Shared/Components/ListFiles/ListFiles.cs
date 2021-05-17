@@ -77,8 +77,10 @@ namespace Lms.MVC.UI.Views.Shared.Components.ListFiles
                 }
                 else
                 {
-                    files.FileList = uow.ActivityRepository.GetAllFilesByActivityId(Int32.Parse(id)).Result.Where(f => f.Assignment == false).ToList();
-
+                    var activityFiles = uow.ActivityRepository.GetAllFilesByActivityId(Int32.Parse(id)).Result.Where(f => f.Assignment == false).ToList();
+                    var userFiles = uow.UserRepository.GetAllFilesByUserId(userId).Result;
+                    activityFiles.AddRange(userFiles);
+                    files.FileList = activityFiles.Distinct().ToList();
                 }
             }
             files.CMAType = CMAType.ToLower();

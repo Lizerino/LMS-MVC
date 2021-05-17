@@ -8,6 +8,7 @@ namespace Lms.MVC.UI.Models.ViewModels.ActivityViewModels
 {
     public class EditActivityViewModel
     {
+        public int Id { get; set; }
         [Display(Name = "Title")]
         public string Title { get; set; }
 
@@ -15,11 +16,11 @@ namespace Lms.MVC.UI.Models.ViewModels.ActivityViewModels
         public string Description { get; set; }
 
         [Display(Name = "StartDate")]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd, HH:mm}", ApplyFormatInEditMode = true)]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd, HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime StartDate { get; set; }
 
         [Display(Name = "EndDate")]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd, HH:mm}", ApplyFormatInEditMode = true)]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd, HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime EndDate { get; set; }
 
         [Display(Name = "For Module")]

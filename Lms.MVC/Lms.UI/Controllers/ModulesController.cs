@@ -244,7 +244,7 @@ namespace Lms.MVC.UI.Controllers
                 uow.ModuleRepository.Update(module);
                 await uow.CompleteAsync();
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Activities",new { Id = id });
             }
             catch
             {
