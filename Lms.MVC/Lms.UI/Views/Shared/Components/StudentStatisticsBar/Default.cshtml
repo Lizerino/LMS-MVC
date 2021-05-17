@@ -44,10 +44,14 @@
 </div>
 }
 <br />
+@if (Model.CurrentModule != -1)
+	{
 <div>
     <b>Current module :</b><br />
     <a asp-controller="Activities" asp-action="Index" asp-route-id="@Model.CurrentModule">  @uow.ModuleRepository.GetModuleAsync(Model.CurrentModule).Result.Title</a>   
 </div>
+	}
+
 <br />
 <div>
     @if (Model.NextModule!=-1)
