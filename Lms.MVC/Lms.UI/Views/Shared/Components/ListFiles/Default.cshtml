@@ -17,7 +17,7 @@
 
         <a class="btn btn-info" asp-action="DownloadFile" asp-controller="Files" asp-route-id="@file.Id"> Download</a>
         
-        @if (uow.UserRepository.GetAllFilesByUserId(Model.userId).Result.Contains(file))
+        @if (uow.UserRepository.GetAllFilesByUserId(Model.userId).Result.Contains(file) || User.IsInRole("Teacher"))
         {
             <a class="btn btn-warning" asp-action="DeleteFile" asp-controller="Files"
                asp-route-id="@file.Id"

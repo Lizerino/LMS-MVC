@@ -79,7 +79,7 @@ namespace Lms.MVC.UI.Controllers
 
             var RemoveFile = await uoW.FileRepository.GetFileByIdAsync((int)id);
 
-            if (RemoveFile != null && uoW.UserRepository.GetAllFilesByUserId(userId).Result.Contains(RemoveFile))
+            if ((RemoveFile != null && uoW.UserRepository.GetAllFilesByUserId(userId).Result.Contains(RemoveFile))|| (RemoveFile != null && User.IsInRole("Teacher")))
             {
                 uoW.FileRepository.Remove(RemoveFile);
                 await uoW.CompleteAsync();
