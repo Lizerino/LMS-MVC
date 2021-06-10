@@ -55,8 +55,6 @@ namespace Lms.MVC.UI
                 {
                     options.UseSqlServer(
                         Configuration.GetConnectionString("DefaultConnection")
-
-                    //Configuration.GetConnectionString("ApplicationDbContextSQL")
                     );
                 }
                 else

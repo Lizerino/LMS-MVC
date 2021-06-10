@@ -26,10 +26,7 @@ namespace Lms.MVC.UI
                     var services = scope.ServiceProvider;
                     var db = services.GetRequiredService<ApplicationDbContext>();
                     var config = services.GetRequiredService<IConfiguration>();
-
-                    // TODO: REMOVE IN PRODUCTION
-                    //db.Database.EnsureDeleted();
-
+                    
                     db.Database.EnsureCreated();
 
                     var adminPW = config["AdminPW"];
