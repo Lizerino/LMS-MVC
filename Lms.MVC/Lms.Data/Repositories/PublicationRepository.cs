@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Lms.API.Core.Entities;
+using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 
 namespace Lms.MVC.Data.Repositories

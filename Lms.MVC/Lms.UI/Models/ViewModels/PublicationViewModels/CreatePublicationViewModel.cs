@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-using Lms.API.Core.Entities;
+using Lms.MVC.Core.Entities;
 
 namespace Lms.MVC.UI.Models.ViewModels.PublicationViewModels
 {

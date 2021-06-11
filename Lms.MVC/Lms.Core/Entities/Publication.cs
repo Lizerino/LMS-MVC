@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-using Lms.MVC.Core.Entities;
-
-namespace Lms.MVC.UI.Models.ViewModels.PublicationViewModels
+namespace Lms.MVC.Core.Entities
 {
-    public class DeletePublicationViewModel
+    public class Publication
     {
+        [Key]
         public int Id { get; set; }
 
         [Required]
@@ -24,20 +23,6 @@ namespace Lms.MVC.UI.Models.ViewModels.PublicationViewModels
         public Subject Subject { get; set; }
 
         public Level Level { get; set; }
-
-        // Dropdown list
-
-        public IEnumerable<Subject> Subjects { get; set; }
-
-        // Author Name to be used
-        [Display(Name = "Author First Name")]
-        public string AuthorFirstName { get; set; }
-
-        [Display(Name = "Author Last Name")]
-        public string AuthorLastName { get; set; }
-
-        //Subject Creation at Post
-        public string SubjectTitle { get; set; }
 
         [Required]
         public ICollection<Author> Authors { get; set; }

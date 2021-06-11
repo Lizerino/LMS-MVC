@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 
-using Lms.API.Core.Entities;
 using Lms.MVC.Core.Entities;
 using Lms.MVC.Core.Repositories;
 using Lms.MVC.UI.Models.ViewModels;
